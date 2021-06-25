@@ -51,4 +51,3 @@ jobs:
           echo
           echo
           bash <(curl -sL https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/oprt.sh)
-
