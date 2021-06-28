@@ -2,6 +2,8 @@ name: Operator CI Labels
 on:
  pull_request_target:
    types: [labeled]
+env:
+  PRODUCTION_TYPE: "ocp"
   
 jobs:
   authorized-changes-handler:

@@ -5,6 +5,8 @@ on:
     types:
       - manual-openshift-report
       - openshift-test-status
+env:
+  PRODUCTION_TYPE: "ocp"
 
 jobs:
   remove-add-label:
