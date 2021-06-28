@@ -5,7 +5,7 @@ production:
     organization: openshift-community-operators
   index:
     registry: quay.io
-    organisation: openshift-community-operators
+    organization: openshift-community-operators
     name: catalog
     tags:
       - v4.6
