@@ -1,6 +1,7 @@
 name: Prepare Test Index
 env:
   GODEBUG: x509ignoreCN=0
+  PRODUCTION_TYPE: "ocp"
   
 on:
   repository_dispatch:
