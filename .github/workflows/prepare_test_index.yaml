@@ -1,3 +1,4 @@
+
 name: Prepare Test Index
 
 on:
@@ -8,6 +9,7 @@ on:
 
 env:
   OPP_PRODUCTION_TYPE: "ocp"
+
 
 jobs:
   build:

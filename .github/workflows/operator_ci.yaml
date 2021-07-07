@@ -1,3 +1,4 @@
+
 name: Operator CI
 
 on:
@@ -7,6 +8,7 @@ on:
 env:
   AUTOMERGE_ENABLED: 1
   OPP_PRODUCTION_TYPE: "ocp"
+
   
 jobs:
   operator-automerge-enabled:
