@@ -2,4 +2,4 @@ packageName: aqua
 channels:
 - name: alpha
   currentCSV: aqua-operator.v5.3.0
-defaultChannel: 5.3.0
+defaultChannel: alpha
