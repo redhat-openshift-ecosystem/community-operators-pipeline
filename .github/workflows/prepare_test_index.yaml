@@ -1,13 +1,13 @@
 name: Prepare Test Index
-env:
-  GODEBUG: x509ignoreCN=0
-  OPP_PRODUCTION_TYPE: "ocp"
-  
+
 on:
   repository_dispatch:
     types:
       - manual-test-index
       - index-for-openshift-test
+
+env:
+  OPP_PRODUCTION_TYPE: "ocp"
 
 jobs:
   build:

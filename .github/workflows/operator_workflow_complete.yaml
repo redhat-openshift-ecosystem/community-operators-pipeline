@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: ["Operator test"]
     types: [completed]
+
 env:
   OPP_PRODUCTION_TYPE: "ocp"
 

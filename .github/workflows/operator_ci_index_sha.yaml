@@ -11,6 +11,7 @@ on:
         description: 'Sync index sha for openshift'     
         required: true
         default: '0'
+
 env:
   OPP_CONTAINER_OPT: "-t"
   OPP_ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
@@ -24,6 +25,7 @@ env:
   IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
   IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
 
+{%- raw -%}
 jobs:
   k8s-index-sha:
     if: github.event.inputs.kubernetes == '1'

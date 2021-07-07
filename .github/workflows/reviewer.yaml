@@ -1,7 +1,9 @@
 name: Handle review
+
 on:
  pull_request_review:
    types: [submitted, edited]
+
 env:
   OPP_PRODUCTION_TYPE: "ocp"
    
