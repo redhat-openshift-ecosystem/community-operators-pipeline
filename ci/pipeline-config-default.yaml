@@ -24,9 +24,11 @@ production:
 pipeline:
     ci_scripts_dir: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
     image: quay.io/operator_testing/operator-test-playbooks:latest
+    automerge:
+      enabled: 1
 
 operatorhubio:
-  enabled: false
+  enabled: 0
 #base:
 #  organisation: operator-framework
 #  project: operator-test-playbooks
