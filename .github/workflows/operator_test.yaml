@@ -12,6 +12,7 @@ env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
   OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp.sh"
+  OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
@@ -46,8 +47,9 @@ jobs:
           OPP_RENAMED_FILES: "${{ steps.files.outputs.renamed }}"
           OPP_REMOVED_FILES: "${{ steps.files.outputs.removed }}"
         run: |
+          echo "Using script '$OPP_SCRIPT_ENV_URL' ..."
           echo "global labels $OPP_LABELS"
-          scripts/ci/actions-env
+          bash <(curl -sL $OPP_SCRIPT_ENV_URL)
     outputs:
       op_test_ready: "${{ steps.op-traffic-light.outputs.op_test_ready }}"
       op_release_ready: "${{ steps.op-traffic-light.outputs.op_release_ready }}"
