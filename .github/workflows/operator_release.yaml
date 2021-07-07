@@ -90,47 +90,6 @@ jobs:
       opp_release_delete_appreg: "${{ steps.op-traffic-light.outputs.opp_release_delete_appreg }}"
       opp_pr_title: "${{ steps.op-traffic-light.outputs.opp_pr_title }}"
 
-  release-k8s_latest:
-    name: "Release / k8s latest"
-    needs: pr-check
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_stream == 'upstream-community-operators'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Remove operator from index
-        if: needs.pr-check.outputs.opp_op_delete == '1'
-        env:
-          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-        run: |
-          echo "OPP_LABELS=$OPP_LABELS"
-          echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy https://github.com/operator-framework/community-operators master"
-          bash <(curl -sL $OPP_SCRIPT_URL) op_delete "operators/${{ needs.pr-check.outputs.opp_name }}/dummy https://github.com/operator-framework/community-operators master"
-      - name: Index recreate only (Only ci.yaml was changed)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
-        env:
-          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-          OPP_CI_YAML_ONLY: 1
-        run: |
-          echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/sync https://github.com/operator-framework/community-operators master"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/${{ needs.pr-check.outputs.opp_name }}/sync https://github.com/operator-framework/community-operators master"
-      - name: Operator release (sync)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
-        env:
-          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-        run: |
-          echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/sync https://github.com/operator-framework/community-operators master"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/sync https://github.com/operator-framework/community-operators master"
-      - name: Operator release (operator version overwrite)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
-        env:
-          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-        run: |
-          echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} https://github.com/operator-framework/community-operators master"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} https://github.com/operator-framework/community-operators master"
   # release-openshift_latest:
   #   name: "Release / o7t latest"
   #   needs: pr-check
@@ -251,23 +210,6 @@ jobs:
             echo "openshift: ${{ matrix.index-tag }}"
             bash <(curl -sL $OPP_ISS_SCRIPT_URL) openshift ${{ matrix.index-tag }}
 
-  ohio-image-k8s:
-    name: "Release / k8s ohio image"
-    needs: [ pr-check, release-k8s_latest ]
-    # if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_stream == 'upstream-community-operators'
-    runs-on: ubuntu-latest
-    env:
-      OHIO_INPUT_CATALOG_IMAGE: "quay.io/operatorhubio/catalog:latest"
-      OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:latest"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Ohio image
-        run: |
-          echo "ohio_image operators/sync https://github.com/operator-framework/community-operators master"
-          scripts/ci/disk-cleanup-on-startup.sh
-          bash <(curl -sL $OPP_SCRIPT_URL) ohio_image "operators/sync https://github.com/operator-framework/community-operators master"
-
   ohio-image-o7t:
     name: "Release / o7t ohio image and sign 'latest'"
     needs: [ pr-check, release-sha-openshift ]
@@ -325,22 +267,6 @@ jobs:
           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} https://github.com/operator-framework/community-operators master"
           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} https://github.com/operator-framework/community-operators master"
 
-  ohio-page-k8s:
-    name: "Release / operatorhub.io"
-    needs: ohio-image-k8s
-    # if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_stream == 'upstream-community-operators'
-    runs-on: ubuntu-latest
-    env:
-      CI_OHIO_BRANCH: "latest"
-      REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Ohio image
-        run: |
-          echo "scripts/ci/trigger-operatorhubio-ci.sh ${CI_OHIO_BRANCH}"
-          scripts/ci/trigger-operatorhubio-ci.sh
-
   ohio-page-o7t:
     name: "Release / dev.operatorhub.io"
     needs: ohio-image-o7t
@@ -358,7 +284,10 @@ jobs:
 
   slack-notification:
     name: "Slack notification"
-    needs: [ pr-check, release-k8s_latest, release-openshift, release-sha-openshift, ohio-image-k8s, ohio-image-o7t, push-to-quay-o7t, ohio-page-k8s, ohio-page-o7t ]
+
+
+    needs: [ pr-check, release-openshift, release-sha-openshift, ohio-image-o7t, push-to-quay-o7t, ohio-page-o7t ]
+
     if: failure()
     runs-on: ubuntu-latest
     steps:
