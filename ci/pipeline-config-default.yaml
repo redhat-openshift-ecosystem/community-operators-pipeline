@@ -2,10 +2,10 @@ production:
   type: ocp
   bundle:
     registry: quay.io
-    organization: openshift-community-operators
+    organization: community-operators-pipeline
   index:
     registry: quay.io
-    organization: openshift-community-operators
+    organization: community-operators-pipeline
     name: catalog
     tags:
       - v4.6
@@ -13,14 +13,16 @@ production:
       - v4.8
     latest: v4.6
   mirror:
-    multiarch:
-      enabled: true
-      registry: quay.io
-      organisation: redhat
-      name: redhat----community-operator-index
+    enabled: 1
+    multiarch: 
+      base: registry.redhat.io/openshift4/ose-operator-registry:v4.5
+      postfix: s
+    registry: quay.io
+    organization: community-operators-pipeline
+    name: catalog_prod
 
 pipeline:
-    ci_scripts: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
+    ci_scripts_dir: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
     image: quay.io/operator_testing/operator-test-playbooks:latest
 
 operatorhubio:

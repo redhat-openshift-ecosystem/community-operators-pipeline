@@ -17,6 +17,17 @@ env:
   OPP_INDEX_MIRROR: 0
   OPP_MIRROR_LATEST_TAG: "v4.6"
   OPP_PRODUCTION_TYPE: "ocp"
+  OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
+  OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"
+  OPP_RELEASE_INDEX_REGISTRY: "quay.io"
+  OPP_RELEASE_INDEX_ORGANIZATION: "community-operators-pipeline"
+  OPP_RELEASE_INDEX_NAME: "catalog"
+  OPP_MIRROR_INDEX_REGISTRY: "quay.io"
+  OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
+  OPP_MIRROR_INDEX_NAME: "catalog_prod"
+  OPP_MIRROR_INDEX_ENABLED: "1"
+  OPP_MIRROR_INDEX_MULTIARCH: "registry.redhat.io/openshift4/ose-operator-registry:v4.5"
+  OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
 
   GODEBUG: x509ignoreCN=0
   CI_OHIO_TRIGGER_TOKEN: ${{ secrets.CI_OHIO_TRIGGER_TOKEN }}

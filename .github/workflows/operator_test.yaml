@@ -14,6 +14,11 @@ env:
   OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp.sh"
   OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
+  OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
+  OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"
+  OPP_RELEASE_INDEX_REGISTRY: "quay.io"
+  OPP_RELEASE_INDEX_ORGANIZATION: "community-operators-pipeline"
+  OPP_RELEASE_INDEX_NAME: "catalog"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "v1.21.1"
