@@ -19,9 +19,8 @@ production:
       organisation: redhat
       name: redhat----community-operator-index
 
-testing:
-    test_script_url: https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/test.sh
-    iss_script_url: https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/iss.sh
+pipeline:
+    ci_scripts: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
     image: quay.io/operator_testing/operator-test-playbooks:latest
 
 operatorhubio:

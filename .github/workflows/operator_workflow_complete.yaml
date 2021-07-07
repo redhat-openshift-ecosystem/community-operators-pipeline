@@ -5,7 +5,7 @@ on:
     workflows: ["Operator test"]
     types: [completed]
 env:
-  PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "ocp"
 
 jobs:
   pr:

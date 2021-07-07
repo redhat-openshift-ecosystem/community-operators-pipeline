@@ -3,13 +3,13 @@ name: Operator release
 env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
-  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/test.sh"
-  ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/iss.sh"
+  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp.sh"
+  OPP_ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
   OPP_PROD: 1
   OPP_INDEX_MIRROR: 0
   OPP_MIRROR_LATEST_TAG: "v4.6"
-  PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "ocp"
   GODEBUG: x509ignoreCN=0
   CI_OHIO_TRIGGER_TOKEN: ${{ secrets.CI_OHIO_TRIGGER_TOKEN }}
   OHIO_REGISTRY_TOKEN: ${{ secrets.OHIO_REGISTRY_TOKEN }}
@@ -214,7 +214,7 @@ jobs:
             INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
             webhook_type: 'json-extended'
             webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
-            webhook_secret: ${{ secrets.INDEX_SIGN_WEBHOOK }}
+            webhook_secret: ${{ secrets.INDEX_SIGN_WEBHOOK_SECRET }}
             data: "{\"index_image\": \"${{ steps.openshift-vars.outputs.operator_index }}\", \"index_image_resolved\": \"${{ steps.openshift-vars.outputs.operator_index_resolved }}\"}"
 
 
@@ -234,7 +234,7 @@ jobs:
             IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
           run: |
             echo "openshift: ${{ matrix.index-tag }}"
-            bash <(curl -sL $ISS_SCRIPT_URL) openshift ${{ matrix.index-tag }}
+            bash <(curl -sL $OPP_ISS_SCRIPT_URL) openshift ${{ matrix.index-tag }}
 
   ohio-image-k8s:
     name: "Release / k8s ohio image"
@@ -286,7 +286,7 @@ jobs:
           INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
           webhook_type: 'json-extended'
           webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
-          webhook_secret: ${{ secrets.INDEX_SIGN_WEBHOOK }}
+          webhook_secret: ${{ secrets.INDEX_SIGN_WEBHOOK_SECRET }}
           data: "{\"index_image\": \"${{ steps.openshift-vars-latest.outputs.operator_index_latest }}\", \"index_image_resolved\": \"${{ steps.openshift-vars-latest.outputs.operator_index_resolved_latest }}\"}"
       - name: Ohio image
         run: |

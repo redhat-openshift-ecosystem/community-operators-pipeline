@@ -3,12 +3,12 @@ name: Operator test
 env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
-  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/test.sh"
+  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "v1.21.1"
-  PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "ocp"
 
 on:
  pull_request:

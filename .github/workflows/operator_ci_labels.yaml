@@ -3,7 +3,7 @@ on:
  pull_request_target:
    types: [labeled]
 env:
-  PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "ocp"
   
 jobs:
   authorized-changes-handler:
