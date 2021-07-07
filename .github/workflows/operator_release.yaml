@@ -14,7 +14,6 @@ env:
   OPP_ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
   OPP_PROD: 1
-  OPP_INDEX_MIRROR: 0
   OPP_MIRROR_LATEST_TAG: "v4.6"
   OPP_PRODUCTION_TYPE: "ocp"
   OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
