@@ -11,7 +11,8 @@ env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
   OPP_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp.sh"
-  OPP_ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
+  OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"
+  OPP_SCRIPT_ISS_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
   OPP_PROD: 1
   OPP_MIRROR_LATEST_TAG: "v4.6"
@@ -212,7 +213,7 @@ jobs:
             IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
           run: |
             echo "openshift: ${{ matrix.index-tag }}"
-            bash <(curl -sL $OPP_ISS_SCRIPT_URL) openshift ${{ matrix.index-tag }}
+            bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
 
   ohio-image-o7t:
     name: "Release / o7t ohio image and sign 'latest'"

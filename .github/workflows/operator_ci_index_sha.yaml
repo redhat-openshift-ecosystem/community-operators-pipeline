@@ -15,7 +15,7 @@ on:
 
 env:
   OPP_CONTAINER_OPT: "-t"
-  OPP_ISS_SCRIPT_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
+  OPP_SCRIPT_ISS_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-iss.sh"
   GODEBUG: x509ignoreCN=0
   OPP_INDEX_MIRROR: 1
   OPP_MIRROR_LATEST_TAG: "v4.6"
@@ -35,7 +35,7 @@ jobs:
     steps:
     - run: |
         echo "kubernetes: ${{ github.event.inputs.kubernetes }} latest"
-        bash <(curl -sL $OPP_ISS_SCRIPT_URL) kubernetes latest
+        bash <(curl -sL $OPP_SCRIPT_ISS_URL) kubernetes latest
 
   o7t-index-sha:
     if: github.event.inputs.openshift == '1'
@@ -49,4 +49,4 @@ jobs:
     steps:
     - run: |
         echo "openshift: ${{ github.event.inputs.openshift }} ${{ matrix.index-tag }}"
-        bash <(curl -sL $OPP_ISS_SCRIPT_URL) openshift ${{ matrix.index-tag }}
+        bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
