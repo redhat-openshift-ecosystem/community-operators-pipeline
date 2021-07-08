@@ -62,7 +62,7 @@ fi
 #detection start
 mkdir -p /tmp/jq-$OC_DIR_CORE/bin/
 curl -L "https://github.com/stedolan/jq/releases/download/jq-$JQ_VERSION/jq-linux64" --output "/tmp/jq-$OC_DIR_CORE/bin/jq" #&& echo "jq $JQ_VERSION downloaded"
-chmod +x "/tmp/jq-$OC_DIR_CORE/bin/jq" && echo "rights adjusted"
+chmod +x "/tmp/jq-$OC_DIR_CORE/bin/jq" && echo "Rights adjusted"
 
 #detect allow/longer-deployment label
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
@@ -90,14 +90,14 @@ OPRT_REPO=${REPO_FULL-""}
 OPRT_SHA=${COMMIT-""}
 OPRT_SRC_BRANCH=${OPRT_SRC_BRANCH-"master"}
 export OPRT=1
-echo "OPRT values set"
+echo "OPRT values set [OK]"
 [ -n "$OPRT_REPO" ] || { echo "Error: '\$OPRT_REPO' is empty !!!"; exit 1; }
 [ -n "$OPRT_SHA" ] || { echo "Error: '\$OPRT_SHA' is empty !!!"; exit 1; }
 echo "Going to clone"
 git clone $REPO_FULL community-operators #> /dev/null 2>&1
-echo "Cloned"
+echo "Cloned  [OK]"
 cd community-operators
-echo "Dir entered"
+echo "Dir entered  [OK]"
 BRANCH_NAME=$(git branch -a --contains $OPRT_SHA | grep remotes/ | grep -v HEAD | cut -d '/' -f 2-)
 echo "BRANCH_NAME"
 git checkout $BRANCH_NAME > /dev/null #2>&1
@@ -114,13 +114,13 @@ export OP_TEST_MODIFIED_FILES=$(git diff --diff-filter=M upstream/$OPRT_SRC_BRAN
 export OP_TEST_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OP_TEST_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OP_TEST_RENAMED_ADDED_MODIFIED_FILES=$(git diff --diff-filter=RAM upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-
+echo "Exported [OK]"
 BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
 echo "BRANCH_NAME=$BRANCH_NAME"
 
 #deleted only
 [ -n "$OP_TEST_REMOVED_FILES" ] && [ -z "$OP_TEST_RENAMED_ADDED_MODIFIED_FILES" ] && echo "Nothing to test - [OK]" && echo "only deleted files detected:" && echo ${OP_TEST_REMOVED_FILES[@]} && curl -f -u framework-automation:$(cat /var/run/cred/framautom) -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}" && exit 0;
-
+echo "Looping"
 for sf in ${OP_TEST_RENAMED_ADDED_MODIFIED_FILES[@]}; do
   echo $sf
   OP_STREAM_DIR="$(echo "$sf" | awk -F'/' '{ print $1 }')"
@@ -139,6 +139,7 @@ for sf in ${OP_TEST_RENAMED_ADDED_MODIFIED_FILES[@]}; do
       OP_VER="$(echo "$sf" | awk -F'/' '{ print $3 }')"
   fi
 done
+echo "Loop ended  [OK]"
 echo
 echo "OP_NAME=$OP_NAME"
 echo "OP_VER=$OP_VER"
@@ -156,13 +157,14 @@ echo "OP_VER=$OP_VER"
 #echo "Forced specific operator - $OP_NAME $OP_VER $COMMIT"
 
 #prepare temp index
+echo "Preparing temp index ..."
 [[ $TEST_MODE -ne 1 ]] && OP_TOKEN=$(cat /var/run/cred/op_token_quay_test)
 echo
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
 -X POST \
 -H "Accept: application/vnd.github.v3+json" \
 https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"index-for-openshift-test\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\"}}"  && echo "Temp index initiated ..."
-
+echo "Temp index triggered [OK]"
 CHECK_TEMP_INDEX=1
 while [ "$CHECK_TEMP_INDEX" -le "$MAX_LIMIT_FOR_INDEX_WAIT" ]; do
   echo "Checking index $QUAY_HASH presence ... $CHECK_TEMP_INDEX minutes."
@@ -182,20 +184,23 @@ while [ "$CHECK_TEMP_INDEX" -le "$MAX_LIMIT_FOR_INDEX_WAIT" ]; do
 done
 
 #deploy start
+echo "Starting deployment ..."
 if [ -d /tmp/playbooks2 ]; then rm -Rf /tmp/playbooks2; fi
 mkdir -p /tmp/playbooks2
 cd /tmp/playbooks2
+echo "We are in dir"
 [[ $TEST_MODE -ne 1 ]] && git clone https://github.com/operator-framework/operator-test-playbooks.git
 [[ $TEST_MODE -eq 1 ]] && git clone $TEST_PB_REPO
 cd operator-test-playbooks
 [[ $TEST_MODE -eq 1 ]] && git checkout $TEST_PB_BRANCH
 cd upstream
-
+echo "Config ..."
 export ANSIBLE_CONFIG=/tmp/playbooks2/operator-test-playbooks/upstream/ansible.cfg
 set +e
+echo "Ansible initiated"
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, deploy-olm-operator-openshift-upstream.yml -e ansible_connection=local -e package_name=$OP_NAME -e operator_dir=$TARGET_PATH/$OP_NAME -e op_version=$OP_VER -e oc_bin_path="/tmp/oc-$OC_DIR_CORE/bin/oc" -e commit_tag=$QUAY_HASH -e dir_suffix_part=$OC_DIR_CORE -e current_openshift_run=$CURRENT_OPENSHIFT_RUN $SUBDIR_ARG $EXTRA_ARGS -vv
 ANSIBLE_STATUS=$?
-
+echo "Reporting ..."
 [[ $TEST_MODE -ne 1 ]] && if [ $ANSIBLE_STATUS -eq 0 ]; then
   curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
   -X POST \
