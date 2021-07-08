@@ -23,10 +23,12 @@ production:
     username: redhat+iib_community
 
 pipeline:
-    ci_scripts_dir: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
-    image: quay.io/operator_testing/operator-test-playbooks:latest
-    automerge:
-      enabled: 1
+  repo: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
+  branch: main
+  ci_scripts_dir: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
+  image: quay.io/operator_testing/operator-test-playbooks:latest
+  automerge:
+    enabled: 1
 
 operatorhubio:
   enabled: 0
