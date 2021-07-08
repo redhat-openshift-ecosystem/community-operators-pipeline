@@ -23,7 +23,19 @@ echo "OS"
 cat /etc/os-release
 
 pwd
-[[ $TEST_MODE -ne 1 ]] && TARGET_PATH='/go/src/github.com/operator-framework/community-operators/community-operators'
+
+#[[ $TEST_MODE -ne 1 ]] && TARGET_PATH='/go/src/github.com/operator-framework/community-operators/community-operators'
+if [ $TEST_MODE -ne 1  ]; then
+    #CURRENT_PATH=/go/src/github.com/redhat-openshift-ecosystem/community-operators-pipeline/scripts/ci
+    CURRENT_PATH=$(pwd)
+    if [ $(echo $CURRENT_PATH|grep operator-framework)  ]; then
+         	TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/community-operators/g')
+    else
+                TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/operators/g')
+    fi
+fi
+echo "TARGET_PATH=$TARGET_PATH"
+
 [[ $TEST_MODE -eq 1 ]] && TARGET_PATH='/tmp/oper-for-me-test/community-operators/community-operators'
 
 #temp test for development to test on a stable commit
