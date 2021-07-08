@@ -35,10 +35,7 @@ env:
 
   REGISTRY_RELEASE_API_TOKEN: ${{ secrets.REGISTRY_RELEASE_API_TOKEN }}
   REGISTRY_MIRROR_INDEX_API_TOKEN: ${{ secrets.REGISTRY_MIRROR_INDEX_API_TOKEN }}
-  #OPP_SRC_REPO: "${{ github.event.pull_request.repository.full_name }}"
-  #OPP_SRC_BRANCH: "${{ github.event.pull_request.master_branch }}"
-
-
+  
   GODEBUG: x509ignoreCN=0
   CI_OHIO_TRIGGER_TOKEN: ${{ secrets.CI_OHIO_TRIGGER_TOKEN }}
   OHIO_REGISTRY_TOKEN: ${{ secrets.OHIO_REGISTRY_TOKEN }}
@@ -115,7 +112,7 @@ jobs:
   #       run: |
   #         echo "OPP_LABELS=$OPP_LABELS"
   #         echo "orange operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
-  #         bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
+  #         bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH
 
   release-openshift:
       name: "Release / o7t"
@@ -138,7 +135,7 @@ jobs:
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
             echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_SRC_REPO $OPP_SRC_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_SRC_REPO $OPP_SRC_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_SRC_REPO $OPP_SRC_BRANCH
         - name: Index recreate only (Only ci.yaml was changed)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
           env:
@@ -151,7 +148,7 @@ jobs:
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
             echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_SRC_REPO $OPP_SRC_BRANCH
         - name: Operator release (sync)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
           env:
@@ -163,7 +160,7 @@ jobs:
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
             echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH
         - name: Operator release (operator version overwrite)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
           env:
@@ -175,7 +172,7 @@ jobs:
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
             echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH
         - name: Prepare variables for the sign process
           id: openshift-vars
           run: |
@@ -260,7 +257,7 @@ jobs:
         run: |
           echo "ohio_image operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
           scripts/ci/disk-cleanup-on-startup.sh
-          bash <(curl -sL $OPP_SCRIPT_URL) ohio_image "operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) ohio_image operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH
 
   push-to-quay-o7t:
     name: "Release / o7t push to quay"
@@ -276,7 +273,7 @@ jobs:
       - name: Push to quay
         run: |
           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH
 
   ohio-page-o7t:
     name: "Release / dev.operatorhub.io"
