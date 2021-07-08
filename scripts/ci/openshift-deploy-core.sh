@@ -13,6 +13,19 @@ OC_DIR_CORE=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 SUBDIR_ARG="-e work_subdir_name=oc-$OC_DIR_CORE"
 echo "SUBDIR_ARG = $SUBDIR_ARG"
 
+if [[ $TEST_MODE -ne 1  ]]; then
+    #CURRENT_PATH=/go/src/github.com/redhat-openshift-ecosystem/community-operators-pipeline/scripts/ci
+    CURRENT_PATH=$(pwd)
+    if [ $(echo $CURRENT_PATH|grep operator-framework)  ]; then
+         	TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/community-operators/g')
+    else
+                TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/operators/g')
+    fi
+fi
+echo "TARGET_PATH=$TARGET_PATH"
+export PR_TARGET_REPO=$(echo $TARGET_PATH|cut -d"/" -f 5-6)
+echo "PR_TARGET_REPO=$PR_TARGET_REPO"
+
 #label start
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
 -X POST \
@@ -25,18 +38,7 @@ cat /etc/os-release
 pwd
 
 #[[ $TEST_MODE -ne 1 ]] && TARGET_PATH='/go/src/github.com/operator-framework/community-operators/community-operators'
-if [[ $TEST_MODE -ne 1  ]]; then
-    #CURRENT_PATH=/go/src/github.com/redhat-openshift-ecosystem/community-operators-pipeline/scripts/ci
-    CURRENT_PATH=$(pwd)
-    if [ $(echo $CURRENT_PATH|grep operator-framework)  ]; then
-         	TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/community-operators/g')
-    else
-                TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/operators/g')
-    fi
-fi
-echo "TARGET_PATH=$TARGET_PATH"
-PR_TARGET_REPO=$(echo $TARGET_PATH|cut -d"/" -f 5-6)
-echo "PR_TARGET_REPO=$PR_TARGET_REPO"
+
 
 [[ $TEST_MODE -eq 1 ]] && TARGET_PATH='/tmp/oper-for-me-test/community-operators/community-operators'
 
