@@ -75,22 +75,31 @@ tmpfile=$(mktemp /tmp/pr-details-XXXXXXX.json)
 curl -s https://api.github.com/repos/operator-framework/community-operators/pulls/$PULL_NUMBER -o $tmpfile
 cat $tmpfile
 REPO_FULL=$(cat $tmpfile | /tmp/jq-$OC_DIR_CORE/bin/jq -r '.head.repo.clone_url')
+echo "REPO_FULL=$REPO_FULL"
 BRANCH=$(cat $tmpfile | /tmp/jq-$OC_DIR_CORE/bin/jq -r '.head.ref')
+echo "BRANCH=$BRANCH"
 COMMIT=$(cat $tmpfile | /tmp/jq-$OC_DIR_CORE/bin/jq -r '.head.sha')
+echo "COMMIT=$COMMIT"
 REPO=$(echo "$REPO_FULL"| awk -F'https://github.com/' '{print $2}')
+echo "REPO=$REPO"
 QUAY_HASH=$(echo ${COMMIT::8})
+echo "QUAY_HASH=$QUAY_HASH"
 rm -f $tmpfile > /dev/null 2>&1
 
 OPRT_REPO=${REPO_FULL-""}
 OPRT_SHA=${COMMIT-""}
 OPRT_SRC_BRANCH=${OPRT_SRC_BRANCH-"master"}
 export OPRT=1
-
+echo "OPRT values set"
 [ -n "$OPRT_REPO" ] || { echo "Error: '\$OPRT_REPO' is empty !!!"; exit 1; }
 [ -n "$OPRT_SHA" ] || { echo "Error: '\$OPRT_SHA' is empty !!!"; exit 1; }
-git clone $REPO_FULL community-operators > /dev/null 2>&1
+echo "Going to clone"
+git clone $REPO_FULL community-operators #> /dev/null 2>&1
+echo "Cloned"
 cd community-operators
+echo "Dir entered"
 BRANCH_NAME=$(git branch -a --contains $OPRT_SHA | grep remotes/ | grep -v HEAD | cut -d '/' -f 2-)
+echo "BRANCH_NAME"
 git checkout $BRANCH_NAME > /dev/null #2>&1
 git log --oneline | head
 
