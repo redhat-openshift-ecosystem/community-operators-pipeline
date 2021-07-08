@@ -88,6 +88,7 @@ rm -f $tmpfile > /dev/null 2>&1
 
 OPRT_REPO=${REPO_FULL-""}
 OPRT_SHA=${COMMIT-""}
+echo "OPRT_SHA=$OPRT_SHA"
 OPRT_SRC_BRANCH=${OPRT_SRC_BRANCH-"master"}
 export OPRT=1
 echo "OPRT values set [OK]"
@@ -99,8 +100,9 @@ echo "Cloned  [OK]"
 cd community-operators
 echo "Dir entered  [OK]"
 BRANCH_NAME=$(git branch -a --contains $OPRT_SHA | grep remotes/ | grep -v HEAD | cut -d '/' -f 2-)
-echo "BRANCH_NAME"
+echo "BRANCH_NAME=$BRANCH_NAME"
 git checkout $BRANCH_NAME > /dev/null #2>&1
+echo "Checkout  [OK]"
 git log --oneline | head
 
 git config --global user.email "test@example.com"
