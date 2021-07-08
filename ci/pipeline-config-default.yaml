@@ -20,7 +20,9 @@ production:
     registry: quay.io
     organization: community-operators-pipeline
     name: catalog_prod
-    username: redhat+iib_community
+    username:
+      in: jbreza
+      out: framework_automation
 
 pipeline:
   repo: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
