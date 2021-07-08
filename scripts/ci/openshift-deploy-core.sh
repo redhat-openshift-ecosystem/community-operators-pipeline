@@ -13,18 +13,6 @@ OC_DIR_CORE=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 SUBDIR_ARG="-e work_subdir_name=oc-$OC_DIR_CORE"
 echo "SUBDIR_ARG = $SUBDIR_ARG"
 
-#label start
-[[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
--X POST \
--H "Accept: application/vnd.github.v3+json" \
-https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
-
-echo "OS"
-cat /etc/os-release
-
-pwd
-
-#[[ $TEST_MODE -ne 1 ]] && TARGET_PATH='/go/src/github.com/operator-framework/community-operators/community-operators'
 if [[ $TEST_MODE -ne 1  ]]; then
     #CURRENT_PATH=/go/src/github.com/redhat-openshift-ecosystem/community-operators-pipeline/scripts/ci
     CURRENT_PATH=$(pwd)
@@ -35,6 +23,22 @@ if [[ $TEST_MODE -ne 1  ]]; then
     fi
 fi
 echo "TARGET_PATH=$TARGET_PATH"
+export PR_TARGET_REPO=$(echo $TARGET_PATH|cut -d"/" -f 5-6)
+echo "PR_TARGET_REPO=$PR_TARGET_REPO"
+
+#label start
+[[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
+-X POST \
+-H "Accept: application/vnd.github.v3+json" \
+https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
+
+echo "OS"
+cat /etc/os-release
+
+pwd
+
+#[[ $TEST_MODE -ne 1 ]] && TARGET_PATH='/go/src/github.com/operator-framework/community-operators/community-operators'
+
 
 [[ $TEST_MODE -eq 1 ]] && TARGET_PATH='/tmp/oper-for-me-test/community-operators/community-operators'
 
@@ -54,7 +58,7 @@ fi
 #echo "Need to clone actual branch, cloning..."
 #mkdir -p /tmp/oper-for-me-test
 #cd /tmp/oper-for-me-test
-#git clone https://github.com/operator-framework/community-operators.git
+#git clone https://github.com/$PR_TARGET_REPO.git
 #cd community-operators
 #ls
 #TARGET_PATH='/tmp/oper-for-me-test/community-operators/community-operators'
@@ -68,11 +72,11 @@ chmod +x "/tmp/jq-$OC_DIR_CORE/bin/jq" && echo "Rights adjusted"
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
 -X GET \
 -H "Accept: application/vnd.github.v3+json" \
-"https://api.github.com/repos/operator-framework/community-operators/issues/$PULL_NUMBER"|"/tmp/jq-$OC_DIR_CORE/bin/jq" '.labels[].name'|grep 'allow/longer-deployment' \
+"https://api.github.com/repos/$PR_TARGET_REPO/issues/$PULL_NUMBER"|"/tmp/jq-$OC_DIR_CORE/bin/jq" '.labels[].name'|grep 'allow/longer-deployment' \
 && echo "Longer deployment detected" && EXTRA_ARGS='-e pod_start_retries=300'
 cd "$TARGET_PATH"
 tmpfile=$(mktemp /tmp/pr-details-XXXXXXX.json)
-curl -s https://api.github.com/repos/operator-framework/community-operators/pulls/$PULL_NUMBER -o $tmpfile
+curl -s https://api.github.com/repos/$PR_TARGET_REPO/pulls/$PULL_NUMBER -o $tmpfile
 cat $tmpfile
 REPO_FULL=$(cat $tmpfile | /tmp/jq-$OC_DIR_CORE/bin/jq -r '.head.repo.clone_url')
 echo "REPO_FULL=$REPO_FULL"
@@ -108,7 +112,7 @@ git log --oneline | head
 git config --global user.email "test@example.com"
 git config --global user.name "Test User"
 
-git remote add upstream https://github.com/operator-framework/community-operators -f > /dev/null 2>&1
+git remote add upstream https://github.com/$PR_TARGET_REPO -f > /dev/null 2>&1
 git pull --rebase -Xours upstream $OPRT_SRC_BRANCH
 
 export OP_TEST_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
@@ -121,7 +125,7 @@ BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
 echo "BRANCH_NAME=$BRANCH_NAME"
 
 #deleted only
-[ -n "$OP_TEST_REMOVED_FILES" ] && [ -z "$OP_TEST_RENAMED_ADDED_MODIFIED_FILES" ] && echo "Nothing to test - [OK]" && echo "only deleted files detected:" && echo ${OP_TEST_REMOVED_FILES[@]} && curl -f -u framework-automation:$(cat /var/run/cred/framautom) -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}" && exit 0;
+[ -n "$OP_TEST_REMOVED_FILES" ] && [ -z "$OP_TEST_RENAMED_ADDED_MODIFIED_FILES" ] && echo "Nothing to test - [OK]" && echo "only deleted files detected:" && echo ${OP_TEST_REMOVED_FILES[@]} && curl -f -u framework-automation:$(cat /var/run/cred/framautom) -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}" && exit 0;
 echo "Looping"
 for sf in ${OP_TEST_RENAMED_ADDED_MODIFIED_FILES[@]}; do
   echo $sf
@@ -131,7 +135,7 @@ for sf in ${OP_TEST_RENAMED_ADDED_MODIFIED_FILES[@]}; do
     curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
     -X POST \
     -H "Accept: application/vnd.github.v3+json" \
-    https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
+    https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
     echo "Running operator deployment on an Openshift is not relevant for the affected commit. Found changes outside Openshift community operators, exiting."
     exit 0;
   fi
@@ -147,7 +151,7 @@ echo "OP_NAME=$OP_NAME"
 echo "OP_VER=$OP_VER"
 
 #[ -n "$OP_NAME" ] || { echo "Error: '\$OP_NAME' is empty !!!"; exit 1; }
-[ -n "$OP_NAME" ] || { echo "Nothing to test, no community operator modified - [OK]"  && curl -f -u framework-automation:$(cat /var/run/cred/framautom) -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}" && exit 0; }
+[ -n "$OP_NAME" ] || { echo "Nothing to test, no community operator modified - [OK]"  && curl -f -u framework-automation:$(cat /var/run/cred/framautom) -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}" && exit 0; }
 [ -n "$OP_VER" ] || { echo "Error: '\$OP_VER' is empty !!!"; exit 1; }
 
 #detection end
@@ -165,7 +169,7 @@ echo
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
 -X POST \
 -H "Accept: application/vnd.github.v3+json" \
-https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"index-for-openshift-test\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\"}}"  && echo "Temp index initiated ..."
+https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"index-for-openshift-test\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\"}}"  && echo "Temp index initiated ..."
 echo "Temp index triggered [OK]"
 CHECK_TEMP_INDEX=1
 while [ "$CHECK_TEMP_INDEX" -le "$MAX_LIMIT_FOR_INDEX_WAIT" ]; do
@@ -176,7 +180,7 @@ while [ "$CHECK_TEMP_INDEX" -le "$MAX_LIMIT_FOR_INDEX_WAIT" ]; do
   elif [ "$CHECK_TEMP_INDEX" -eq "$MAX_LIMIT_FOR_INDEX_WAIT" ]; then
     echo
     echo
-    echo 'Temp index not found. Are your commits squashed? If so, please check logs https://github.com/operator-framework/community-operators/actions?query=workflow%3Aprepare-test-index'
+    echo "Temp index not found. Are your commits squashed? If so, please check logs https://github.com/$PR_TARGET_REPO/actions?query=workflow%3Aprepare-test-index"
     echo
     echo
     exit 1
@@ -207,12 +211,12 @@ echo "Reporting ..."
   curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
   -X POST \
   -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
+  https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
 else
   curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
   -X POST \
   -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/operator-framework/community-operators/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
+  https://api.github.com/repos/$PR_TARGET_REPO/dispatches --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
 fi
 
 echo "Variable summary:"
