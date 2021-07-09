@@ -111,16 +111,24 @@ git log --oneline | head
 
 git config --global user.email "test@example.com"
 git config --global user.name "Test User"
+echo "Git user configured  [OK]"
 
 git remote add upstream https://github.com/$PR_TARGET_REPO -f > /dev/null 2>&1
+echo "Remote added [OK]"
+
 git pull --rebase -Xours upstream $OPRT_SRC_BRANCH
+echo "Rebased  [OK]"
 
 export OP_TEST_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+echo "OP_TEST_ADDED_FILES exported  [OK]"
 export OP_TEST_MODIFIED_FILES=$(git diff --diff-filter=M upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+echo "OP_TEST_MODIFIED_FILES exported  [OK]"
 export OP_TEST_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+echo "OP_TEST_REMOVED_FILES exported  [OK]"
 export OP_TEST_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OP_TEST_RENAMED_ADDED_MODIFIED_FILES=$(git diff --diff-filter=RAM upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-echo "Exported [OK]"
+echo "OP_TEST_RENAMED_ADDED_MODIFIED_FILES: $OP_TEST_RENAMED_ADDED_MODIFIED_FILES"
+echo "All exported [OK]"
 BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
 echo "BRANCH_NAME=$BRANCH_NAME"
 
