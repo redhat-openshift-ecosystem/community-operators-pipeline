@@ -191,7 +191,6 @@ spec:
     oc create secret generic aqua-database-password --from-literal=db-password=<password> -n aqua
     oc secrets add aqua-sa aqua-registry --for=pull -n aqua
     ```
-    
     ## After the Installation
     Once the operator is installed in the cluster, you now can use the CRDs to install the Aqua cluster and components.
   keywords: ['aqua-security', 'scanning', 'security', 'runtime-security']
