@@ -175,6 +175,22 @@ jobs:
             echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
             bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH
 
+  push-to-quay-o7t:
+    name: "Release / o7t push to quay"
+    needs: pr-check
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    env:
+      DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
+      OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Push to quay
+        run: |
+          echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH
+
   release-sha-openshift:
       name: "Release sha / o7t"
       needs: [ pr-check, release-openshift ]
@@ -193,96 +209,3 @@ jobs:
           run: |
             echo "openshift: ${{ matrix.index-tag }}"
             bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
-
-  ohio-image-o7t:
-    name: "Release / o7t ohio image and sign 'latest'"
-    needs: [ pr-check, release-sha-openshift ]
-    # if: needs.pr-check.outputs.opp_release_ready == '1'
-    runs-on: ubuntu-latest
-    env:
-      OHIO_INPUT_CATALOG_IMAGE: "quay.io/openshift-community-operators/catalog:v4.8"
-      OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:dev"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Prepare variables for the sign process
-        id: openshift-vars-latest
-        run: |
-          docker login quay.io -u $QUAY_USER -p $QUAY_PW
-          OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://quay.io/${QUAY_REGISTRY}:${OPERATOR_INDEX_TAG} | jq -r ".Digest")
-          OPERATOR_INDEX_RESOLVED="quay.io/${QUAY_REGISTRY}@${OPERATOR_INDEX_DIGEST}"
-          OPERATOR_INDEX="quay.io/${QUAY_REGISTRY}:${OPERATOR_INDEX_TAG}"
-          echo $OPERATOR_INDEX_RESOLVED
-          echo $OPERATOR_INDEX
-          echo "::set-output name=operator_index_resolved_latest::${OPERATOR_INDEX_RESOLVED}"
-          echo "::set-output name=operator_index_latest::${OPERATOR_INDEX}"
-        env:
-          QUAY_REGISTRY: 'redhat/redhat----community-operator-index'
-          OPERATOR_INDEX_TAG: "latest"
-          QUAY_PW: ${{ secrets.QUAY_J }}
-          QUAY_USER: ${{ secrets.QUAY_RH_RO_INDEX_USER }}
-      - name: Initialize sign process
-        uses: operator-framework/community-operators@webhook
-        env:
-          INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
-          webhook_type: 'json-extended'
-          webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
-          webhook_secret: ${{ secrets.INDEX_SIGN_WEBHOOK_SECRET }}
-          data: "{\"index_image\": \"${{ steps.openshift-vars-latest.outputs.operator_index_latest }}\", \"index_image_resolved\": \"${{ steps.openshift-vars-latest.outputs.operator_index_resolved_latest }}\"}"
-      - name: Ohio image
-        run: |
-          echo "ohio_image operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH"
-          scripts/ci/disk-cleanup-on-startup.sh
-          bash <(curl -sL $OPP_SCRIPT_URL) ohio_image operators/sync $OPP_SRC_REPO $OPP_SRC_BRANCH
-
-  push-to-quay-o7t:
-    name: "Release / o7t push to quay"
-    needs: pr-check
-    if: needs.pr-check.outputs.opp_release_ready == '1'
-    runs-on: ubuntu-latest
-    env:
-      DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
-      OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Push to quay
-        run: |
-          echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_SRC_REPO $OPP_SRC_BRANCH
-
-  ohio-page-o7t:
-    name: "Release / dev.operatorhub.io"
-    needs: ohio-image-o7t
-    # if: needs.pr-check.outputs.opp_release_ready == '1'
-    runs-on: ubuntu-latest
-    env:
-      CI_OHIO_BRANCH: "master"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Ohio image
-        run: |
-          echo "scripts/ci/trigger-operatorhubio-ci.sh ${CI_OHIO_BRANCH}"
-          scripts/ci/trigger-operatorhubio-ci.sh
-
-  slack-notification:
-    name: "Slack notification"
-
-
-    needs: [ pr-check, release-openshift, release-sha-openshift, ohio-image-o7t, push-to-quay-o7t, ohio-page-o7t ]
-
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Report Status
-        uses: ravsamhq/notify-slack-action@master
-        with:
-          notification_title: 'Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}'
-          footer: 'monitoring'
-#          status: ${{ needs.pr-check.result }}
-          status: 'failure'
-          notify_when: 'failure'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
-        continue-on-error: true
