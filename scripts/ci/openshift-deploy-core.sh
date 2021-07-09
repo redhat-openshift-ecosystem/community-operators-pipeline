@@ -127,6 +127,7 @@ export OP_TEST_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPRT_SRC_BRANC
 echo "OP_TEST_REMOVED_FILES exported  [OK]"
 export OP_TEST_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OP_TEST_RENAMED_ADDED_MODIFIED_FILES=$(git diff --diff-filter=RAM upstream/$OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+echo "OP_TEST_RENAMED_ADDED_MODIFIED_FILES: $OP_TEST_RENAMED_ADDED_MODIFIED_FILES"
 echo "All exported [OK]"
 BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
 echo "BRANCH_NAME=$BRANCH_NAME"
