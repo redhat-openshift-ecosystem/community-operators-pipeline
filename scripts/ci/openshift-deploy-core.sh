@@ -93,7 +93,7 @@ rm -f $tmpfile > /dev/null 2>&1
 OPRT_REPO=${REPO_FULL-""}
 OPRT_SHA=${COMMIT-""}
 echo "OPRT_SHA=$OPRT_SHA"
-OPRT_SRC_BRANCH=${OPRT_SRC_BRANCH-"master"}
+OPRT_SRC_BRANCH=${OPRT_SRC_BRANCH-"main"}
 export OPRT=1
 echo "OPRT values set [OK]"
 [ -n "$OPRT_REPO" ] || { echo "Error: '\$OPRT_REPO' is empty !!!"; exit 1; }
