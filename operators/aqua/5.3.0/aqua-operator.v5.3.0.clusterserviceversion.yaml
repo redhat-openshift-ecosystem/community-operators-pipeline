@@ -256,7 +256,7 @@ metadata:
 spec:
   displayName: Aqua Security Operator
   version: 5.3.0
-  replaces: aqua-operator.v1.0.0
+  replaces: aqua-operator.v1.0.1
   description: |-
     The Aqua Security Operator runs within an OpenShift cluster and provides a means to deploy and manage the Aqua Security cluster and components :
     * Server (aka “console”)
