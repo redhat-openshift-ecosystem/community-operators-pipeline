@@ -44,8 +44,8 @@ jobs:
 #          REPO: ${{ steps.variables.outputs.opp_repo }}
 #          BRANCH: ${{ steps.variables.outputs.opp_branch }}
           COMMIT: ${{ steps.variables.outputs.opp_commit }}
-          OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
-          OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
+          OPP_OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
+          OPP_OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
           OPRT_SCRIPT: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-osr_run.sh"
           OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline.git"
           OPP_OPRT_SRC_BRANCH: "main"
