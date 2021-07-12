@@ -7,7 +7,7 @@ metadata:
     certified: 'False'
     containerImage: 'quay.io/keycloak/keycloak-operator:14.0.0'
     createdAt: 2021-06-23 00:00:00
-    description: 'An Operator for installing and managing Keycloak'
+    description: 'An Operator for installing and managing Keycloak '
     repository: 'https://github.com/keycloak/keycloak-operator'
     support: Red Hat
     alm-examples: |-
