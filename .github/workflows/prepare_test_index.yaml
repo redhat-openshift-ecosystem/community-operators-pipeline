@@ -47,6 +47,9 @@ jobs:
           COMMIT: ${{ steps.variables.outputs.opp_commit }}
           OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
           OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
+          OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline.git"
+          OPP_OPRT_SRC_BRANCH: "main"
+
         run: |
           echo ${{ github.event.client_payload.source_pr }} >> file
           echo
