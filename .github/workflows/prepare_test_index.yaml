@@ -49,8 +49,6 @@ jobs:
           OPRT_SCRIPT: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-osr_run.sh"
           OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline.git"
           OPP_OPRT_SRC_BRANCH: "main"
-          REPO: "redhat-openshift-ecosystem/community-operators-pipeline.git"
-          BRANCH: "main"
 
         run: |
           echo ${{ github.event.client_payload.source_pr }} >> file
