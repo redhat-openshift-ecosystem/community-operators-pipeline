@@ -139,12 +139,12 @@ for sf in ${OP_TEST_RENAMED_ADDED_MODIFIED_FILES[@]}; do
   echo $sf
   OP_STREAM_DIR="$(echo "$sf" | awk -F'/' '{ print $1 }')"
   # make green when PR from maintainers targeting CI
-  if [[ "$OP_STREAM_DIR" != "community-operators" ]]; then
+  if [[ "$OP_STREAM_DIR" != "operators" ]]; then
     curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
     -X POST \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/$PR_TARGET_REPO/dispatches" --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
-    echo "Running operator deployment on an Openshift is not relevant for the affected commit. Found changes outside Openshift community operators, exiting."
+    echo "Running operator deployment on an Openshift is not relevant for the affected commit. Found changes outside Openshift operators, exiting."
     exit 0;
   fi
 
