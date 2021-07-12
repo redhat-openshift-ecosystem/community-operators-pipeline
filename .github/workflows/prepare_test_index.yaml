@@ -60,4 +60,5 @@ jobs:
           cat file
           echo
           echo
-          bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/operator-test-playbooks/upstream-community/upstream/test/oprt.sh)
+          bash <(curl -sL https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-oprt.sh)
+
