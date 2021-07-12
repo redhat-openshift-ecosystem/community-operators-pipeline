@@ -30,7 +30,8 @@ env:
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
   IIB_INPUT_REGISTRY_USER: "mavala"
   OPP_REGISTRY_MIRROR_USER: "framework_automation"
-  OPP_THIS_REPO: "https://github.com/redhat-openshift-ecosystem/community-operators-pipeline"
+  OPP_THIS_REPO_BASE: "https://github.com"
+  OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
   OPP_THIS_BRANCH: "main"
 
 

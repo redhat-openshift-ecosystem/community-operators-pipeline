@@ -26,7 +26,8 @@ production:
       out: framework_automation
 
 pipeline:
-  repo: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
+  base: https://github.com
+  repo: redhat-openshift-ecosystem/community-operators-pipeline
   branch: main
   ci_scripts_dir: https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts
   image: quay.io/operator_testing/operator-test-playbooks:latest
