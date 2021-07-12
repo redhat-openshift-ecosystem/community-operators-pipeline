@@ -22,7 +22,7 @@ jobs:
           OP_PR: ${{ github.event.client_payload.source_pr }}
         run: |
           tmpfile=$(mktemp /tmp/XXXXXX.json)
-          curl -s https://api.github.com/repos/operator-framework/community-operators/pulls/$OP_PR -o $tmpfile
+          curl -s https://api.github.com/repos/redhat-openshift-ecosystem/community-operators-pipeline/pulls/$OP_PR -o $tmpfile
           REPO_FULL=$(cat $tmpfile | jq -r '.head.repo.clone_url')
           BRANCH=$(cat $tmpfile | jq -r '.head.ref')
           COMMIT=$(cat $tmpfile | jq -r '.head.sha')
