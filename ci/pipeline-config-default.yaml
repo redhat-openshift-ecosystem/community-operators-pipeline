@@ -36,6 +36,7 @@ pipeline:
 
 operatorhubio:
   enabled: 0
+
 #base:
 #  organisation: operator-framework
 #  project: operator-test-playbooks
