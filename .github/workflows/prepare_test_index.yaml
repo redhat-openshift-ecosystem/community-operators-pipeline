@@ -14,7 +14,8 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: quay.io/operator_testing/operator-test-playbooks:latest
+#    runs-on: ubuntu-latest
 
     steps:
       - name: "prepare"
@@ -47,6 +48,7 @@ jobs:
           OPP_OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
           OPP_OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
           OPRT_SCRIPT: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-osr_run.sh"
+          OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"
           OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline.git"
           OPP_OPRT_SRC_BRANCH: "main"
 #          REPO: "redhat-openshift-ecosystem/community-operators-pipeline.git"
