@@ -50,6 +50,7 @@ jobs:
           OP_DEBUG: 0
           OP_TOKEN: ${{ secrets.QUAY_API_TOKEN_OPERATOR_TESTING }}
 #          OP_PR: ${{ github.event.client_payload.source_pr }}
+          BASE: "https://github.com"
           REPO: ${{ steps.variables.outputs.opp_repo }}
           BRANCH: ${{ steps.variables.outputs.opp_branch }}
           COMMIT: ${{ steps.variables.outputs.opp_commit }}
@@ -57,7 +58,8 @@ jobs:
           OPP_OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
           OPP_OPRT_SCRIPT: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-osr-run.sh"
           OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"
-          OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline.git"
+          OPP_OPRT_SRC_BASE:  "https://github.com"
+          OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline"
           OPP_OPRT_SRC_BRANCH: "main"
 #          REPO: "redhat-openshift-ecosystem/community-operators-pipeline.git"
 #          BRANCH: "main"
