@@ -38,6 +38,10 @@ pipeline:
 
 operatorhubio:
   enabled: 0
+  registry: quay.io
+  organization: operator-framework
+  name: upstream-community-operators
+  tag: latest
 
 #base:
 #  organisation: operator-framework
