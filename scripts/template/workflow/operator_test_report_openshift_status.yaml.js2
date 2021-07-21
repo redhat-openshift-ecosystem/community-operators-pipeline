@@ -7,6 +7,11 @@ on:
       - manual-openshift-report
       - openshift-test-status
 
+env:
+{% endraw %}
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
+{% raw %}
+
 jobs:
   remove-add-label:
     runs-on: ubuntu-latest
@@ -105,5 +110,4 @@ jobs:
               repo: context.repo.repo,
               body: '/merge possible'
             })
-
 {% endraw %}
