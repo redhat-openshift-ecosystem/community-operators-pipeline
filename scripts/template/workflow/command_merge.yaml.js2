@@ -1,6 +1,10 @@
 {% raw %}
 on: issue_comment
 name: Issue Comments
+env:
+{% endraw %}
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
+{% raw %}
 jobs:
   handle_comments:
     name: Merge command handler
@@ -92,5 +96,4 @@ jobs:
           MERGE_FORKS: "true"
           MERGE_RETRIES: "6"
           MERGE_RETRY_SLEEP: "10000"
-
-{% endraw %}
+{% endraw -%}

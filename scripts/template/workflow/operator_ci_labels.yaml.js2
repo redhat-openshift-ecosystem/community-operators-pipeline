@@ -1,8 +1,14 @@
 {% raw %}
 name: Operator CI Labels
+
 on:
  pull_request_target:
    types: [labeled]
+
+env:
+{% endraw %}
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
+{% raw %}
   
 jobs:
   authorized-changes-handler:
@@ -21,5 +27,4 @@ jobs:
               repo: context.repo.repo,
               body: '/merge possible'
             })
-
 {% endraw %}
