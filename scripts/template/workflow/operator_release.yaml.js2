@@ -372,6 +372,8 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL)
 {% endraw %}
 {% endif %}
+{% endif %}
+{% if default_config.production.index.signature == 1 %}
 {% raw %}
   sign-latest:
     name: "Sign 'latest'"
@@ -409,7 +411,9 @@ jobs:
           webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
           webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
           data: "{\"index_image\": \"${{ steps.openshift-vars-latest.outputs.operator_index_latest }}\", \"index_image_resolved\": \"${{ steps.openshift-vars-latest.outputs.operator_index_resolved_latest }}\"}"
-
+{% endraw %}
+{% endif %}
+{% raw %}
   slack-notification:
     name: "Slack notification"
 
@@ -439,4 +443,3 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
         continue-on-error: true
 {% endraw %}
-{% endif %}
