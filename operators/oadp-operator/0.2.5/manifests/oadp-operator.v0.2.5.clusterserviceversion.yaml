@@ -1,7 +1,7 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: oadp-operator.v0.2.3
+  name: oadp-operator.v0.2.5
   namespace: oadp-operator
   annotations:
     # Setting olm.maxOpenShiftVersion automatically
@@ -12,8 +12,8 @@ metadata:
     # distribute solutions which is compatible with Openshift 4.9.
     # For further information, check the README of this repository.
     olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
-    olm.skipRange: '>=0.0.0 <0.2.3'
-    containerImage: "quay.io/konveyor/oadp-operator:v0.2.3"
+    olm.skipRange: '>=0.0.0 <0.2.5'
+    containerImage: "quay.io/konveyor/oadp-operator:v0.2.5"
     alm-examples: |-
       [
         {
@@ -180,6 +180,8 @@ spec:
   - oadp-operator.v0.1.3
   - oadp-operator.v0.2.0
   - oadp-operator.v0.2.1
+  - oadp-operator.v0.2.2
+  - oadp-operator.v0.2.3
   apiservicedefinitions: {}
   displayName: OADP Operator
   description: OADP is OpenShift Application Data Protection operator. This operator sets up and installs Velero on the OpenShift platform. 
@@ -224,7 +226,7 @@ spec:
                 - name: VELERO_OPENSHIFT_PLUGIN_REPO
                   value: openshift-velero-plugin
                 - name: VELERO_OPENSHIFT_PLUGIN_TAG
-                  value: oadp-0.2.3
+                  value: oadp-0.2.5
                 - name: VELERO_RESTIC_RESTORE_HELPER_REPO
                   value: velero-restic-restore-helper
                 - name: VELERO_AWS_PLUGIN_REPO
@@ -238,20 +240,20 @@ spec:
                 - name: VELERO_VSPHERE_PLUGIN_REPO
                   value: velero-plugin-for-vsphere
                 - name: VELERO_TAG
-                  value: oadp-0.2.3
+                  value: oadp-0.2.5
                 - name: VELERO_RESTIC_RESTORE_HELPER_TAG
                   value: latest
                 - name: VELERO_AWS_PLUGIN_TAG
-                  value: oadp-0.2.3
+                  value: oadp-0.2.5
                 - name: VELERO_GCP_PLUGIN_TAG
-                  value: oadp-0.2.3
+                  value: oadp-0.2.5
                 - name: VELERO_AZURE_PLUGIN_TAG
-                  value: oadp-0.2.3
+                  value: oadp-0.2.5
                 - name: VELERO_CSI_PLUGIN_TAG
                   value: main
                 - name: VELERO_VSPHERE_PLUGIN_TAG
                   value: 1.1.0
-                image: "quay.io/konveyor/oadp-operator:v0.2.3"
+                image: "quay.io/konveyor/oadp-operator:v0.2.5"
                 imagePullPolicy: Always
                 name: oadp-operator
                 resources: {}
@@ -441,7 +443,8 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.2.3
+  replaces: oadp-operator.v0.2.3
+  version: 0.2.5
   customresourcedefinitions:
     owned:
     - name: veleros.konveyor.openshift.io
