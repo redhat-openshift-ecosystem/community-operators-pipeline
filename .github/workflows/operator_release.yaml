@@ -86,7 +86,7 @@ jobs:
           INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
           webhook_type: 'json-extended'
           webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
-          webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
+          webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET_FAIL }}
           data: "{\"index_image\": \"${{ steps.openshift-vars-latest.outputs.operator_index_latest }}\", \"index_image_resolved\": \"${{ steps.openshift-vars-latest.outputs.operator_index_resolved_latest }}\"}"
 
 
