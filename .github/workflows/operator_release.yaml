@@ -52,7 +52,7 @@ env:
   REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
 
 jobs:
-  sign-latest:
+  sign-original-latest:
     name: "Sign 'latest'"
 #    needs: [ pr-check, release-sha-openshift ]
     # if: needs.pr-check.outputs.opp_release_ready == '1'
