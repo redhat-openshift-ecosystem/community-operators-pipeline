@@ -1,1 +1,1 @@
-# Community Operators
+# Community operators CI configuration
