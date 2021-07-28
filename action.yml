@@ -1,0 +1,56 @@
+name: 'Community operators'
+description: 'Community operator action for operator testing'
+inputs:
+  test-type:
+    description: 'Test type (kiwi,lemon or orange)'
+    required: true
+    default: 'kiwi'
+  stream:
+    description: 'Operator dirname (operators)'
+    required: true
+    default: 'operators'
+  name:
+    description: 'Operator name'
+    required: true
+    default: 'aqua'
+  version:
+    description: 'Operator version'
+    required: true
+    default: '5.3.0'
+  repo:
+    description: 'Community operators repo'
+    default: 'https://github.com/redhat-openshift-ecosystem/community-operators-pipeline'
+  branch:
+    description: 'Community operators branch'
+    default: 'main'
+  operator-version-path:
+    description: 'Path to operator version content (for example local/path/to/operator/version).'
+    default: ''
+  pr-labels:
+    description: 'Space separated list of labels in PR'
+    default: ''
+  package-path:
+    description: 'Path to package file (for example local/path/to/my-operator.package.yaml).'
+    default: ''
+  ci-path:
+    description: 'Path to ci.yaml file (for example local/path/to/ci.yaml).'
+    default: ''
+  
+runs:
+  using: "composite"
+  steps:
+    - id: operator-test
+      name: "Operator test"
+      env:
+        OPA_TEST_TYPE: "${{ inputs.test-type }}"
+        OPA_STREAM: "${{ inputs.stream }}"
+        OPA_NAME: "${{ inputs.name }}"
+        OPA_VERSION: "${{ inputs.version }}"
+        OPA_REPO: "${{ inputs.repo }}"
+        OPA_BRANCH: "${{ inputs.branch }}"
+        OPA_OPERATOR_VERSION_PATH: "${{ inputs.operator-version-path }}"
+        OPA_PR_LABELS: "${{ inputs.pr-labels }}"
+        OPA_PACKAGE_PATH: "${{ inputs.package-path }}"
+        OPA_CI_PATH: "${{ inputs.ci-path }}"
+      run: ${{ github.action_path }}/action.sh
+      shell: bash

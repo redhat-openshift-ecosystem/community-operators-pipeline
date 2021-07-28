@@ -1,0 +1,45 @@
+name: Operator action
+on:
+  push:
+    branches:
+      - action/stable
+    tags:
+      - v*
+
+jobs:
+  kiwi-test-example:
+    runs-on: ubuntu-latest
+    name: kiwi operator test example
+    steps:
+    - id: Test
+      uses:  redhat-openshift-ecosystem/community-operators-pipeline@action/stable
+      with:
+        test-type: 'kiwi'
+        stream: 'operators'
+        name: 'aqua'
+        version: '5.3.0'
+        # pr-labels: 'allow/operator-version-overwrite bug'
+  lemon-test-example:
+    runs-on: ubuntu-latest
+    name: lemon operator test example
+    steps:
+    - id: Test
+      uses:  redhat-openshift-ecosystem/community-operators-pipeline@action/stable
+      with:
+        test-type: 'lemon'
+        stream: 'operators'
+        name: 'aqua'
+        version: '5.3.0'
+        # pr-labels: 'allow/operator-version-overwrite bug'
+  orange-test-example:
+    runs-on: ubuntu-latest
+    name: orange operator test example
+    steps:
+    - id: Test
+      uses:  redhat-openshift-ecosystem/community-operators-pipeline@action/stable
+      with:
+        test-type: 'orange'
+        stream: 'operators'
+        name: 'aqua'
+        version: '5.3.0'
+        pr-labels: 'allow/operator-version-overwrite bug'
