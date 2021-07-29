@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e #fail in case of non zero return
-CI_OHIO_BRANCH=${CI_OHIO_BRANCH-"master"}
+CI_OHIO_BRANCH=${CI_OHIO_BRANCH-"main"}
 
 payload()
 {
@@ -12,7 +12,7 @@ EOF
 }
 
 curl -f -s -X POST \
-  --url https://api.github.com/repos/operator-framework/operatorhub.io/actions/workflows/4934257/dispatches \
+  --url https://api.github.com/repos/operator-framework/operatorhub.io/actions/workflows/11432086s/dispatches \
   --header "Authorization: token $CI_OHIO_TRIGGER_TOKEN" \
   --header 'Content-Type: application/json' \
   --data "$(payload)"
