@@ -2,10 +2,10 @@
 name: Operator release
 
 on:
- push:
-   branches:
-     - master
-     - main
+  push:
+    branches:
+      - master
+      - main
   workflow_dispatch:
     inputs:
       release:
