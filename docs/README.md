@@ -19,6 +19,9 @@ This repo is the canonical source for Kubernetes Operators that appear on [Opera
 <!-- ## Documentation
 Full documentation is generated via [mkdoc](https://www.mkdocs.org/) and located at [https://operator-framework.github.io/community-operators/](https://operator-framework.github.io/community-operators/) -->
 
+## Documentation contributions
+For changes in the documentation, please raise a PR against [redhat-openshift-ecosystem/community-operators-pipeline:documentation](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/documentation).
+
 ## Add your Operator
 
 We would love to see your Operator being added to this collection. We currently use automated vetting via continuous integration plus manual review to curate a list of high-quality, well-documented Operators. If you are new to Kubernetes Operators start [here](https://sdk.operatorframework.io/build/).
@@ -33,7 +36,7 @@ You can use our [test suite](./operator-test-suite.md) to test your Operator pri
 
 ```bash
 cd <community-operators-project>
-bash <(curl -sL https://cutt.ly/WhkV76k) \
+bash <(curl -sL https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh) \
   kiwi,lemon,orange \
   <operator-stream>/<operator-name>/<operator-version>
 ```
