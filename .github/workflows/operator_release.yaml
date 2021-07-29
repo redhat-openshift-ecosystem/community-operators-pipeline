@@ -6,7 +6,9 @@ on:
    branches:
      - master
      - main
-
+on: 
+  workflow_dispatch:
+  
 env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
