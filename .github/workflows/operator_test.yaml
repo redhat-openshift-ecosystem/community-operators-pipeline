@@ -2,7 +2,7 @@ name: Operator test
 
 
 on:
- pull_request:
+ pull_request_target:
    types: [opened, reopened, synchronize, unlabeled]
    branches:
      - master
@@ -11,9 +11,12 @@ on:
 env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
-  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh"
+  # OPP_SCRIPT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh"
   OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp-env.sh"
+  OPP_SCRIPT_ENV_OPRT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp-oprt.sh"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
+  OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/"
+  OPP_ANSIBLE_PULL_BRANCH: "upstream-community"
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
   OPP_THIS_BRANCH: "main"
@@ -36,29 +39,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks out a copy of your repository on the ubuntu-latest machine
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - id: files
-        uses: jitterbit/get-changed-files@v1
-        continue-on-error: true
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
+      # - id: files
+      #   uses: jitterbit/get-changed-files@v1
+      #   continue-on-error: true
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       - name: Install dependencies
         run: python -m pip install --upgrade pip yq
+      # - name: Operator traffic light
+      #   id: op-traffic-light
+      #   env:
+      #     OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+      #     OPP_MODIFIED_FILES: "${{ steps.files.outputs.modified }}"
+      #     OPP_ADDED_MODIFIED_FILES: "${{ steps.files.outputs.added_modified }}"
+      #     OPP_RENAMED_FILES: "${{ steps.files.outputs.renamed }}"
+      #     OPP_REMOVED_FILES: "${{ steps.files.outputs.removed }}"
+      #   run: |
+      #     echo "Using script '$OPP_SCRIPT_ENV_URL' ..."
+      #     echo "global labels $OPP_LABELS"
+      #     bash <(curl -sL $OPP_SCRIPT_ENV_URL)
       - name: Operator traffic light
         id: op-traffic-light
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
-          OPP_MODIFIED_FILES: "${{ steps.files.outputs.modified }}"
-          OPP_ADDED_MODIFIED_FILES: "${{ steps.files.outputs.added_modified }}"
-          OPP_RENAMED_FILES: "${{ steps.files.outputs.renamed }}"
-          OPP_REMOVED_FILES: "${{ steps.files.outputs.removed }}"
+          OPP_PR_AUTHOR: "${{ github.event.pull_request.user.login }}"
+          OPP_OPRT_REPO: "${{ github.event.pull_request.head.repo.full_name }}"
+          OPP_OPRT_SHA: "${{ github.event.pull_request.head.sha }}"
+          OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
+          OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
         run: |
-          echo "Using script '$OPP_SCRIPT_ENV_URL' ..."
+          echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
-          bash <(curl -sL $OPP_SCRIPT_ENV_URL)
+          bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
+
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
       opp_release_ready: "${{ steps.op-traffic-light.outputs.opp_release_ready }}"
@@ -91,6 +108,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
@@ -106,6 +125,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
@@ -138,6 +159,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
@@ -153,6 +176,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
