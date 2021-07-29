@@ -1,3 +1,7 @@
 ci/operator-flow/
 results.json
 site/
+categories.json
+scripts/
+upstream.Dockerfile
+
