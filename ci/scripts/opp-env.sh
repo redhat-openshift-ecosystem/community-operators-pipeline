@@ -4,6 +4,7 @@
 set -e
 export INPUT_ENV_SCRIPT="/tmp/opp-env-vars"
 OPP_ALLOW_CI_CHANGES=${OPP_ALLOW_CI_CHANGES-0}
+OPP_ALLOW_FORCE_RELEASE=${OPP_ALLOW_FORCE_RELEASE-0}
 OPP_TEST_READY=${OPP_TEST_READY-1}
 OPP_RELEASE_READY=${OPP_RELEASE_READY-0}
 OPP_OP_DELETE=${OPP_OP_DELETE-0}
@@ -68,6 +69,7 @@ echo "::set-output name=opp_recreate::${OPP_RECREATE}"
 for l in $(echo $OPP_LABELS);do
   echo "Checking label '$l' ..."
   [[ "$l" = "allow/ci-changes" ]] && export OPP_ALLOW_CI_CHANGES=1
+  [[ "$l" = "allow/force-release" ]] && export OPP_ALLOW_FORCE_RELEASE=1  
   [[ "$l" = "allow/operator-version-overwrite" ]] && export OPP_VER_OVERWRITE=1
   [[ "$l" = "allow/operator-recreate" ]] && export OPP_OP_DELETE=1 && export OPP_RECREATE=1
   [[ "$l" = "allow/serious-changes-to-existing" ]] && export OPP_ALLOW_SERIOUS_CHANGES=1
@@ -91,8 +93,20 @@ echo "::set-output name=opp_is_new_operatror::${OPP_IS_NEW_OPERATOR}"
 echo "::set-output name=opp_pr_title::${OPP_PR_TITLE}"
 echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
 echo "::set-output name=opp_authorized_changes::${OPP_AUTHORIZED_CHANGES}"
+echo "::set-output name=opp_changed_ci_yaml::${OPP_CI_YAML_CHANGED}"
+echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
 
-[[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]] && { echo "CI changes detected. Continue doing release ..."; exit 0; }
+if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
+  echo "::set-output name=opp_release_ready::$OPP_ALLOW_FORCE_RELEASE"
+  echo "CI changes detected. Continue doing release ..."
+  exit 0
+fi
+
+if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 0 ]];then
+  echo "::set-output name=opp_test_ready::0"
+  echo "CI changes detected. No testing ..."
+  exit 0
+fi
 
 # Handle removed files
 if [ -n "$OPP_REMOVED_FILES" ];then
