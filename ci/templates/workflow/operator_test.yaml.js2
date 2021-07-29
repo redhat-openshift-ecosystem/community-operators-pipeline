@@ -26,6 +26,7 @@ env:
   OPP_RELEASE_INDEX_REGISTRY: "{{ default_config.production.index.registry }}"
   OPP_RELEASE_INDEX_ORGANIZATION: "{{ default_config.production.index.organization }}"
   OPP_RELEASE_INDEX_NAME: "{{ default_config.production.index.name }}"
+  IIB_INPUT_REGISTRY_USER: "{{ default_config.production.mirror.username.in }}"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "{{ default_config.tools.kind_kube_version }}"
@@ -211,6 +212,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.6 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.6 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -230,6 +232,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.7 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.7 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -247,6 +250,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.8 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.8 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
