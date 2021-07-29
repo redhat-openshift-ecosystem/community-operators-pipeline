@@ -6,8 +6,12 @@ on:
    branches:
      - master
      - main
-
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Force to run release'
+        required: true
+        default: '1'
 
 env:
 {% endraw %}
