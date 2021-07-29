@@ -1,6 +1,4 @@
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/156px-Warning.svg.png)
-
-## Repository is obsolete
+## Community-operators-pipeline
  The repository `community-operators` was migrated to two different repositories. We are doing this for better separation of concerns. All functionality remains the same.
 
 |Old location|New location|Operators appear on|
