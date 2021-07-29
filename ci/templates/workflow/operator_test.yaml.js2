@@ -136,6 +136,7 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
+          OPP_IIB_INSTALL: 1
         run: |
           echo "lemon_v4.6 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.6 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -154,6 +155,7 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
+          OPP_IIB_INSTALL: 1
         run: |
           echo "lemon_v4.7 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.7 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -170,6 +172,7 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
+          OPP_IIB_INSTALL: 1
         run: |
           echo "lemon_v4.8 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.8 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
