@@ -380,7 +380,6 @@ function ExecParameters() {
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
             OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
-            # OPP_MIRROR_INDEX_MULTIARCH_POSTFIX=s
             [[ $OPP_MIRROR_INDEX_MULTIARCH != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH"
             [ "$OPP_MIRROR_LATEST_TAG" != "${1/orange_/}" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
             [ "$OPP_MIRROR_LATEST_TAG" = "${1/orange_/}" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
@@ -407,6 +406,7 @@ function ExecParameters() {
     [[ $1 == orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="" && { echo "Warning: Index versions are not supported for 'upstream-community-operators' !!! Skipping ..."; OPP_SKIP=1; }
 
     # Building index from bundle shas in production
+    # [[ $1 == orange* ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_sha_posfix=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_sha_posfix=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX"
 
     # Don't reset kind when production (It should speedup deploy when kind and registry is not needed)
