@@ -96,7 +96,7 @@ echo "::set-output name=opp_changed_ci_yaml::${OPP_CI_YAML_CHANGED}"
 echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
 
 
-[ -z $OPP_LABELS ] && OPP_ALLOW_CI_CHANGES=1 && OPP_ALLOW_FORCE_RELEASE=1
+[ -z $OPP_LABELS ] && OPP_ALLOW_CI_CHANGES=1 && OPP_ALLOW_FORCE_RELEASE=0
 
 if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
   echo "::set-output name=opp_release_ready::$OPP_ALLOW_FORCE_RELEASE"
