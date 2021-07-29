@@ -12,7 +12,7 @@ env:
 {% endraw %}
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
-  # OPP_SCRIPT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp.sh"
+  OPP_SCRIPT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp.sh"
   OPP_SCRIPT_ENV_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-env.sh"
   OPP_SCRIPT_ENV_OPRT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-oprt.sh"
   OPP_IMAGE: "{{ default_config.pipeline.image }}"
