@@ -376,6 +376,19 @@ function ExecParameters() {
         [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e supported_cluster_versions=$OPP_PRODUCTION_INDEX_IMAGE_TAG -e bundle_index_image_version=$OPP_PRODUCTION_INDEX_IMAGE_TAG"
     fi
 
+    if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]];then
+        if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
+            OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
+            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
+            # OPP_MIRROR_INDEX_MULTIARCH_POSTFIX=s
+            [[ $OPP_MIRROR_INDEX_MULTIARCH != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH"
+            [ "$OPP_MIRROR_LATEST_TAG" != "${1/orange_/}" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "${1/orange_/}" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+        else
+            OPP_EXEC_USER="$OPP_EXEC_USER -e sis_index_add_skip=true"    
+        fi
+    fi
+
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 1 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
             OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
@@ -386,6 +399,7 @@ function ExecParameters() {
             OPP_EXEC_USER="$OPP_EXEC_USER -e sis_index_add_skip=true"    
         fi
     fi
+
 
     [[ OP_ALLOW_BIG_CHANGES_TO_EXISTING -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e allow_big_changes_to_existing=true"
 
