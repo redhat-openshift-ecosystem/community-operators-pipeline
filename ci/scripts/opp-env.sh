@@ -83,7 +83,6 @@ OPP_CHANGES_OPERATOR=
 OPP_CHANGES_OPERATOR_VERSIONS_MODIFIED=
 OPP_CHANGES_OPERATOR_VERSIONS_REMOVED=
 
-
 echo "::set-output name=opp_set_label_operator_version_overwrite::$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"
 echo "::set-output name=opp_set_label_operator_recreate::$OPP_SET_LABEL_OPERATOR_RECREATE"
 echo "::set-output name=opp_is_modified::$OPP_IS_MODIFIED"
@@ -95,6 +94,9 @@ echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
 echo "::set-output name=opp_authorized_changes::${OPP_AUTHORIZED_CHANGES}"
 echo "::set-output name=opp_changed_ci_yaml::${OPP_CI_YAML_CHANGED}"
 echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
+
+
+[ -z $OPP_LABELS ] && OPP_ALLOW_CI_CHANGES=1 && OPP_ALLOW_FORCE_RELEASE=1
 
 if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
   echo "::set-output name=opp_release_ready::$OPP_ALLOW_FORCE_RELEASE"
