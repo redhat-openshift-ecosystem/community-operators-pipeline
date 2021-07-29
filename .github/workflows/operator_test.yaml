@@ -25,6 +25,7 @@ env:
   OPP_RELEASE_INDEX_REGISTRY: "quay.io"
   OPP_RELEASE_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_RELEASE_INDEX_NAME: "catalog"
+  IIB_INPUT_REGISTRY_USER: "mavala"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "v1.21.1"
@@ -166,6 +167,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.6 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.6 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -185,6 +187,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.7 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.7 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -202,6 +205,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
           echo "orange_v4.8 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.8 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
