@@ -36,7 +36,7 @@ You can use our [test suite](./operator-test-suite.md) to test your Operator pri
 
 ```bash
 cd <community-operators-project>
-bash <(curl -sL https://cutt.ly/WhkV76k) \
+bash <(curl -sL https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh) \
   kiwi,lemon,orange \
   <operator-stream>/<operator-name>/<operator-version>
 ```
