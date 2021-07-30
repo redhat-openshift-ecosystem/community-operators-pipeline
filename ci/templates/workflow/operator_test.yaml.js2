@@ -100,6 +100,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
+        id: operator_kiwi_test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
         run: |
@@ -108,11 +109,10 @@ jobs:
       - name: Operator test
         if: always()
         run: |
-          echo "${{ kiwi-full-operator-test.outputs }}"
+          echo "${{ steps.operator_kiwi_test.outputs }}"
 
       - name: "Comment operator test error olm.maxOpenShiftVersion"
-        if: always()
-        #&& contains(steps.kiwi-full-operator-test.outputs, 'not specified olm.maxOpenShiftVersion') == true
+        if: always() && contains(steps.operator_kiwi_test.outputs, 'not specified olm.maxOpenShiftVersion') == true
         uses: mshick/add-pr-comment@v1
         with:
           message: |
