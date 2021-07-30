@@ -27,7 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      # with:
+      with:
+        token: ${{ secrets.ACTIONS_TOKEN }}
         #persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         # fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: Create local changes
@@ -37,7 +38,7 @@ jobs:
       run: |
         git config --local user.email "mavala@redhat.com"
         git config --local user.name "mvalarh"
-        git remote set-url origin "https://x-access-token:${{ secrets.WORKFLOW_UPGRADE_TOKEN }}@github.com/${{ github.repository }}"
+        #git remote set-url origin "https://x-access-token:${{ secrets.WORKFLOW_UPGRADE_TOKEN }}@github.com/${{ github.repository }}"
         git commit -m "${{ github.event.inputs.commit-message }}" -a
         git push
     # - name: Push changes
