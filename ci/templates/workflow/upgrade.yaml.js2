@@ -21,6 +21,7 @@ env:
 {% endraw %}
   OPP_SCRIPT_UPGRADE_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-update.sh"
 {% raw %}
+
 jobs:
   build:
     runs-on: ubuntu-latest
