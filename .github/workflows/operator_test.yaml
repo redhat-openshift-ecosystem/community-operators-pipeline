@@ -2,11 +2,11 @@ name: Operator test
 
 
 on:
- pull_request_target:
-   types: [opened, reopened, synchronize, unlabeled]
-   branches:
-     - master
-     - main
+  pull_request_target:
+    types: [opened, reopened, synchronize, unlabeled]
+    branches:
+      - master
+      - main
 
 env:
   OPP_DEBUG: 1
