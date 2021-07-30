@@ -155,27 +155,12 @@ jobs:
         run: |
           echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          
-  test-dco:
-    name: "DCO test (commits signoff)"
-    needs: pr-check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get PR Commits
-        id: 'get-pr-commits'
-        uses: tim-actions/get-pr-commits@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: DCO Check
-        uses: tim-actions/dco@v1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commits: ${{ steps.get-pr-commits.outputs.commits }}
+
 
   test-summary:
     name: "Summary"
 
-    needs: [ pr-check, test-dco, test-kiwi, test-lemon-openshift, test-orange-openshift ]
+    needs: [ pr-check, test-kiwi, test-lemon-openshift, test-orange-openshift ]
 
     if: always()
     runs-on: ubuntu-latest
