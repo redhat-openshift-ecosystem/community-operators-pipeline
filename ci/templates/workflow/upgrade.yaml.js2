@@ -6,7 +6,7 @@ on:
       commit-message:
         description: 'Commit message'     
         required: true
-        default: 'Upgrade CI messa'
+        default: 'Upgrade CI messag'
       repo:
         description: 'Source repsitory'     
         required: true
