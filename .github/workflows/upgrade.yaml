@@ -6,7 +6,7 @@ on:
       commit-message:
         description: 'Commit message'     
         required: true
-        default: 'Upgrade CI'
+        default: 'Upgrade CI m'
       repo:
         description: 'Source repsitory'     
         required: true
@@ -39,5 +39,5 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.WORKFLOW_UPGRADE_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
