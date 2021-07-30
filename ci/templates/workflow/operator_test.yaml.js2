@@ -109,9 +109,8 @@ jobs:
         id: op-kiwi-test-err-maxOpenShiftVersion
         if: always()
         run: |
-          cat /tmp/op-test/log.out
-          cat /tmp/op-test/log.out | grep 'not specified olm.maxOpenShiftVersion' | wc -l
           ERR_LINES=$(cat /tmp/op-test/log.out | grep 'not specified olm.maxOpenShiftVersion' | wc -l)
+          echo "opp_check_err_maxOpenShiftVersion=$ERR_LINES"
           echo "::set-output name=opp_check_err_maxOpenShiftVersion::$ERR_LINES"
 
       - name: "Comment operator test error olm.maxOpenShiftVersion"
