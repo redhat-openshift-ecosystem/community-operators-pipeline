@@ -383,7 +383,7 @@ jobs:
       - name: Ohio image
         run: |
           echo "$OPP_SCRIPT_TRIGGER_OHIO_URL ${CI_OHIO_BRANCH}"
-          bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL)
+          bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL) ${CI_OHIO_BRANCH}
 {% endraw %}
 {% else %}
 {% raw %}
@@ -393,14 +393,14 @@ jobs:
     # if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
-      CI_OHIO_BRANCH: "master"
+      CI_OHIO_BRANCH: "main"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Ohio image
         run: |
           echo "$OPP_SCRIPT_TRIGGER_OHIO_URL ${CI_OHIO_BRANCH}"
-          bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL)
+          bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL) ${CI_OHIO_BRANCH}
 {% endraw %}
 {% endif %}
 {% raw %}
