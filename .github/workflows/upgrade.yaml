@@ -6,7 +6,7 @@ on:
       commit-message:
         description: 'Commit message'     
         required: true
-        default: 'Upgrade CI messa'
+        default: 'Upgrade CI messag'
       repo:
         description: 'Source repsitory'     
         required: true
@@ -18,7 +18,7 @@ on:
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
-  GITHUB_TOKEN: ${{ secrets.WORKFLOW_UPGRADE_TOKEN }}
+  #sGITHUB_TOKEN: ${{ secrets.WORKFLOW_UPGRADE_TOKEN }}
   OPP_SCRIPT_UPGRADE_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp-update.sh"
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
       run: |
         git config --local user.email "mavala@redhat.com"
         git config --local user.name "mvalarh"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git remote set-url origin https://x-access-token:${{ secrets.WORKFLOW_UPGRADE_TOKEN }}@github.com/${{ github.repository }}
         git commit -m "${{ github.event.inputs.commit-message }}" -a
         git push
     # - name: Push changes
