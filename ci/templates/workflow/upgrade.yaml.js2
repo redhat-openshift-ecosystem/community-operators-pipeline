@@ -34,12 +34,12 @@ jobs:
         bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL)
     - name: Commit files
       run: |
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
+        git config --local user.email "framework-automation[bot]@users.noreply.github.com"
+        git config --local user.name "framework-automation"
         git commit -m "${{ github.event.inputs.commit-message }}" -a
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.FRAMEWORK_MERGE }}
         branch: ${{ github.ref }}
 {% endraw %}
