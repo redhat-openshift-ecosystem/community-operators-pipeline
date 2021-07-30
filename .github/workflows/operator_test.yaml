@@ -108,10 +108,10 @@ jobs:
       - name: Operator test
         if: always()
         run: |
-          echo "${{ steps.operator_kiwi_test.outputs }}"
+          echo "${{ steps.operator_kiwi_test.outputs.lines }}"
 
       - name: "Comment operator test error olm.maxOpenShiftVersion"
-        if: always() && contains(steps.operator_kiwi_test.outputs, 'not specified olm.maxOpenShiftVersion') == true
+        if: always() && contains(steps.operator_kiwi_test.outputs.lines, 'not specified olm.maxOpenShiftVersion') == true
         uses: mshick/add-pr-comment@v1
         with:
           message: |
