@@ -115,7 +115,7 @@ jobs:
           echo "::set-output name=opp_check_err_maxOpenShiftVersion::$ERR_LINES"
 
       - name: "Comment operator test error olm.maxOpenShiftVersion"
-        if: always() && steps.op-kiwi-test-err-maxOpenShiftVersion.opp_check_err_maxOpenShiftVersion != '0'
+        if: always() && steps.op-kiwi-test-err-maxOpenShiftVersion.outputs.opp_check_err_maxOpenShiftVersion != '0'
         uses: mshick/add-pr-comment@v1
         with:
           message: |
