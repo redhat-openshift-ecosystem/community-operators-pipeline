@@ -18,6 +18,7 @@ on:
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
+  GITHUB_TOKEN: ${{ secrets.WORKFLOW_UPGRADE_TOKEN }}
 {% endraw %}
   OPP_SCRIPT_UPGRADE_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-update.sh"
 {% raw %}
