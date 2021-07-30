@@ -1,0 +1,45 @@
+{% raw %}
+name: "Upgrade scripts and workflows"
+on:
+  workflow_dispatch:
+    inputs:
+      commit-message:
+        description: 'Commit message'     
+        required: true
+        default: 'Upgrade scripts and workflows'
+      repo:
+        description: 'Source repsitory'     
+        required: true
+        default: 'https://github.com/redhat-openshift-ecosystem/community-operators-pipeline'
+      branch:
+        description: 'Source branch'     
+        required: true
+        default: 'ci/latest'
+env:
+  OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
+  OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
+{% endraw %}
+  OPP_SCRIPT_UPGRADE_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-update.sh"
+{% raw %}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+    - name: Create local changes
+      run: |
+        bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL)
+    - name: Commit files
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -m "${{ github.event.inputs.commit-message }}" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+{% endraw %}
