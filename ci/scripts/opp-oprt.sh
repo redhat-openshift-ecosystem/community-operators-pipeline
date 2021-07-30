@@ -45,4 +45,7 @@ BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
 echo "BRANCH_NAME=$BRANCH_NAME"
 # echo "::set-output name=op_test_repo_branch::$OPP_OPRT_REPO/${BRANCH_NAME}"
 
+
+[ -z $OPP_ADDED_FILES ] && [ -z $OPP_MODIFIED_FILES ] && [ -z $OPP_REMOVED_FILES ] && [ -z $OPP_RENAMED_FILES ] && [ -z $OPP_ADDED_MODIFIED_FILES ] && [ -z $OPP_ADDED_MODIFIED_RENAMED_FILES ] && { echo "ERROR: No change detected in PR !!! Contact project maintainers about this error !!!"; exit 1; }
+
 bash <(curl -sL $OPP_SCRIPT_ENV_URL)
