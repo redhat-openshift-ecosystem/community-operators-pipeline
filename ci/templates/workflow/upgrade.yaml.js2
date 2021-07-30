@@ -37,7 +37,7 @@ jobs:
       run: |
         git config --local user.email "mavala@redhat.com"
         git config --local user.name "mvalarh"
-        git remote set-url origin https://x-access-token:${{ secrets.WORKFLOW_UPGRADE_TOKEN }}@github.com/${{ github.repository }}
+        git remote set-url origin "https://x-access-token:${{ secrets.WORKFLOW_UPGRADE_TOKEN }}@github.com/${{ github.repository }}"
         git commit -m "${{ github.event.inputs.commit-message }}" -a
         git push
     # - name: Push changes
