@@ -3,7 +3,7 @@ name: DCO Workflow Complete
 
 on:
   workflow_run:
-    workflows: ["DCO"]
+    workflows: ["DCO test"]
     types: [completed]
 
 env:
