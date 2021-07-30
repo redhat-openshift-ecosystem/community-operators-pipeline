@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       commit-message:
-        description: 'Commit me'     
+        description: 'Commit message'     
         required: true
         default: 'Upgrade CI message'
       repo:
