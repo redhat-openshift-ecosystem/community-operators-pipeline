@@ -1,5 +1,5 @@
 {% raw %}
-name: "Upgrade scripts and workflows"
+name: "CI Upgrade"
 on:
   workflow_dispatch:
     inputs:
