@@ -106,7 +106,7 @@ jobs:
           echo "kiwi operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
       - name: "Comment operator test error olm.maxOpenShiftVersion"
-        if: contains(steps.kiwi-full-operator-test.outputs, 'not specified olm.maxOpenShiftVersion') == true
+        if: always() && contains(steps.kiwi-full-operator-test.outputs, 'not specified olm.maxOpenShiftVersion') == true
         uses: mshick/add-pr-comment@v1
         with:
           message: |
