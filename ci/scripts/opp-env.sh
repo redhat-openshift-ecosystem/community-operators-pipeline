@@ -208,7 +208,7 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   [[ $sf == ci* ]] && OPP_CHANGES_CI=1 && continue
   [[ $sf == docs* ]] && OPP_CHANGES_DOCS=1 && continue
   [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
-  # [[ $sf == community-operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
+  [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
   # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
 
   [[ $sf == *package.yaml ]] && continue
@@ -256,73 +256,82 @@ echo "OPP_MODIFIED_OTHERS=$OPP_MODIFIED_OTHERS"
 # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && OPP_OPERATORS_DIR="community-operators"
 # [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && OPP_OPERATORS_DIR="upstream-community-operators"
 
-[[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]] && [ ! -n "$FILES" ] && OPP_CI_YAML_ONLY=1 && FILES=${OPP_ADDED_MODIFIED_FILES}
+if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]] && [ ! -n "$FILES" ];then
+  OPP_CI_YAML_ONLY=1
+  OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
+  echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
+  echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
+  echo "Only ci.yaml was changed : ${OPP_ADDED_MODIFIED_FILES}"
 
-echo "FILES: $FILES"
 
-VERSIONS=$(echo -e "${FILES// /\\n}" | uniq | sort -r)
+else
+  echo "FILES: $FILES"
 
-LATEST="$(echo -e $VERSIONS | cut -d ' ' -f 1)"
-OPP_OPERATOR_NAME=$(echo $LATEST | cut -d '/' -f 2)
-OPP_OPERATOR_VERSION=$(echo $LATEST | cut -d '/' -f 3)
-OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
-OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+  VERSIONS=$(echo -e "${FILES// /\\n}" | uniq | sort -r)
 
-OPP_OPERATOR_VERSIONS=
-for v in $VERSIONS;do
-  TMP_OP_NAME=$(echo $v | cut -d '/' -f 2)
-  OPP_OPERATOR_VERSIONS="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS"
-  [ "$OPP_OPERATOR_NAME" = "$TMP_OP_NAME" ] || { echo "Error: Multiple operators are changed !!! Detected:'$OPP_OPERATOR_NAME' and '$TMP_OP_NAME' !!! Exiting ..."; OPP_TEST_READY=0; echo "::set-output name=opp_error_code::5";  exit 1;  }
-done
-# remove trailing space
-OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | sed 's/ *$//g')
-OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | uniq |  tr '\n' ' ' | sed 's/ *$//')
+  LATEST="$(echo -e $VERSIONS | cut -d ' ' -f 1)"
+  OPP_OPERATOR_NAME=$(echo $LATEST | cut -d '/' -f 2)
+  OPP_OPERATOR_VERSION=$(echo $LATEST | cut -d '/' -f 3)
+  OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+  OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
 
-OPP_OPERATOR_VERSIONS_REMOVED=
-for v in $REMOVED_VERSIONS;do
-  OPP_OPERATOR_VERSIONS_REMOVED="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"  
-done
-# remove trailing space
-OPP_OPERATOR_VERSIONS_REMOVED=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | sed 's/ *$//g')
+  OPP_OPERATOR_VERSIONS=
+  for v in $VERSIONS;do
+    TMP_OP_NAME=$(echo $v | cut -d '/' -f 2)
+    OPP_OPERATOR_VERSIONS="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS"
+    [ "$OPP_OPERATOR_NAME" = "$TMP_OP_NAME" ] || { echo "Error: Multiple operators are changed !!! Detected:'$OPP_OPERATOR_NAME' and '$TMP_OP_NAME' !!! Exiting ..."; OPP_TEST_READY=0; echo "::set-output name=opp_error_code::5";  exit 1;  }
+  done
+  # remove trailing space
+  OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | sed 's/ *$//g')
+  OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | uniq |  tr '\n' ' ' | sed 's/ *$//')
 
-[[ $OPP_PROD -ge 1 ]] && OPP_RELEASE_READY=1
+  OPP_OPERATOR_VERSIONS_REMOVED=
+  for v in $REMOVED_VERSIONS;do
+    OPP_OPERATOR_VERSIONS_REMOVED="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"  
+  done
+  # remove trailing space
+  OPP_OPERATOR_VERSIONS_REMOVED=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | sed 's/ *$//g')
 
-if [[ $OPP_CI_YAML_ONLY -eq 1 ]];then
-  if [[ $OPP_PROD -ge 1 ]];then
-    OPP_OPERATOR_VERSION="sync"
-    OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
-  else
-    OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
-    OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
+  [[ $OPP_PROD -ge 1 ]] && OPP_RELEASE_READY=1
+
+  if [[ $OPP_CI_YAML_ONLY -eq 1 ]];then
+    if [[ $OPP_PROD -ge 1 ]];then
+      OPP_OPERATOR_VERSION="sync"
+      OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
+    else
+      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+      OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
+    fi
   fi
+
+  OPP_OPERATOR_VERSIONS_COUNT=0
+  [ -n "$OPP_OPERATOR_VERSIONS" ] && OPP_OPERATOR_VERSIONS_COUNT=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | wc -l)
+  OPP_OPERATOR_VERSIONS_REMOVED_COUNT=0
+  [ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && OPP_OPERATOR_VERSIONS_REMOVED_COUNT=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | tr ' ' '\n' | wc -l)
+
+
+  OPP_OPERATOR_VERSIONS_ALL_COUNT=0
+  [ -n "$OPP_OPERATOR_VERSIONS_ALL" ] && OPP_OPERATOR_VERSIONS_ALL_COUNT=$(echo $OPP_OPERATOR_VERSIONS_ALL | tr ' ' '\n' | wc -l)
+
+  echo "Versions Count: CHANGED[$OPP_OPERATOR_VERSIONS] REMOVED[$OPP_OPERATOR_VERSIONS_REMOVED]"
+
+  # [[ $OPRT -eq 1 ]] && [ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && [[ ! $OPP_RECREATE -eq 1 ]] && [ "$OPP_OPERATOR_VERSIONS_REMOVED" != "$OPP_OPERATOR_VERSIONS_ALL_LATEST" ] && { echo "Error: Old versions [$OPP_OPERATOR_VERSIONS_REMOVED] were removed and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::6"; exit 1;  }
+  # [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
+
+  [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=1
+  [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_OP_DELETE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
+  [[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
+  [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_OP_DELETE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
+  [[ $OPP_OPERATOR_VERSIONS_ALL_COUNT -eq 1 ]] && OPP_IS_NEW_OPERATOR=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_VER_OVERWRITE=0 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0
+
+  # [[ $OPRT -eq 0 ]] && [[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && [[ ! $OPP_RECREATE -eq 1 ]] && { echo "Error: Multiple versions [$OPP_OPERATOR_VERSIONS] were modified and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::5"; exit 1;  }
+
+
+  [[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..."; echo "::set-output name=opp_error_code::1"; exit 1; }
+
+  # [[ $OPRT -eq 1 ]] && [[ $OPP_CI_YAML_MODIFIED -eq 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/."; echo "::set-output name=opp_error_code::7"; exit 1; }
+
 fi
-
-OPP_OPERATOR_VERSIONS_COUNT=0
-[ -n "$OPP_OPERATOR_VERSIONS" ] && OPP_OPERATOR_VERSIONS_COUNT=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | wc -l)
-OPP_OPERATOR_VERSIONS_REMOVED_COUNT=0
-[ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && OPP_OPERATOR_VERSIONS_REMOVED_COUNT=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | tr ' ' '\n' | wc -l)
-
-
-OPP_OPERATOR_VERSIONS_ALL_COUNT=0
-[ -n "$OPP_OPERATOR_VERSIONS_ALL" ] && OPP_OPERATOR_VERSIONS_ALL_COUNT=$(echo $OPP_OPERATOR_VERSIONS_ALL | tr ' ' '\n' | wc -l)
-
-echo "Versions Count: CHANGED[$OPP_OPERATOR_VERSIONS] REMOVED[$OPP_OPERATOR_VERSIONS_REMOVED]"
-
-# [[ $OPRT -eq 1 ]] && [ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && [[ ! $OPP_RECREATE -eq 1 ]] && [ "$OPP_OPERATOR_VERSIONS_REMOVED" != "$OPP_OPERATOR_VERSIONS_ALL_LATEST" ] && { echo "Error: Old versions [$OPP_OPERATOR_VERSIONS_REMOVED] were removed and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::6"; exit 1;  }
-# [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
-
-[[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=1
-[[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_OP_DELETE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
-[[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
-[[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_OP_DELETE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
-[[ $OPP_OPERATOR_VERSIONS_ALL_COUNT -eq 1 ]] && OPP_IS_NEW_OPERATOR=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_VER_OVERWRITE=0 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0
-
-# [[ $OPRT -eq 0 ]] && [[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && [[ ! $OPP_RECREATE -eq 1 ]] && { echo "Error: Multiple versions [$OPP_OPERATOR_VERSIONS] were modified and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::5"; exit 1;  }
-
-
-[[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..."; echo "::set-output name=opp_error_code::1"; exit 1; }
-
-# [[ $OPRT -eq 1 ]] && [[ $OPP_CI_YAML_MODIFIED -eq 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/."; echo "::set-output name=opp_error_code::7"; exit 1; }
 
 echo "::set-output name=opp_production_type::${OPP_PRODUCTION_TYPE}"
 echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
