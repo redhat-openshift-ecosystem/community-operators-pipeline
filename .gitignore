@@ -4,4 +4,7 @@ site/
 categories.json
 scripts/
 upstream.Dockerfile
-
+*.png
+*.pdf
+reseult.json
+docs
