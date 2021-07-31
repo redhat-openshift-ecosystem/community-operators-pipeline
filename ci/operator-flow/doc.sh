@@ -6,6 +6,7 @@ ADMINS=${ADMINS-"mvalarh J0zi"}
 SCRIPT_DIR="$(dirname $(readlink -m $0))"
 DOC_DIR="$(dirname $(dirname $(dirname $(readlink -m $0))))"/docs
 
+echo "$SCRIPT_DIR/measure-operator-flow.py -l $NPRS -o results.json -r $REPO -a $ADMINS"
 $SCRIPT_DIR/measure-operator-flow.py -l $NPRS -o results.json -r $REPO -a $ADMINS
 $SCRIPT_DIR/ana.py
 [ -d $DOC_DIR/images/stats ] || mkdir -p $DOC_DIR/images/stats
