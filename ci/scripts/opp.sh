@@ -378,7 +378,7 @@ function ExecParameters() {
 
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
-            OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
+            # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
             [[ $OPP_MIRROR_INDEX_MULTIARCH != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH"
             [ "$OPP_MIRROR_LATEST_TAG" != "${1/orange_/}" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
@@ -390,7 +390,7 @@ function ExecParameters() {
 
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 1 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
-            OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
+            # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             [[ $OPP_MIRROR_INDEX_MULTIARCH != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH"
             [ "$OPP_MIRROR_LATEST_TAG" != "${1/orange_/}" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|$OPP_REGISTRY_MIRROR_USER|$REGISTRY_MIRROR_PW|$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
             [ "$OPP_MIRROR_LATEST_TAG" = "${1/orange_/}" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:${1/orange_/}|$OPP_REGISTRY_MIRROR_USER|$REGISTRY_MIRROR_PW|$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
