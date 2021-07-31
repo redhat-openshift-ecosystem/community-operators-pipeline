@@ -259,10 +259,19 @@ echo "OPP_MODIFIED_OTHERS=$OPP_MODIFIED_OTHERS"
 if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]] && [ ! -n "$FILES" ];then
   OPP_CI_YAML_ONLY=1
   OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
+  if [[ $OPP_CI_YAML_ONLY -eq 1 ]];then
+    if [[ $OPP_PROD -ge 1 ]];then
+      OPP_OPERATOR_VERSION="sync"
+    else
+      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+    fi
+    OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+  fi
+
   echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
   echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
   echo "Only ci.yaml was changed : ${OPP_ADDED_MODIFIED_FILES}"
-
 
 else
   echo "FILES: $FILES"
@@ -294,15 +303,7 @@ else
 
   [[ $OPP_PROD -ge 1 ]] && OPP_RELEASE_READY=1
 
-  if [[ $OPP_CI_YAML_ONLY -eq 1 ]];then
-    if [[ $OPP_PROD -ge 1 ]];then
-      OPP_OPERATOR_VERSION="sync"
-      OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
-    else
-      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
-      OPP_OPERATOR_VERSIONS="$OPP_OPERATOR_VERSION"
-    fi
-  fi
+
 
   OPP_OPERATOR_VERSIONS_COUNT=0
   [ -n "$OPP_OPERATOR_VERSIONS" ] && OPP_OPERATOR_VERSIONS_COUNT=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | wc -l)
