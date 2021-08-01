@@ -313,7 +313,7 @@
 <h2 id="running-tests">Running tests</h2>
 <p>One can run test by entering to 'community-operators' project directory and run with following command with these options. '<git repo="">' and '<git branch="">' options are optional</git></git></p>
 <div class="codehilite"><pre><span></span><code><span class="err">cd &lt;community-operators&gt;</span>
-<span class="err">bash &lt;(curl -sL https://cutt.ly/WhkV76k) \</span>
+<span class="err">bash &lt;(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \</span>
 <span class="err">&lt;test-type1,test-type2,...,test-typeN&gt; \</span>
 <span class="err">&lt;operator-version-dir-relative-to-community-operators-project&gt; \</span>
 <span class="err">[&lt;git repo&gt;] [&lt;git branch&gt;]</span>
@@ -356,14 +356,14 @@
 <h2 id="running-tests-from-local-direcotry">Running tests from local direcotry</h2>
 <p>Following example will run 'all' tests on 'aqua' operator with version '1.0.2' from 'upstream-community-operators (k8s)' directory. 'community-operators' project will be taken from local directory one is running command from ($PWD).</p>
 <div class="codehilite"><pre><span></span><code><span class="err">cd &lt;community-operators&gt;</span>
-<span class="err">bash &lt;(curl -sL https://cutt.ly/WhkV76k) \</span>
+<span class="err">bash &lt;(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \</span>
 <span class="err">all \</span>
 <span class="err">upstream-community-operators/aqua/1.0.2</span>
 </code></pre></div>
 <h2 id="running-tests-from-official-community-operators-repo">Running tests from official 'community-operators' repo</h2>
 <p>Following example will run 'kiwi' and 'lemon' tests on 'aqua' operator with version '1.0.2' from 'community-operators (Openshift)' directory. 'community-operators' project will be taken from git repo 'https://github.com/operator-framework/community-operators' and 'master' branch</p>
 <div class="codehilite"><pre><span></span><code><span class="err">cd &lt;community-operators&gt;</span>
-<span class="err">bash &lt;(curl -sL https://cutt.ly/WhkV76k) \</span>
+<span class="err">bash &lt;(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \</span>
 <span class="err">kiwi,lemon \</span>
 <span class="err">community-operators/aqua/1.0.2 \</span>
 <span class="c">https://github.com/operator-framework/community-operators \</span>
@@ -372,7 +372,7 @@
 <h2 id="running-tests-from-forked-community-operators-repo-ans-specific-branch">Running tests from forked 'community-operators' repo ans specific branch</h2>
 <p>Following example will run 'kiwi' and 'lemon' tests on 'kong' operator with version '0.5.0' from 'upstream-community-operators (k8s)' directory.'community-operators' project will be taken from git repo 'https://github.com/Kong/community-operators' and 'release/v0.5.0' branch ('https://github.com/Kong/community-operators/tree/release/v0.5.0')</p>
 <div class="codehilite"><pre><span></span><code><span class="err">cd &lt;community-operators&gt;</span>
-<span class="err">bash &lt;(curl -sL https://cutt.ly/WhkV76k) \</span>
+<span class="err">bash &lt;(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \</span>
 <span class="err">kiwi,lemon \</span>
 <span class="err">upstream-community-operators/kong/0.5.0 \</span>
 <span class="c">https://github.com/Kong/community-operators \</span>
