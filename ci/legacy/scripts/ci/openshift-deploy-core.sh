@@ -3,6 +3,7 @@
 
 set -e #fail in case of non zero return
 PLAYBOOK_REPO='https://github.com/redhat-openshift-ecosystem/operator-test-playbooks.git'
+PLAYBOOK_REPO_BRANCH='upstream-community'
 echo "OCP_CLUSTER_VERSION_SUFFIX=$OCP_CLUSTER_VERSION_SUFFIX"
 
 JQ_VERSION='1.6'
@@ -201,10 +202,12 @@ if [ -d /tmp/playbooks2 ]; then rm -Rf /tmp/playbooks2; fi
 mkdir -p /tmp/playbooks2
 cd /tmp/playbooks2
 echo "We are in dir"
-[[ $TEST_MODE -ne 1 ]] && git clone $PLAYBOOK_REPO
-[[ $TEST_MODE -eq 1 ]] && git clone $TEST_PB_REPO
+
+[[ $TEST_MODE -ne 1 ]] && git clone $PLAYBOOK_REPO operator-test-playbooks
+[[ $TEST_MODE -eq 1 ]] && git clone $TEST_PB_REPO operator-test-playbooks
 cd operator-test-playbooks
 [[ $TEST_MODE -eq 1 ]] && git checkout $TEST_PB_BRANCH
+[[ $TEST_MODE -ne 1 ]] && git checkout $PLAYBOOK_REPO_BRANCH
 cd upstream
 echo "Config ..."
 export ANSIBLE_CONFIG=/tmp/playbooks2/operator-test-playbooks/upstream/ansible.cfg
