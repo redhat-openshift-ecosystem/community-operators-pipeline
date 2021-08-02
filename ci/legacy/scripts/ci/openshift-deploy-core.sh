@@ -2,6 +2,7 @@
 #./openshift-deploy.sh test-only https://github.com/J0zi/community-operators.git bundle2 https://github.com/J0zi/operator-test-playbooks.git CVP-1793-exit-non-relevant-ocp-test
 
 set -e #fail in case of non zero return
+PLAYBOOK_REPO='https://github.com/redhat-openshift-ecosystem/operator-test-playbooks.git'
 echo "OCP_CLUSTER_VERSION_SUFFIX=$OCP_CLUSTER_VERSION_SUFFIX"
 
 JQ_VERSION='1.6'
@@ -203,7 +204,7 @@ if [ -d /tmp/playbooks2 ]; then rm -Rf /tmp/playbooks2; fi
 mkdir -p /tmp/playbooks2
 cd /tmp/playbooks2
 echo "We are in dir"
-[[ $TEST_MODE -ne 1 ]] && git clone https://github.com/operator-framework/operator-test-playbooks.git
+[[ $TEST_MODE -ne 1 ]] && git clone $PLAYBOOK_REPO
 [[ $TEST_MODE -eq 1 ]] && git clone $TEST_PB_REPO
 cd operator-test-playbooks
 [[ $TEST_MODE -eq 1 ]] && git checkout $TEST_PB_BRANCH
