@@ -372,6 +372,7 @@ function ExecParameters() {
     # [[ $1 == lemon_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream -e supported_cluster_versions=${1/lemon_/} -e bundle_index_image_version=${1/lemon_/}"
 
     [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
+    [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e force_skip_mirror=true"
     if [[ $1 == orange_* || $1 == lemon_* ]];then
         [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e supported_cluster_versions=$OPP_PRODUCTION_INDEX_IMAGE_TAG -e bundle_index_image_version=$OPP_PRODUCTION_INDEX_IMAGE_TAG"
     fi
