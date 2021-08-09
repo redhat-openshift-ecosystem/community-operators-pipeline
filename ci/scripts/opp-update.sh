@@ -47,7 +47,7 @@ done
 
 rm -rf $PWD/scripts
 mkdir -p $PWD/scripts
-ln -sfn $OPP_CI_SCRIPTS_DIR scripts/ci
+ln -sfn ../$OPP_CI_SCRIPTS_DIR scripts/ci
 
 ######## Gen empty index ###############################
 #
