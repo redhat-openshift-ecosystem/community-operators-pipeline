@@ -2,7 +2,7 @@
 set +o pipefail
 
 OPP_FILES_TO_COPY="ci/root/categories.json ci/root/upstream.Dockerfile"
-OPP_CI_SCRIPTS_DIR="scripts/ci"
+OPP_CI_SCRIPTS_DIR="ci/prow"
 OPP_FILES_TO_COPY_CI_SCRIPTS="ci/legacy/scripts/ci/openshift-deploy-core.sh ci/legacy/scripts/ci/openshift-deploy.sh ci/legacy/scripts/ci/Dockerfile.ci-operator"
 
 OPP_ANSIBLE_PULL_REPO=${OPP_ANSIBLE_PULL_REPO-"https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"}
@@ -44,6 +44,10 @@ for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$OPP_CI_SCRIPTS_DIR/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
     cp $OPP_TMP_DIR/opp-input/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
 done
+
+rm -f scripts
+mkdir -p scripts
+ln -sfn $OPP_CI_SCRIPTS_DIR scripts/ci
 
 ######## Gen empty index ###############################
 #
