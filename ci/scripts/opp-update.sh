@@ -45,9 +45,9 @@ for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     cp $OPP_TMP_DIR/opp-input/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
 done
 
-echo rm -rf $PWD/scripts
-echo mkdir -p $PWD/scripts
-echo ln -sfn $PWD/$OPP_CI_SCRIPTS_DIR scripts/ci
+rm -rf $PWD/scripts
+mkdir -p $PWD/scripts
+ln -sfn $PWD/$OPP_CI_SCRIPTS_DIR scripts/ci
 
 ######## Gen empty index ###############################
 #
