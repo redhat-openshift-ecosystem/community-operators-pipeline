@@ -16,7 +16,6 @@ SUBDIR_ARG="-e work_subdir_name=oc-$OC_DIR_CORE"
 echo "SUBDIR_ARG = $SUBDIR_ARG"
 
 if [[ $TEST_MODE -ne 1  ]]; then
-#    TARGET_PATH=$(echo $CURRENT_PATH|sed -e 's/scripts\/ci/operators/g')
     TARGET_PATH="$(dirname $(dirname $(dirname $(readlink -m $0))))/operators"
 fi
 echo "TARGET_PATH=$TARGET_PATH"
