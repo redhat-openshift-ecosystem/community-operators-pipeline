@@ -41,6 +41,7 @@ OPP_EXEC_EXTRA=${OPP_EXEC_EXTRA-"-e container_tool=podman"}
 OPP_RUN_MODE=${OPP_RUN_MODE-"privileged"}
 OPP_LABELS=${OPP_LABELS-""}
 OPP_PROD=${OPP_PROD-0}
+OPP_SKIP_INDEX=${OPP_SKIP_INDEX-0}
 OPP_PRETEST_CUSTOM_SCRIPT=${OPP_PRETEST_CUSTOM_SCRIPT-""}
 OPP_DEBUG=${OPP_DEBUG-0}
 OPP_DRY_RUN=${OPP_DRY_RUN-0}
@@ -365,6 +366,8 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=$OPP_RELEASE_BUNDLE_REGISTRY -e bundle_image_namespace=$OPP_RELEASE_BUNDLE_ORGANIZATION -e bundle_index_image_namespace=$OPP_RELEASE_INDEX_ORGANIZATION -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
     
+
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]]  OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
 
     # If community and doing orange_<version>
     # [[ $1 == orange* ]] && [[ $1 != orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
