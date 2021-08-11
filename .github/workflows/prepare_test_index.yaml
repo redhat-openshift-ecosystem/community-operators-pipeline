@@ -9,7 +9,7 @@ on:
 
 env:
   OPP_PRODUCTION_TYPE: "ocp"
-  OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:latest"
+  OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:dev"
 
 
 
@@ -57,7 +57,7 @@ jobs:
           COMMIT: ${{ steps.variables.outputs.opp_commit }}
           OPP_OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
           OPP_OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
-          OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp-osr-run.sh"
+          OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-osr-run.sh"
           OPP_OPRT_SRC_BASE:  "https://github.com"
           OPP_OPRT_SRC_REPO:  "redhat-openshift-ecosystem/community-operators-pipeline"
           OPP_OPRT_SRC_BRANCH: "main"
@@ -72,5 +72,5 @@ jobs:
           cat file
           echo
           echo
-          bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp-oprt.sh)
+          bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-oprt.sh)
 
