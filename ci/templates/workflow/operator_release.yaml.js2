@@ -167,7 +167,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Operator release (sync)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+        # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
         run: |
@@ -178,24 +178,10 @@ jobs:
 {% endraw %}
 {% else %}
 {% raw %}
-  # release-openshift_latest:
-  #   name: "Release / o7t latest"
-  #   needs: pr-check
-  #   if: needs.pr-check.outputs.opp_release_ready == '1'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-  #     - name: Operator release
-  #       env:
-  #         OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-  #       run: |
-  #         echo "OPP_LABELS=$OPP_LABELS"
-  #         echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-  #         bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-openshift:
-      name: "Release / o7t"
+
+  remove-openshift:
+      name: "Release (remove) / o7t"
       needs: pr-check
       if: needs.pr-check.outputs.opp_release_ready == '1'
       runs-on: ubuntu-latest
@@ -213,23 +199,65 @@ jobs:
           env:
             OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_SKIP_INDEX: 1
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
             echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
             bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
-        - name: Index recreate only (Only ci.yaml was changed)
-          if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
+        - name: Operator release (operator version overwrite)
+          if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
           env:
             OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-            OPP_CI_YAML_ONLY: 1
             OPP_IIB_INSTALL: 0
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OPP_MIRROR_IMAGE_POSTFIX: "s"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_SKIP_INDEX: 1
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+            echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+
+
+
+
+  bundles-openshift:
+      name: "Release (bundles only) / o7t"
+      needs: pr-check, remove-openshift
+      if: needs.pr-check.outputs.opp_release_ready == '1'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+        - name: Operator release (sync)
+          if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+          env:
+            OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+            OPP_IIB_INSTALL: 0
+            IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
+            # OPP_MIRROR_IMAGE_POSTFIX: "s"
+            # OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_SKIP_INDEX: 1
+          run: |
+            echo "OPP_LABELS=$OPP_LABELS"
+            echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+
+
+  release-openshift:
+      name: "Release / o7t"
+      needs: pr-check, bundles-openshift
+      if: needs.pr-check.outputs.opp_release_ready == '1'
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+{% endraw %}
+          index-tag: {{ default_config.production.index.tags }}
+{% raw %}
+        fail-fast: false
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
         - name: Operator release (sync)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
           env:
@@ -242,18 +270,6 @@ jobs:
             echo "OPP_LABELS=$OPP_LABELS"
             echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
             bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-        - name: Operator release (operator version overwrite)
-          if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
-          env:
-            OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-            OPP_IIB_INSTALL: 0
-            IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-            # OPP_MIRROR_IMAGE_POSTFIX: "s"
-            OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
-          run: |
-            echo "OPP_LABELS=$OPP_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 {% endraw %}
 {% if default_config.production.index.signature == 1 %}
 {% raw %}
