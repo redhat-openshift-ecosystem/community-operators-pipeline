@@ -459,7 +459,7 @@ function ExecParameters() {
 
     [[ $1 == op_delete_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_image_version=${1/op_delete_/}"
     [[ $1 == op_delete_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Removing specific version (not latest) not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
-
+    [[ $1 == op_delete* ]] && [[ $OPP_VER_OVERWRITE -eq 1 ]] && [ "$OPP_VERSION" != "sync" ] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_version=$OPP_VERSION"
 
     # index safety - avoid accidental index destroy
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER $OPP_INDEX_SAFETY" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK $OPP_INDEX_SAFETY"
