@@ -154,7 +154,7 @@ jobs:
 
   bundles-openshift:
       name: "Release (bundles only) / o7t"
-      needs: pr-check, remove-openshift
+      needs: [ pr-check, remove-openshift ]
       if: needs.pr-check.outputs.opp_release_ready == '1'
       runs-on: ubuntu-latest
       steps:
@@ -177,7 +177,7 @@ jobs:
 
   release-openshift:
       name: "Release / o7t"
-      needs: pr-check, bundles-openshift
+      needs: [ pr-check, bundles-openshift ]
       if: needs.pr-check.outputs.opp_release_ready == '1'
       runs-on: ubuntu-latest
       strategy:
