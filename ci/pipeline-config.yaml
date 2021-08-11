@@ -30,7 +30,7 @@ pipeline:
   repo: redhat-openshift-ecosystem/community-operators-pipeline
   branch: main
   ci_scripts_dir: https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts
-  image: quay.io/operator_testing/operator-test-playbooks:latest
+  image: quay.io/operator_testing/operator-test-playbooks:dev
   automerge:
     enabled: 1
   reviewers:
