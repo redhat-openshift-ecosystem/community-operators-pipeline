@@ -289,7 +289,6 @@ spec:
     * Automatically scale the number of Aqua scanners based on the number of images in the scan queue
 
     ## Before You Begin Using the Operator CRDs
-
     Obtain access to the Aqua registry - https://www.aquasec.com/about-us/contact-us/
 
     ## Instructions and exmaples
