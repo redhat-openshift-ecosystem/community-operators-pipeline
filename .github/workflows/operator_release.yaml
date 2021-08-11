@@ -167,7 +167,7 @@ jobs:
             OPP_IIB_INSTALL: 0
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OPP_MIRROR_IMAGE_POSTFIX: "s"
-            # OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPERATOR_INDEX_TAG: latest
             OPP_SKIP_INDEX: 1
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
