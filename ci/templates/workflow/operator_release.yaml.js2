@@ -113,8 +113,9 @@ jobs:
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
-  release-k8s_latest:
-    name: "Release / k8s latest"
+
+  remove-k8s:
+    name: "Release (remove) / k8s"
     needs: pr-check
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -129,15 +130,42 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
-      - name: Index recreate only (Only ci.yaml was changed)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
+      - name: Operator version overwrite
+        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-          OPP_CI_YAML_ONLY: 1
+          OPP_SKIP_INDEX: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+
+  bundles-k8s:
+    name: "Release (bundles only) / k8s"
+    needs: pr-check, remove-k8s
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Operator release (sync)
+        # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+        env:
+          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_SKIP_INDEX: 1
+        run: |
+          echo "OPP_LABELS=$OPP_LABELS"
+          echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+
+  release-k8s:
+    name: "Release / k8s"
+    needs: pr-check, bundles-k8s
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Operator release (sync)
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
@@ -146,14 +174,7 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-      - name: Operator release (operator version overwrite)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
-        env:
-          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-        run: |
-          echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+
 {% endraw %}
 {% else %}
 {% raw %}
@@ -306,7 +327,7 @@ jobs:
 
   ohio-image-k8s:
     name: "Release / k8s ohio image"
-    needs: [ pr-check, release-k8s_latest ]
+    needs: [ pr-check, release-k8s ]
     # if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
@@ -410,7 +431,7 @@ jobs:
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
-    needs: [ pr-check, release-k8s_latest, ohio-image-k8s, ohio-page-k8s ]
+    needs: [ pr-check, release-k8s, ohio-image-k8s, ohio-page-k8s ]
 {% endraw %}
 {% else %}
 {% raw %}
