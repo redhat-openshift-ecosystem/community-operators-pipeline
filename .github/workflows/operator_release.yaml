@@ -158,7 +158,7 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v2
         - name: Operator release (sync)
-          if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+          # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
           env:
             OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
             OPP_IIB_INSTALL: 0
@@ -186,7 +186,7 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v2
         - name: Operator release (sync)
-          if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+          # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
           env:
             OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
             OPP_IIB_INSTALL: 0
