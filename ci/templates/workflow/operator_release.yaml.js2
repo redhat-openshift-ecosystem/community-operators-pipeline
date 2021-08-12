@@ -236,10 +236,13 @@ jobs:
           OPP_INDEX_CHECK_ONLY: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          t=""
           for v in $OPERATOR_INDEX_TAG;do
-            echo "orange_$v operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_$v operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+            t="orange_$v $t"
           done
+            echo "'$t' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) "$t" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          
       - name: Operators for sync
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
