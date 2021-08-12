@@ -244,7 +244,7 @@ fi
 echo "debug=$OPP_DEBUG"
 
 # Handle test types
-[ -z $1 ] && help
+[ -n "$1" ] || help
 
 [ "$ACTION" = "clean" ] && clean
 if [ "$ACTION" = "docker" ];then
@@ -555,6 +555,7 @@ for t in $TESTS;do
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL run -d --rm $OPP_CONTAINER_OPT --name $OPP_NAME $OPP_CONAINER_RUN_DEFAULT_ARGS $OPP_CONTAINER_RUN_EXTRA_ARGS $OPP_IMAGE
     [[ $OPP_RESET -eq 1 ]] && run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $HOME/.kube $OPP_NAME:/root/
     if [ -n "$OPP_FORCE_OPERATORS" ];then
+        echo "Generating config file"
         GenerateOperatorConfigFile
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
     else
@@ -562,10 +563,10 @@ for t in $TESTS;do
         if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
-            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || continue
+            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || set +e && continue
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")"
-            [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && continue
+            [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && set +e && continue
         fi
     fi
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
@@ -575,6 +576,7 @@ for t in $TESTS;do
     set +e
     echo -e "Test '$t' : [ OK ]\n"
 done
+
 echo "[0] OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
 [ -n "$OPP_UNCOMPLETE_OPERATORS" ] && OPP_UNCOMPLETE_OPERATORS=$(echo $OPP_UNCOMPLETE_OPERATORS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 echo "[1] OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"

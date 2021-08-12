@@ -232,16 +232,12 @@ jobs:
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
-          OPERATOR_INDEX_TAG: "v4.6 v4.7 v4.8"
+          OPERATOR_INDEX_TAG: "orange_v4.6 orange_v4.7 orange_v4.8"
           OPP_INDEX_CHECK_ONLY: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          t=""
-          for v in $OPERATOR_INDEX_TAG;do
-            t="orange_$v $t"
-          done
-            echo "'$t' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) "$t" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
           
       - name: Operators for sync
         run: |
