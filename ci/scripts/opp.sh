@@ -81,6 +81,7 @@ OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
 OPP_CI_YAML_ONLY=${OPP_CI_YAML_ONLY-0}
 OPP_UNCOMPLETE="/tmp/operators_uncomplete-localhost.yaml"
 OPP_UNCOMPLETE_OPERATORS=""
+OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS-""}
 OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
 OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
@@ -469,6 +470,14 @@ function ExecParameters() {
 
 }
 
+function GenerateOperatorConfigFile() {
+    echo "operator_base_dir: /tmp/community-operators-for-catalog/operators" > $OPP_UNCOMPLETE
+    echo "operators:" >> $OPP_UNCOMPLETE
+    for o in $OPP_FORCE_OPERATORS;do
+        echo "- $o" >> $OPP_UNCOMPLETE
+    done
+    cat $OPP_UNCOMPLETE
+}
 echo "Using $(ansible --version | head -n 1) on host ..."
 if [[ $OPP_DEBUG -ge 2 ]];then
     run echo "OPP_DEBUG='$OPP_DEBUG'"
@@ -545,16 +554,20 @@ for t in $TESTS;do
     $DRY_RUN_CMD $OPP_CONTAINER_TOOL rm -f $OPP_NAME > /dev/null 2>&1
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL run -d --rm $OPP_CONTAINER_OPT --name $OPP_NAME $OPP_CONAINER_RUN_DEFAULT_ARGS $OPP_CONTAINER_RUN_EXTRA_ARGS $OPP_IMAGE
     [[ $OPP_RESET -eq 1 ]] && run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $HOME/.kube $OPP_NAME:/root/
-    set -e
-    if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
-        echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
-        run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
-        $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || continue
-        OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
-        OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")"
-        [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && continue
+    if [ -n "$OPP_FORCE_OPERATORS" ];then
+        GenerateOperatorConfigFile
+        run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
+    else
+        set -e
+        if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
+            echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
+            run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
+            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || continue
+            OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
+            OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")"
+            [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && continue
+        fi
     fi
-    
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
  
     echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA $OPP_EXEC_USER"
@@ -563,6 +576,7 @@ for t in $TESTS;do
     echo -e "Test '$t' : [ OK ]\n"
 done
 
+OPP_UNCOMPLETE_OPERATORS=$(echo $OPP_UNCOMPLETE_OPERATORS | tr ' ' '\n' | sort | uniq | tr '\n ' '')
 echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
 echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
 
