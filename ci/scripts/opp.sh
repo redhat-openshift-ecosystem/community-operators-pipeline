@@ -82,6 +82,7 @@ OPP_RECREATE=${OPP_RECREATE-0}
 OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
 OPP_CI_YAML_ONLY=${OPP_CI_YAML_ONLY-0}
 OPP_UNCOMPLETE="/tmp/operators_uncomplete-localhost.yaml"
+OPP_UNCOMPLETE_OPERATORS=""
 DELETE_APPREG=${DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
 
@@ -550,7 +551,11 @@ for t in $TESTS;do
         echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
         $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || continue
-        OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE" 
+        echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
+        OPP_UNCOMPLETE_OPERATORS=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
+        OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
+        echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
+        echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
     fi
     
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
