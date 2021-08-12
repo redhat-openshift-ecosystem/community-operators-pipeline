@@ -63,8 +63,6 @@ OPP_MIRROR_INDEX_ORGANIZATION=${OPP_MIRROR_INDEX_ORGANIZATION-"community-operato
 OPP_MIRROR_INDEX_NAME=${OPP_MIRROR_INDEX_NAME-"catalog_prod"}
 OPP_MIRROR_INDEX_IMAGE="$OPP_MIRROR_INDEX_REGISTRY/$OPP_MIRROR_INDEX_ORGANIZATION/$OPP_MIRROR_INDEX_NAME"
 
-
-
 OHIO_INPUT_CATALOG_IMAGE=${OHIO_INPUT_CATALOG_IMAGE-"quay.io/operatorhubio/catalog:latest"}
 OHIO_REGISTRY_IMAGE=${OHIO_REGISTRY_IMAGE-"quay.io/operator-framework/upstream-community-operators:latest"}
 
@@ -83,7 +81,8 @@ OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
 OPP_CI_YAML_ONLY=${OPP_CI_YAML_ONLY-0}
 OPP_UNCOMPLETE="/tmp/operators_uncomplete-localhost.yaml"
 OPP_UNCOMPLETE_OPERATORS=""
-DELETE_APPREG=${DELETE_APPREG-0}
+OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
+OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
 
 export GODEBUG=${GODEBUG-x509ignoreCN=0}
@@ -443,7 +442,7 @@ function ExecParameters() {
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER="$OPP_EXEC_USER --tags deploy_bundles -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e production_registry_namespace=$OPP_PRODUCTION_REGISTRY_NAMESPACE -e index_force_update=true -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME -e op_test_operator_version=$OPP_VERSION"
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"    
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_appregistry_api_token=$QUAY_APPREG_TOKEN -e quay_appregistry_courier_token=$QUAY_COURIER_TOKEN"
-    [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && [[ DELETE_APPREG -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e delete_appreg='true'"
+    [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && [[ OPP_DELETE_APPREG -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e delete_appreg='true'"
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Push to quay is not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
 
     [[ $1 == ohio_image* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags app_registry -e bundle_index_image=$OHIO_INPUT_CATALOG_IMAGE -e index_export_parallel=true -e app_registry_image=$OHIO_REGISTRY_IMAGE -e quay_api_token=$OHIO_REGISTRY_TOKEN"
@@ -520,7 +519,7 @@ $DRY_RUN_CMD $OPP_CONTAINER_TOOL pull $OPP_IMAGE > /dev/null 2>&1 || { echo "Err
 
 OPP_CONTAINER_OPT="$OPP_CONTAINER_OPT -e ANSIBLE_CONFIG=/playbooks/upstream/ansible.cfg"
 OPP_CONTAINER_OPT="$OPP_CONTAINER_OPT -e GODEBUG=$GODEBUG"
-
+echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
 OPP_SKIP=0
 IIB_INSTALLED=0
 for t in $TESTS;do
@@ -547,15 +546,13 @@ for t in $TESTS;do
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL run -d --rm $OPP_CONTAINER_OPT --name $OPP_NAME $OPP_CONAINER_RUN_DEFAULT_ARGS $OPP_CONTAINER_RUN_EXTRA_ARGS $OPP_IMAGE
     [[ $OPP_RESET -eq 1 ]] && run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $HOME/.kube $OPP_NAME:/root/
     set -e
-    if [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
+    if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
         echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
         $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || continue
-        echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
-        OPP_UNCOMPLETE_OPERATORS=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
         OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
-        echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
-        echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
+        OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")"
+        [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && continue
     fi
     
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
@@ -565,6 +562,10 @@ for t in $TESTS;do
     set +e
     echo -e "Test '$t' : [ OK ]\n"
 done
+
+echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
+echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
+
 
 echo "Done"
 
