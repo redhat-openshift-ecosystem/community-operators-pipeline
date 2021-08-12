@@ -284,6 +284,7 @@ spec:
 
 
 
+
     Use the Aqua-Operator to
     * Deploy Aqua Security components on OpenShift
     * Scale up Aqua Security components with extra replicas
