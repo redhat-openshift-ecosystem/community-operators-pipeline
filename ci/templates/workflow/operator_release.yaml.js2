@@ -217,8 +217,8 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
   operators-openshift:
-    name: "Release (remove) / o7t"
-    needs: pr-check
+    name: "Release (missing operator check) / o7t"
+    needs: [pr-check, remove-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     strategy:
