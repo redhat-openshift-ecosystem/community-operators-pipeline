@@ -14,7 +14,6 @@ OPP_THIS_REPO_BASE=${OPP_THIS_REPO_BASE-"https://github.com"}
 OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pipeline"}
 OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
 
-
 OPP_BASE_DEP="ansible curl openssl git"
 KIND_KUBE_VERSION=${KIND_KUBE_VERSION-"v1.19.11"}
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
@@ -81,12 +80,14 @@ OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
 OPP_CI_YAML_ONLY=${OPP_CI_YAML_ONLY-0}
 OPP_UNCOMPLETE="/tmp/operators_uncomplete-localhost.yaml"
 OPP_UNCOMPLETE_OPERATORS=""
+OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=${OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH-""}
 OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS-""}
 OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
 OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
 
 export GODEBUG=${GODEBUG-x509ignoreCN=0}
+
 
 
 
@@ -330,9 +331,6 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
 
-
-
-
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/openshift-community-operators"
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "upstream-community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/operatorhubio"
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=$OPP_PRODUCTION_REGISTRY_NAMESPACE"
@@ -467,6 +465,9 @@ function ExecParameters() {
 
     # Force strict mode (force to fail on 'bundle add' and 'index add')
     [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_mode=true"
+
+    # FOR debuging only
+    [ -n "$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e remove_base_dir=/tmp/community-operators-for-catalog/operators -e remove_operator_dirs=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"
 
 }
 

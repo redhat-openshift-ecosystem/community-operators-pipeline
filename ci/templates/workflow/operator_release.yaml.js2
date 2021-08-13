@@ -12,6 +12,10 @@ on:
         description: 'Force to run release'
         required: true
         default: '0'
+      delete:
+        description: 'Delete operator (aqua or aqua/6.0.2) for debuging only'
+        required: false
+        default: ''
 
 env:
 {% endraw %}
@@ -46,6 +50,7 @@ env:
 
 {% raw %}
   OPP_ALLOW_FORCE_RELEASE: ${{ github.event.inputs.release }}
+  OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH: ${{ github.event.inputs.delete }}
   REGISTRY_RELEASE_API_TOKEN: ${{ secrets.REGISTRY_RELEASE_API_TOKEN }}
   REGISTRY_MIRROR_PW: ${{ secrets.REGISTRY_MIRROR_PW }}
   
