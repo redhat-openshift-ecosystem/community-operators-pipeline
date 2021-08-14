@@ -17,10 +17,11 @@ on:
         default: 'ci/latest'
       cluster:
         description: 'Cluster type (k8s, ocp)'
-        required: required
+        required: true
 {% endraw %}
         default: '{{ default_config.production.type }}'
 {% raw %}
+
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
