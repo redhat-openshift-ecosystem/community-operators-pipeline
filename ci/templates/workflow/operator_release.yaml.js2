@@ -305,8 +305,8 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
 {% endraw %}
-{% for item in default_config.production.index.tags %}
-          OPP_FORCE_OPERATORS_{{ item }}: ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item }} {{ '}}' }}
+{% for item_ver in default_config.production.index.tags %}
+          OPP_FORCE_OPERATORS_{{ item_ver }}: ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item_ver }} {{ '}}' }}
 {% endfor %}
 {% raw %}
         run: |
