@@ -251,7 +251,11 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
-
+{% endraw %}
+{% for item in default_config.production.index.tags %}
+      opp_uncomplete_operators_{{ item }}: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
+{% endfor %}
+{% raw %}
   bundles-openshift:
     name: "Release (bundles only) / o7t"
     needs: [ pr-check, operators-openshift, remove-openshift ]
@@ -299,6 +303,12 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
+{% endraw %}
+{% for item in default_config.production.index.tags %}
+          OPP_FORCE_OPERATORS_{{ item }}: "$'{{' steps.operators.outputs.opp_uncomplete_operators_{{ item }} '}}'"
+{% endfor %}
+{% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
