@@ -1,5 +1,5 @@
 production:
-  type: ocp
+  type: k8s
   bundle:
     registry: quay.io
     organization: community-operators-pipeline
@@ -8,21 +8,19 @@ production:
     organization: community-operators-pipeline
     name: catalog
     tags:
-      - v4.6
-      - v4.7
-      - v4.8
-    latest: v4.6
-    signature: 1
+      - latest
+    latest: latest
+    signature: 0
   mirror:
-    enabled: 1
-    multiarch: 
+    enabled: 0
+    multiarch:
       base: registry.redhat.io/openshift4/ose-operator-registry:v4.5
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
     name: catalog_prod
     username:
-      in: mavala
+      in: jbreza
       out: framework_automation
 
 pipeline:
