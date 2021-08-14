@@ -567,11 +567,11 @@ for t in $TESTS;do
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || { set +e && continue; }
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
-            echo "XXXX"
-            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '"
-            OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")"
-            echo "[0] OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
-            [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && set +e && continue
+            OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
+            OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            echo "[$t] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
+            [[ $t == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${t/orange_/}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }
         fi
     fi
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
