@@ -181,9 +181,9 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
-      opp_uncomplete_operators_v4.6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4.6 }}"
-      opp_uncomplete_operators_v4.7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4.7 }}"
-      opp_uncomplete_operators_v4.8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4.8 }}"
+      opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
+      opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
+      opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
 
   bundles-openshift:
     name: "Release (bundles only) / o7t"
@@ -232,9 +232,9 @@ jobs:
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
-          OPP_FORCE_OPERATORS_v4.6: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.6 }}"
-          OPP_FORCE_OPERATORS_v4.7: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.7 }}"
-          OPP_FORCE_OPERATORS_v4.8: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.8 }}"
+          OPP_FORCE_OPERATORS_v4_6: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4_6 }}"
+          OPP_FORCE_OPERATORS_v4_7: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4_7 }}"
+          OPP_FORCE_OPERATORS_v4_8: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4_8 }}"
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
