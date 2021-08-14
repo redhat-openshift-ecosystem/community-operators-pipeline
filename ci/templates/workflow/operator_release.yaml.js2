@@ -194,7 +194,7 @@ jobs:
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
 {% endraw %}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+          OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
