@@ -31,7 +31,7 @@ ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSI
 -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN \
 -e container_tool=$OPP_CONTAINER_TOOL \
 -e pu_postfix=$OPP_INDEX_IMAGE_POSTFIX \
-$OPP_ANSIBLE_EXTRA_ARGS
+$OPP_ANSIBLE_EXTRA_ARGS || { echo "Problem running upgrade ansilbe script"; exit 1; }
 
 for f in $OPP_FILES_TO_COPY;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$f $PWD/$(basename $f)'"
