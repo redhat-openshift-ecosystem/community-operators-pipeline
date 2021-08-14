@@ -35,13 +35,15 @@ pipeline:
     enabled: 1
   reviewers:
     enabled: 0
-
+  notifications:
+    slack: 0
 operatorhubio:
   enabled: 0
   registry: quay.io
   organization: operator-framework
   name: upstream-community-operators
   tag: latest
+
 
 #base:
 #  organisation: operator-framework
