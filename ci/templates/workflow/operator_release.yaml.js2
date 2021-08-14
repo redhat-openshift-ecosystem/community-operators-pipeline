@@ -165,8 +165,8 @@ jobs:
   bundles-{{ default_config.production.type }}:
     name: "Bundles / {{ default_config.production.type }}"
     needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }} ]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
       - name: Operator release (sync)
@@ -184,8 +184,8 @@ jobs:
   release-{{ default_config.production.type }}:
     name: "Index / {{ default_config.production.type }}"
     needs: [ pr-check, bundles-{{ default_config.production.type }} ]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
       - name: Operator release (sync)
@@ -268,8 +268,8 @@ jobs:
   bundles-{{ default_config.production.type }}:
     name: "Bundles / {{ default_config.production.type }}"
     needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }} ]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
       - name: Operator release (sync)
@@ -290,8 +290,8 @@ jobs:
   release-{{ default_config.production.type }}:
     name: "Index / {{ default_config.production.type }}"
     needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }} ]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     strategy:
       matrix:
