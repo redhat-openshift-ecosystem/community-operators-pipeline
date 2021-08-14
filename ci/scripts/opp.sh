@@ -88,10 +88,6 @@ OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
 
 export GODEBUG=${GODEBUG-x509ignoreCN=0}
 
-
-
-
-
 [[ $OPP_NOCOLOR -eq 1 ]] && ANSIBLE_NOCOLOR=1
 
 # Handle if cluster is k8s (pure kubernetes) or openshift
@@ -534,7 +530,12 @@ echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
 OPP_SKIP=0
 IIB_INSTALLED=0
 for t in $TESTS;do
+    
+    OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t/orange_/}
+    echo "------------------- ${!OPP_FORCE_OPERATORS_TMP}"
 
+    [ -n "${!OPP_FORCE_OPERATORS_TMP} "] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
+    echo "------------------- $OPP_FORCE_OPERATORS"
     ExecParameters $t
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
 
@@ -569,6 +570,7 @@ for t in $TESTS;do
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo $OPP_UNCOMPLETE_OPERATORS_CURRENT | xargs)
             echo "[$t] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
             [[ $t == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${t/orange_/}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
             [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }
@@ -584,6 +586,7 @@ done
 
 echo "[0] OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
 [ -n "$OPP_UNCOMPLETE_OPERATORS" ] && OPP_UNCOMPLETE_OPERATORS=$(echo $OPP_UNCOMPLETE_OPERATORS | tr ' ' '\n' | sort | uniq | tr '\n' ' '| xargs)
+
 echo "[1] OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
 echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
 
