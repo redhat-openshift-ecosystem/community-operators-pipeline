@@ -480,7 +480,7 @@ jobs:
 {% endraw %}
 {% endif %}
 {% endif %}
-{% if default_config.notifications.slack == 1 %}
+{% if default_config.pipeline.notifications.slack == 1 %}
 {% raw %}
   slack-notification:
     name: "Slack notification"
