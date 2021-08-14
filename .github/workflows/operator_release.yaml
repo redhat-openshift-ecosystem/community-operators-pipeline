@@ -279,7 +279,7 @@ jobs:
 
   slack-notification:
     name: "Slack notification"
-    needs: [ pr-check, remove-ocp, operators-ocp, bundles-ocp, release-ocp, release-sha-ocp, ohio-image-ocp, push-to-quay-ocp, ohio-page-ocp ]
+    needs: [ pr-check, remove-ocp, operators-ocp, bundles-ocp, release-ocp, release-sha-ocp, push-to-quay-ocp ]
 
     if: failure()
     runs-on: ubuntu-latest
