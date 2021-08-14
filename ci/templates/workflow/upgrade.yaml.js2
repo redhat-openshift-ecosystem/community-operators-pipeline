@@ -23,7 +23,7 @@ env:
 {% raw %}
 
 jobs:
-  build:
+  upgrade:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,6 +33,7 @@ jobs:
         # fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: Create local changes
       run: |
+        echo "$OPP_INPUT_REPO $OPP_INPUT_BRANCH"
         bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL)
     - name: Commit files
       run: |
