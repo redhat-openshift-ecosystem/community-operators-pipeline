@@ -352,7 +352,7 @@ jobs:
     name: "Push to quay / {{ default_config.production.type }}"
 {% raw %}
     needs: pr-check
-    if: needs.pr-check.outputs.opp_release_ready == '1'
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
     runs-on: ubuntu-latest
     env:
       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
