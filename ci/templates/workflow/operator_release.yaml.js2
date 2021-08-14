@@ -120,13 +120,13 @@ jobs:
 {% raw %}
 
   remove-k8s:
-    name: "Release (remove) / k8s"
+    name: "Remove / k8s"
     needs: pr-check
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Remove operator from index
         if: needs.pr-check.outputs.opp_op_delete == '1'
         env:
@@ -135,31 +135,63 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
-      - name: Operator version overwrite
+      - name: Operator release (operator version overwrite)
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-          OPP_SKIP_INDEX: 1
+          OPP_IIB_INSTALL: 0
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  bundles-k8s:
-    name: "Release (bundles only) / k8s"
-    needs: [ pr-check, remove-k8s ]
+
+  operators-k8s:
+{% endraw %}
+    name: "Index check / {{ default_config.production.type }}"
+{% raw %}
+    needs: [pr-check, remove-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
+      - name: List of missing operators
+        id: operators
+        # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
+        env:
+          OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_INDEX_CHECK_ONLY: 1
+        run: |
+          echo "OPP_LABELS=$OPP_LABELS"
+          echo "'orange' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+      - name: Operators for sync
+        run: |
+          echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
+    outputs:
+      opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
+
+
+  bundles-k8s:
+{% endraw %}
+    name: "Bundles / {{ default_config.production.type }}"
+{% raw %}
+    needs: [ pr-check, remove-k8s, operators-k8s ]
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Operator release (sync)
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_SKIP_INDEX: 1
+          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
@@ -169,12 +201,13 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Operator release (sync)
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
@@ -184,7 +217,9 @@ jobs:
 {% else %}
 {% raw %}
   remove-openshift:
-    name: "Release (remove) / o7t"
+{% endraw %}
+    name: "Remove / {{ default_config.production.type }}"
+{% raw %}
     needs: pr-check
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -195,8 +230,8 @@ jobs:
 {% raw %}
       fail-fast: false
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Remove operator from index
         if: needs.pr-check.outputs.opp_op_delete == '1'
         env:
@@ -222,13 +257,15 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
   operators-openshift:
-    name: "Release (missing operator check) / o7t"
+{% endraw %}
+    name: "Index check / {{ default_config.production.type }}"
+{% raw %}
     needs: [pr-check, remove-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: List of missing operators
         id: operators
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
@@ -257,13 +294,15 @@ jobs:
 {% endfor %}
 {% raw %}
   bundles-openshift:
-    name: "Release (bundles only) / o7t"
+{% endraw %}
+    name: "Bundles / {{ default_config.production.type }}"
+{% raw %}
     needs: [ pr-check, operators-openshift, remove-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Operator release (sync)
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
@@ -282,7 +321,9 @@ jobs:
 
 
   release-openshift:
-    name: "Release / o7t"
+{% endraw %}
+    name: "Index / {{ default_config.production.type }}"
+{% raw %}
     needs: [ pr-check, bundles-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -293,8 +334,8 @@ jobs:
 {% raw %}
       fail-fast: false
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Operator release (sync)
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
@@ -344,7 +385,9 @@ jobs:
 {% endif %}
 {% raw %}
   push-to-quay-o7t:
-    name: "Release / o7t push to quay"
+{% endraw %}
+    name: "Push to quay / {{ default_config.production.type }}"
+{% raw %}
     needs: pr-check
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -352,15 +395,17 @@ jobs:
       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
       OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Push to quay
         run: |
           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
   release-sha-openshift:
-      name: "Release sha / o7t"
+{% endraw %}
+    name: "Index production / {{ default_config.production.type }}"
+{% raw %}
       needs: [ pr-check, release-openshift ]
       if: needs.pr-check.outputs.opp_release_ready == '1'
       runs-on: ubuntu-latest
@@ -395,8 +440,8 @@ jobs:
       OHIO_REGISTRY_IMAGE: "{{ default_config.operatorhubio.registry }}/{{ default_config.operatorhubio.organization }}/{{ default_config.operatorhubio.name }}:{{ default_config.operatorhubio.tag }}"
 {% raw %}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Ohio image
         run: |
           echo "ohio_image operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
@@ -406,7 +451,9 @@ jobs:
 {% else %}
 {% raw %}
   ohio-image-o7t:
-    name: "Release / o7t ohio image and sign 'latest'"
+{% endraw %}
+    name: "OHIO image and sign 'latest' / {{ default_config.production.type }}"
+{% raw %}
     needs: [ pr-check, release-sha-openshift ]
     # if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -458,8 +505,8 @@ jobs:
       CI_OHIO_BRANCH: "latest"
       REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Ohio image
         run: |
           echo "$OPP_SCRIPT_TRIGGER_OHIO_URL ${CI_OHIO_BRANCH}"
@@ -475,8 +522,8 @@ jobs:
     env:
       CI_OHIO_BRANCH: "main"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
       - name: Ohio image
         run: |
           echo "$OPP_SCRIPT_TRIGGER_OHIO_URL ${CI_OHIO_BRANCH}"
