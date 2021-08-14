@@ -479,10 +479,10 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL) ${CI_OHIO_BRANCH}
 {% endraw %}
 {% endif %}
+{% endif %}
 {% raw %}
   slack-notification:
     name: "Slack notification"
-
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
     needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
