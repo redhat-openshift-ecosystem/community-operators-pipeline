@@ -146,7 +146,7 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: List of missing operators
+      - name: Index check
         id: operators
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
@@ -169,7 +169,7 @@ jobs:
 {% raw %}
     runs-on: ubuntu-latest
     steps:
-      - name: Operator release (sync)
+      - name: Build bundles
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_SKIP_INDEX: 1
@@ -190,7 +190,7 @@ jobs:
 {% raw %}
     runs-on: ubuntu-latest
     steps:
-      - name: Operator release (sync)
+      - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
 {% endraw %}
@@ -259,7 +259,7 @@ jobs:
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
           
-      - name: Operators for sync
+      - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
     outputs:
@@ -276,7 +276,7 @@ jobs:
 {% raw %}
     runs-on: ubuntu-latest
     steps:
-      - name: Operator release (sync)
+      - name: Build bundles
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
@@ -306,7 +306,7 @@ jobs:
 {% raw %}
       fail-fast: false
     steps:
-      - name: Operator release (sync)
+      - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
