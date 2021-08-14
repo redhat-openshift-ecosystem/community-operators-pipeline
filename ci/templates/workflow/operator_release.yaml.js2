@@ -174,7 +174,7 @@ jobs:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_SKIP_INDEX: 1
 {% endraw %}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+          OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -284,7 +284,7 @@ jobs:
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
 {% endraw %}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+          OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -313,9 +313,7 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
 {% endraw %}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
-{% raw %}
-{% endraw %}
+          OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% for item_ver in default_config.production.index.tags %}
           OPP_FORCE_OPERATORS_{{ item_ver | replace('.','_') }}: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators_{{ item_ver | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
