@@ -480,6 +480,7 @@ jobs:
 {% endraw %}
 {% endif %}
 {% endif %}
+{% if default_config.notifications.slack == 1 %}
 {% raw %}
   slack-notification:
     name: "Slack notification"
@@ -514,3 +515,4 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
         continue-on-error: true
 {% endraw %}
+{% endif %}
