@@ -163,7 +163,7 @@ jobs:
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
           
-      - name: Operators for sync
+      - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
     outputs:
@@ -179,7 +179,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Operator release (sync)
+      - name: Build bundles
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
@@ -206,7 +206,7 @@ jobs:
 
       fail-fast: false
     steps:
-      - name: Operator release (sync)
+      - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
@@ -247,7 +247,7 @@ jobs:
     name: "Push to quay / ocp"
 
     needs: pr-check
-    if: needs.pr-check.outputs.opp_release_ready == '1'
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
     runs-on: ubuntu-latest
     env:
       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
