@@ -400,23 +400,23 @@ jobs:
 {% endraw %}
     name: "Index production / {{ default_config.production.type }}"
 {% raw %}
-      needs: [ pr-check, release-openshift ]
-      if: needs.pr-check.outputs.opp_release_ready == '1'
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
+    needs: [ pr-check, release-openshift ]
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
 {% endraw %}
-          index-tag: {{ default_config.production.index.tags }}
+        index-tag: {{ default_config.production.index.tags }}
 {% raw %}
-        fail-fast: false
-      steps:
-        - name: Release sha
-          env:
-            IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-            IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
-          run: |
-            echo "openshift: ${{ matrix.index-tag }}"
-            bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
+      fail-fast: false
+    steps:
+      - name: Release sha
+        env:
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
+          IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
+        run: |
+          echo "openshift: ${{ matrix.index-tag }}"
+          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
 {% endraw %}
 {% endif %}
 {% if default_config.operatorhubio.enabled == 1 %}
