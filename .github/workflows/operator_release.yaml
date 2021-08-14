@@ -13,7 +13,7 @@ on:
         required: true
         default: '0'
       delete:
-        description: 'Delete operator (aqua or aqua/6.0.2) for debuging only'
+        description: 'Delete operator (aqua or aqua/6.2.0) for debuging only'
         required: false
         default: ''
 
@@ -169,6 +169,7 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
           OPERATOR_INDEX_TAG: "orange_v4.6 orange_v4.7 orange_v4.8"
+
           OPP_INDEX_CHECK_ONLY: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -180,6 +181,9 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
+      opp_uncomplete_operators_v4.6: ${{ steps.operators.outputs.opp_uncomplete_operators_v4.6 }}
+      opp_uncomplete_operators_v4.7: ${{ steps.operators.outputs.opp_uncomplete_operators_v4.7 }}
+      opp_uncomplete_operators_v4.8: ${{ steps.operators.outputs.opp_uncomplete_operators_v4.8 }}
 
   bundles-openshift:
     name: "Release (bundles only) / o7t"
@@ -198,9 +202,10 @@ jobs:
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
+          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          echo "Operators : ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}"
+          echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
@@ -226,6 +231,11 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           # OPP_MIRROR_IMAGE_POSTFIX: "s"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
+          OPP_FORCE_OPERATORS_v4.6: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.6 }}
+          OPP_FORCE_OPERATORS_v4.7: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.7 }}
+          OPP_FORCE_OPERATORS_v4.8: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators_v4.8 }}
+
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
