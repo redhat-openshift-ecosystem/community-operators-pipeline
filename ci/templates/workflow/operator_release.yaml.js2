@@ -84,7 +84,7 @@ jobs:
           python-version: '3.x'
       - name: Install dependencies
         run: python -m pip install --upgrade pip yq
-      - name: Operator test
+      - name: Operator traffic light
         id: op-traffic-light
         env:
           OPP_ADDED_MODIFIED_FILES: "${{ steps.files.outputs.added_modified }}"
@@ -112,10 +112,10 @@ jobs:
       opp_pr_title: "${{ steps.op-traffic-light.outputs.opp_pr_title }}"
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
-{% raw %}
 
-  remove-k8s:
-    name: "Remove / k8s"
+  remove-{{ default_config.production.type }}:
+    name: "Remove / {{ default_config.production.type }}"
+{% raw %}
     needs: pr-check
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -138,11 +138,11 @@ jobs:
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  operators-k8s:
 {% endraw %}
+  operators-{{ default_config.production.type }}:
     name: "Index check / {{ default_config.production.type }}"
+    needs: [pr-check, remove-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [pr-check, remove-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
@@ -161,11 +161,11 @@ jobs:
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 
-  bundles-k8s:
 {% endraw %}
+  bundles-{{ default_config.production.type }}:
     name: "Bundles / {{ default_config.production.type }}"
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, remove-k8s, operators-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
@@ -180,11 +180,11 @@ jobs:
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-k8s:
 {% endraw %}
+  release-{{ default_config.production.type }}:
     name: "Index / {{ default_config.production.type }}"
+    needs: [ pr-check, bundles-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, bundles-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
@@ -198,9 +198,7 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 {% endraw %}
 {% else %}
-{% raw %}
-  remove-openshift:
-{% endraw %}
+  remove-{{ default_config.production.type }}:
     name: "Remove / {{ default_config.production.type }}"
 {% raw %}
     needs: pr-check
@@ -234,11 +232,11 @@ jobs:
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  operators-openshift:
 {% endraw %}
+  operators-{{ default_config.production.type }}:
     name: "Index check / {{ default_config.production.type }}"
+    needs: [pr-check, remove-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [pr-check, remove-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
@@ -266,13 +264,11 @@ jobs:
 {% for item in default_config.production.index.tags %}
       opp_uncomplete_operators_{{ item | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
-{% raw %}
 
-  bundles-openshift:
-{% endraw %}
+  bundles-{{ default_config.production.type }}:
     name: "Bundles / {{ default_config.production.type }}"
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, remove-openshift, operators-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
@@ -290,11 +286,11 @@ jobs:
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-openshift:
 {% endraw %}
+  release-{{ default_config.production.type }}:
     name: "Index / {{ default_config.production.type }}"
+    needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, operators-openshift, bundles-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     strategy:
@@ -346,9 +342,7 @@ jobs:
           data: "{\"index_image\": \"${{ steps.openshift-vars.outputs.operator_index }}\", \"index_image_resolved\": \"${{ steps.openshift-vars.outputs.operator_index_resolved }}\"}"
 {% endraw %}
 {% endif %}
-{% raw %}
-  push-to-quay-o7t:
-{% endraw %}
+  push-to-quay-{{ default_config.production.type }}:
     name: "Push to quay / {{ default_config.production.type }}"
 {% raw %}
     needs: pr-check
@@ -363,11 +357,11 @@ jobs:
           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-sha-openshift:
 {% endraw %}
+  release-sha-{{ default_config.production.type }}:
     name: "Index production / {{ default_config.production.type }}"
+    needs: [ pr-check, release-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, release-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     strategy:
@@ -389,10 +383,12 @@ jobs:
 {% if default_config.operatorhubio.enabled == 1 %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
+{% endraw %}
 
-  ohio-image-k8s:
-    name: "Release / k8s ohio image"
-    needs: [ pr-check, release-k8s ]
+  ohio-image-{{ default_config.production.type }}:
+    name: "OHIO image / {{ default_config.production.type }}"
+    needs: [ pr-check, release-{{ default_config.production.type }} ]
+{% raw %}
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
@@ -408,12 +404,10 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_URL) ohio_image operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 {% endraw %}
 {% else %}
-{% raw %}
-  ohio-image-o7t:
-{% endraw %}
+  ohio-image-{{ default_config.production.type }}:
     name: "OHIO image and sign 'latest' / {{ default_config.production.type }}"
+    needs: [ pr-check, release-sha-{{ default_config.production.type }} ]
 {% raw %}
-    needs: [ pr-check, release-sha-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
@@ -454,10 +448,10 @@ jobs:
 {% endraw %}
 {% endif %}
 {% if default_config.production.type == 'k8s' %}
-{% raw %}
-  ohio-page-k8s:
+  ohio-page-{{ default_config.production.type }}:
     name: "Release / operatorhub.io"
-    needs: ohio-image-k8s
+    needs: ohio-image-{{ default_config.production.type }}
+{% raw %}
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
@@ -470,10 +464,10 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_TRIGGER_OHIO_URL) ${CI_OHIO_BRANCH}
 {% endraw %}
 {% else %}
-{% raw %}
-  ohio-page-o7t:
+  ohio-page-{{ default_config.production.type }}:
     name: "Release / dev.operatorhub.io"
-    needs: ohio-image-o7t
+    needs: ohio-image-{{ default_config.production.type }}
+{% raw %}
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
@@ -491,13 +485,9 @@ jobs:
 
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
-{% raw %}
-    needs: [ pr-check, release-k8s, ohio-image-k8s, ohio-page-k8s ]
-{% endraw %}
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
 {% else %}
-{% raw %}
-    needs: [ pr-check, release-openshift, release-sha-openshift, ohio-image-o7t, push-to-quay-o7t, ohio-page-o7t ]
-{% endraw %}
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, release-sha-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, push-to-quay-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
 {% endif %}
 {% raw %}
     if: failure()
