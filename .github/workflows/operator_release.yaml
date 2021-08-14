@@ -83,7 +83,7 @@ jobs:
           python-version: '3.x'
       - name: Install dependencies
         run: python -m pip install --upgrade pip yq
-      - name: Operator test
+      - name: Operator traffic light
         id: op-traffic-light
         env:
           OPP_ADDED_MODIFIED_FILES: "${{ steps.files.outputs.added_modified }}"
@@ -109,8 +109,7 @@ jobs:
       opp_op_delete: "${{ steps.op-traffic-light.outputs.opp_op_delete }}"
       opp_release_delete_appreg: "${{ steps.op-traffic-light.outputs.opp_release_delete_appreg }}"
       opp_pr_title: "${{ steps.op-traffic-light.outputs.opp_pr_title }}"
-
-  remove-openshift:
+  remove-ocp:
     name: "Remove / ocp"
 
     needs: pr-check
@@ -143,10 +142,10 @@ jobs:
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  operators-openshift:
+  operators-ocp:
     name: "Index check / ocp"
+    needs: [pr-check, remove-ocp ]
 
-    needs: [pr-check, remove-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
@@ -173,11 +172,10 @@ jobs:
       opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
       opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
 
-
-  bundles-openshift:
+  bundles-ocp:
     name: "Bundles / ocp"
+    needs: [ pr-check, remove-ocp, operators-ocp ]
 
-    needs: [ pr-check, remove-openshift, operators-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     steps:
@@ -195,10 +193,10 @@ jobs:
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-openshift:
+  release-ocp:
     name: "Index / ocp"
+    needs: [ pr-check, operators-ocp, bundles-ocp ]
 
-    needs: [ pr-check, operators-openshift, bundles-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     strategy:
@@ -244,8 +242,7 @@ jobs:
           webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
           webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
           data: "{\"index_image\": \"${{ steps.openshift-vars.outputs.operator_index }}\", \"index_image_resolved\": \"${{ steps.openshift-vars.outputs.operator_index_resolved }}\"}"
-
-  push-to-quay-o7t:
+  push-to-quay-ocp:
     name: "Push to quay / ocp"
 
     needs: pr-check
@@ -260,10 +257,10 @@ jobs:
           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-  release-sha-openshift:
+  release-sha-ocp:
     name: "Index production / ocp"
+    needs: [ pr-check, release-ocp ]
 
-    needs: [ pr-check, release-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     strategy:
