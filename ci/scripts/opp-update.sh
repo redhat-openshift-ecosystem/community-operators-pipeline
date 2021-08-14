@@ -19,12 +19,19 @@ OPP_INDEX_IMAGE_POSTFIX=${OPP_INDEX_IMAGE_POSTFIX-"s"}
 [ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e empty_index=quay.io/operator_testing/index_empty"
 
 OPP_TMP_DIR="/tmp/opp-update"
+
+if [ -n "$1" ];then
+    [ -f ci/pipeline-config-${CLUSTER_TYPE}.yaml ] || mv ci/pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
+    ln -sfn ci/pipeline-config-${CLUSTER_TYPE}.yaml ci/pipeline-config.yaml
+    CLUSTER_TYPE="-$CLUSTER_TYPE"
+fi
+
 [ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
 mkdir -p $OPP_TMP_DIR
 git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
 
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
--e pipeline_config_name="pipeline-config.yaml" \
+-e pipeline_config_name="pipeline-config${CLUSTER_TYPE}.yaml" \
 -e workflow_config_path="$PWD/ci" \
 -e workflow_templates_path="$OPP_TMP_DIR/opp-input/ci/templates/workflow" \
 -e workflow_output_path="$PWD/.github/workflows" \
