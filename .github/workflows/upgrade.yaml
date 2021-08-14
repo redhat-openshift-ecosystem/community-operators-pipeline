@@ -45,6 +45,7 @@ jobs:
           [ -f ci/pipeline-config-${CLUSTER_TYPE}.yaml ] || mv ci/pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
           ln -sfn ci/pipeline-config-${CLUSTER_TYPE}.yaml ci/pipeline-config.yaml
         fi
+        ls -al ci/
         bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL)
     - name: Commit files
       run: |
