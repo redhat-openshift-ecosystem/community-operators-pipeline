@@ -53,13 +53,9 @@ env:
   OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH: ${{ github.event.inputs.delete }}
   REGISTRY_RELEASE_API_TOKEN: ${{ secrets.REGISTRY_RELEASE_API_TOKEN }}
   REGISTRY_MIRROR_PW: ${{ secrets.REGISTRY_MIRROR_PW }}
-  
   GODEBUG: x509ignoreCN=0
   CI_OHIO_TRIGGER_TOKEN: ${{ secrets.CI_OHIO_TRIGGER_TOKEN }}
   OHIO_REGISTRY_TOKEN: ${{ secrets.OHIO_REGISTRY_TOKEN }}
-
-  #QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP: ${{ secrets.QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP }}
-  #QUAY_API_TOKEN_OPERATORHUBIO: ${{ secrets.QUAY_API_TOKEN_OPERATORHUBIO }}
   QUAY_APPREG_TOKEN: ${{ secrets.QUAY_APPREG_TOKEN }}
   QUAY_COURIER_TOKEN: ${{ secrets.QUAY_COURIER_TOKEN }}
   REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
@@ -68,7 +64,6 @@ jobs:
   pr-check:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
-
     steps:
       - name: Block until there is no running workflow
         uses: softprops/turnstyle@v1
@@ -145,7 +140,6 @@ jobs:
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
 
-
   operators-k8s:
 {% endraw %}
     name: "Index check / {{ default_config.production.type }}"
@@ -172,7 +166,6 @@ jobs:
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 
-
   bundles-k8s:
 {% endraw %}
     name: "Bundles / {{ default_config.production.type }}"
@@ -196,7 +189,9 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
 
   release-k8s:
-    name: "Release / k8s"
+{% endraw %}
+    name: "Index / {{ default_config.production.type }}"
+{% raw %}
     needs: [ pr-check, bundles-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
@@ -212,7 +207,6 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-
 {% endraw %}
 {% else %}
 {% raw %}
@@ -293,11 +287,12 @@ jobs:
       opp_uncomplete_operators_{{ item | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
+
   bundles-openshift:
 {% endraw %}
     name: "Bundles / {{ default_config.production.type }}"
 {% raw %}
-    needs: [ pr-check, operators-openshift, remove-openshift ]
+    needs: [ pr-check, remove-openshift, operators-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
@@ -318,7 +313,6 @@ jobs:
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-
 
   release-openshift:
 {% endraw %}
