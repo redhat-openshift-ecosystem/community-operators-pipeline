@@ -18,7 +18,8 @@ on:
       cluster:
         description: 'Cluster type (k8s, ocp)'
         required: required
-        default: '{{ default_config.production.type }}'
+        default: 'k8s'
+
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
