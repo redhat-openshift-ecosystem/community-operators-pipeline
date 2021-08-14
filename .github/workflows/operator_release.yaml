@@ -52,13 +52,9 @@ env:
   OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH: ${{ github.event.inputs.delete }}
   REGISTRY_RELEASE_API_TOKEN: ${{ secrets.REGISTRY_RELEASE_API_TOKEN }}
   REGISTRY_MIRROR_PW: ${{ secrets.REGISTRY_MIRROR_PW }}
-  
   GODEBUG: x509ignoreCN=0
   CI_OHIO_TRIGGER_TOKEN: ${{ secrets.CI_OHIO_TRIGGER_TOKEN }}
   OHIO_REGISTRY_TOKEN: ${{ secrets.OHIO_REGISTRY_TOKEN }}
-
-  #QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP: ${{ secrets.QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP }}
-  #QUAY_API_TOKEN_OPERATORHUBIO: ${{ secrets.QUAY_API_TOKEN_OPERATORHUBIO }}
   QUAY_APPREG_TOKEN: ${{ secrets.QUAY_APPREG_TOKEN }}
   QUAY_COURIER_TOKEN: ${{ secrets.QUAY_COURIER_TOKEN }}
   REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
@@ -67,7 +63,6 @@ jobs:
   pr-check:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
-
     steps:
       - name: Block until there is no running workflow
         uses: softprops/turnstyle@v1
@@ -187,10 +182,11 @@ jobs:
       opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
       opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
 
+
   bundles-openshift:
     name: "Bundles / ocp"
 
-    needs: [ pr-check, operators-openshift, remove-openshift ]
+    needs: [ pr-check, remove-openshift, operators-openshift ]
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
@@ -211,7 +207,6 @@ jobs:
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-
 
   release-openshift:
     name: "Index / ocp"
@@ -290,19 +285,19 @@ jobs:
   release-sha-openshift:
     name: "Index production / ocp"
 
-      needs: [ pr-check, release-openshift ]
-      if: needs.pr-check.outputs.opp_release_ready == '1'
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          index-tag: ['v4.6', 'v4.7', 'v4.8']
+    needs: [ pr-check, release-openshift ]
+    if: needs.pr-check.outputs.opp_release_ready == '1'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index-tag: ['v4.6', 'v4.7', 'v4.8']
 
-        fail-fast: false
-      steps:
-        - name: Release sha
-          env:
-            IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-            IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
-          run: |
-            echo "openshift: ${{ matrix.index-tag }}"
-            bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
+      fail-fast: false
+    steps:
+      - name: Release sha
+        env:
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
+          IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
+        run: |
+          echo "openshift: ${{ matrix.index-tag }}"
+          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
