@@ -173,7 +173,9 @@ jobs:
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_SKIP_INDEX: 1
-          OPP_FORCE_OPERATORS: "${{ needs.operators-k8s.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+{% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
@@ -191,7 +193,9 @@ jobs:
       - name: Operator release (sync)
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-          OPP_FORCE_OPERATORS: "${{ needs.operators-k8s.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+{% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
@@ -279,7 +283,9 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
-          OPP_FORCE_OPERATORS: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+{% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
@@ -306,10 +312,12 @@ jobs:
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+          OPP_FORCE_OPERATORS: "${{ needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators }}"
+{% raw %}
 {% endraw %}
 {% for item_ver in default_config.production.index.tags %}
-          OPP_FORCE_OPERATORS_{{ item_ver | replace('.','_') }}: "${{ '{{' }} needs.operators-openshift.outputs.opp_uncomplete_operators_{{ item_ver | replace('.','_') }} {{ '}}' }}"
+          OPP_FORCE_OPERATORS_{{ item_ver | replace('.','_') }}: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators_{{ item_ver | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
         run: |
