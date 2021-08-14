@@ -535,7 +535,7 @@ for t in $TESTS;do
     OPP_FORCE_OPERATORS_TMP=${OPP_FORCE_OPERATORS_TMP//./_}
     echo "------------------- ${!OPP_FORCE_OPERATORS_TMP}"
 
-    [ -n "${!OPP_FORCE_OPERATORS_TMP} "] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
+    [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
     echo "------------------- $OPP_FORCE_OPERATORS"
     ExecParameters $t
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
@@ -562,6 +562,7 @@ for t in $TESTS;do
         echo "Generating config file"
         GenerateOperatorConfigFile
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
+        OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
     else
         set -e
         if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
