@@ -181,7 +181,7 @@ jobs:
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_SKIP_INDEX: 1
-          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
+          OPP_FORCE_OPERATORS: ${{ needs.operators-k8s.outputs.opp_uncomplete_operators }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
@@ -202,7 +202,7 @@ jobs:
         # if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
-          OPP_FORCE_OPERATORS: ${{ needs.operators-openshift.outputs.opp_uncomplete_operators }}
+          OPP_FORCE_OPERATORS: ${{ needs.operators-k8s.outputs.opp_uncomplete_operators }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
@@ -318,8 +318,8 @@ jobs:
 {% endraw %}
     name: "Index / {{ default_config.production.type }}"
 {% raw %}
-    needs: [ pr-check, bundles-openshift ]
-    if: needs.pr-check.outputs.opp_release_ready == '1'
+    needs: [ pr-check, operators-openshift, bundles-openshift ]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-openshift.outputs.opp_uncomplete_operators != ''
     runs-on: ubuntu-latest
     strategy:
       matrix:
