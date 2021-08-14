@@ -21,8 +21,10 @@ OPP_INDEX_IMAGE_POSTFIX=${OPP_INDEX_IMAGE_POSTFIX-"s"}
 OPP_TMP_DIR="/tmp/opp-update"
 
 if [ -n "$1" ];then
-    [ -f ci/pipeline-config-${CLUSTER_TYPE}.yaml ] || mv ci/pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
-    ln -sfn ci/pipeline-config-${CLUSTER_TYPE}.yaml ci/pipeline-config.yaml
+    cd ci
+    [ -f pipeline-config-${CLUSTER_TYPE}.yaml ] || mv pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
+    ln -sfn pipeline-config-${CLUSTER_TYPE}.yaml pipeline-config.yaml
+    cd -
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
 
