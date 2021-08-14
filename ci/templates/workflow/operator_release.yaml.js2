@@ -505,4 +505,3 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
         continue-on-error: true
 {% endraw %}
-{% endif %}
