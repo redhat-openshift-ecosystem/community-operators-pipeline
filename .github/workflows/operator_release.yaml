@@ -166,6 +166,10 @@ jobs:
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
+          echo "Operators (v4.6) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
+          echo "Operators (v4.7) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
+          echo "Operators (v4.8) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
+
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
       opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
