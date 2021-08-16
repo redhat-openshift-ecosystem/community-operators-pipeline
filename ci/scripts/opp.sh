@@ -362,10 +362,7 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=$OPP_RELEASE_BUNDLE_REGISTRY -e bundle_image_namespace=$OPP_RELEASE_BUNDLE_ORGANIZATION -e bundle_index_image_namespace=$OPP_RELEASE_INDEX_ORGANIZATION -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
     
-
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
-    
-    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_FORCE_INDEX_UPDATE -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e -e index_force_update=true"
 
     # If community and doing orange_<version>
     # [[ $1 == orange* ]] && [[ $1 != orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
@@ -417,7 +414,7 @@ function ExecParameters() {
     
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 1 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
-    [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && && OPP_FORCE_INDEX_UPDATE=1 OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true"
+    [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && OPP_FORCE_INDEX_UPDATE=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true"
 
     [[ $OPP_FORCE_INDEX_UPDATE -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_force_update=true"
 
