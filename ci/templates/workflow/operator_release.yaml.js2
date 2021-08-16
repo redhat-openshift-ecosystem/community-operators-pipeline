@@ -193,6 +193,7 @@ jobs:
       - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_FORCE_INDEX_UPDATE: 1
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
@@ -310,6 +311,7 @@ jobs:
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
+          OPP_FORCE_INDEX_UPDATE: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
 {% endraw %}

@@ -41,6 +41,7 @@ OPP_RUN_MODE=${OPP_RUN_MODE-"privileged"}
 OPP_LABELS=${OPP_LABELS-""}
 OPP_PROD=${OPP_PROD-0}
 OPP_SKIP_INDEX=${OPP_SKIP_INDEX-0}
+OPP_FORCE_INDEX_UPDATE=${OPP_FORCE_INDEX_UPDATE-0}
 OPP_PRETEST_CUSTOM_SCRIPT=${OPP_PRETEST_CUSTOM_SCRIPT-""}
 OPP_DEBUG=${OPP_DEBUG-0}
 OPP_DRY_RUN=${OPP_DRY_RUN-0}
@@ -81,7 +82,7 @@ OPP_CI_YAML_ONLY=${OPP_CI_YAML_ONLY-0}
 OPP_UNCOMPLETE="/tmp/operators_uncomplete-localhost.yaml"
 OPP_UNCOMPLETE_OPERATORS=""
 OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=${OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH-""}
-OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS-""}
+# OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS-""}
 OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
 OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
@@ -363,6 +364,8 @@ function ExecParameters() {
     
 
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
+    
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_FORCE_INDEX_UPDATE -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e -e index_force_update=true"
 
     # If community and doing orange_<version>
     # [[ $1 == orange* ]] && [[ $1 != orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
@@ -412,9 +415,11 @@ function ExecParameters() {
 
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false"
     
-    [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_force_update=true"
+    [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 1 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
-    [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true -e index_force_update=true"
+    [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && && OPP_FORCE_INDEX_UPDATE=1 OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true"
+
+    [[ $OPP_FORCE_INDEX_UPDATE -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_force_update=true"
 
     # Handle OPP_VER_OVERWRITE
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 1 ]] && [ "$OPP_VERSION" != "sync" ] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_version=$OPP_VERSION -e bundle_force_rebuild=true -e fail_on_no_index_change=false"
@@ -571,7 +576,9 @@ for t in $TESTS;do
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo $OPP_UNCOMPLETE_OPERATORS_CURRENT | xargs)
             echo "[$t] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
-            [[ $t == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${t/orange_/}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            OPP_MY_VER=${t/orange_/}
+            OPP_MY_VER=${OPP_MY_VER//./_}
+            [[ $t == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${OPP_MY_VER}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
             [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }
         fi
     fi
