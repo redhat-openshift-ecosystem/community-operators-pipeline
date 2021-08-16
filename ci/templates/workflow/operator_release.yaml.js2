@@ -217,7 +217,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Remove operator from index
-        if: needs.pr-check.outputs.opp_op_delete == '1'
+        if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
@@ -226,7 +226,7 @@ jobs:
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
       - name: Operator release (operator version overwrite)
-        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
+        if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_IIB_INSTALL: 0
