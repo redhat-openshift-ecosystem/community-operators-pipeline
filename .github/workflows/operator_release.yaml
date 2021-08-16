@@ -217,7 +217,7 @@ jobs:
           OPP_FORCE_INDEX_UPDATE: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
-          OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
+          # OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
           OPP_FORCE_OPERATORS_v4_6: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6 }}"
           OPP_FORCE_OPERATORS_v4_7: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7 }}"
           OPP_FORCE_OPERATORS_v4_8: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8 }}"
