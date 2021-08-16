@@ -263,6 +263,11 @@ jobs:
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+{% for item in default_config.production.index.tags %}
+          echo "Operators ({{ item }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
+{% endfor %}
+{% raw %}
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
