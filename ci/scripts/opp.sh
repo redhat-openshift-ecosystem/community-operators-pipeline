@@ -578,7 +578,7 @@ for t in $TESTS;do
     $DRY_RUN_CMD $OPP_CONTAINER_TOOL rm -f $OPP_NAME > /dev/null 2>&1
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL run -d --rm $OPP_CONTAINER_OPT --name $OPP_NAME $OPP_CONAINER_RUN_DEFAULT_ARGS $OPP_CONTAINER_RUN_EXTRA_ARGS $OPP_IMAGE
     [[ $OPP_RESET -eq 1 ]] && run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $HOME/.kube $OPP_NAME:/root/
-    if [ "${!OPP_FORCE_OPERATORS-x}" != "x" ];then
+    if [[ "${!OPP_FORCE_OPERATORS-x}" != "x" ]];then
         if [ -n "$OPP_FORCE_OPERATORS" ];then
         echo "Generating config file"
         GenerateOperatorConfigFile
