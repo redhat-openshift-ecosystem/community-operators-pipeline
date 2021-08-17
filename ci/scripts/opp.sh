@@ -584,8 +584,9 @@ for t in $TESTS;do
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
         OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
     else
+         [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
         set -e
-        if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ] && [[ "${OPP_FORCE_OPERATORS-x}" == "x" ]];then
+        if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || { set +e && continue; }
