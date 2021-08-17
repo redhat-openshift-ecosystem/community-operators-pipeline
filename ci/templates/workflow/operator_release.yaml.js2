@@ -388,6 +388,7 @@ jobs:
         env:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
+          OPP_MULTIARCH_SUPPORTED_VERSION: "v4.5 v4.6 v4.7"
         run: |
           echo "openshift: ${{ matrix.index-tag }}"
           bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
