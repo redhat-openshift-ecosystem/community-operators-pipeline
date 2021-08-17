@@ -556,7 +556,7 @@ for t in $TESTS;do
 
     [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
     echo "Using Varialble : OPP_FORCE_OPERATORS_TMP=$OPP_FORCE_OPERATORS_TMP (${!OPP_FORCE_OPERATORS_TMP}) -> OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
-    [ -n "$OPP_FORCE_OPERATORS" ] && [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
+    [ ! -n "$OPP_FORCE_OPERATORS" ] && [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
 
     ExecParameters $t
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
@@ -576,7 +576,7 @@ for t in $TESTS;do
     fi
     echo -e "[$t] Running test ..."
     [[ $OPP_DEBUG -ge 3 ]] && echo "OPP_EXEC_EXTRA=$OPP_EXEC_EXTRA"
-    
+
     # Pull container
     echo -e " [ Pull testing container '$OPP_NAME' from '$OPP_IMAGE' ] "
     $DRY_RUN_CMD $OPP_CONTAINER_TOOL pull $OPP_IMAGE > /dev/null 2>&1 || { echo "Error: Problem pulling image '$OPP_IMAGE' !!!"; exit 1; }
