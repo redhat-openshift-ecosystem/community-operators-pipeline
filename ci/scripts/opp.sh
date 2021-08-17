@@ -557,7 +557,7 @@ for t in $TESTS;do
     [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
     echo "Using Varialble : OPP_FORCE_OPERATORS_TMP=$OPP_FORCE_OPERATORS_TMP -> OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
 
-    [ -z "$OPP_FORCE_OPERATORS" ] && [ -n "$OPP_FORCE_OPERATORS_TMP" ] && { echo "Notning to do (OPP_FORCE_OPERATORS is empty and $OPP_FORCE_OPERATORS_TMP exists) !!!"; continue; }
+    [ -z "$OPP_FORCE_OPERATORS" ] && [ -n "$OPP_FORCE_OPERATORS_TMP" ] && [ -z "${!OPP_FORCE_OPERATORS_TMP}" ] && { echo "Notning to do (OPP_FORCE_OPERATORS is empty and $OPP_FORCE_OPERATORS_TMP exists) !!!"; continue; }
 
     ExecParameters $t
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
