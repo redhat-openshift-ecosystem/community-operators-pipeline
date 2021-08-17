@@ -556,7 +556,7 @@ for t in $TESTS;do
 
     [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
     echo "Using Varialble : OPP_FORCE_OPERATORS_TMP=$OPP_FORCE_OPERATORS_TMP (${!OPP_FORCE_OPERATORS_TMP}) -> OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
-
+    [ -n "$OPP_FORCE_OPERATORS" ] && [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
     ExecParameters $t
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
 
@@ -584,7 +584,6 @@ for t in $TESTS;do
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
         OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
     else
-         [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
         set -e
         if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
