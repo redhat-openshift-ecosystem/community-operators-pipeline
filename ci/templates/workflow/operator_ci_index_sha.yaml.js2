@@ -22,6 +22,7 @@ env:
   OPP_MIRROR_LATEST_TAG: "{{ default_config.production.index.latest }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "{{ default_config.production.mirror.multiarch.base }}"
+  OPP_MULTIARCH_SUPPORTED_VERSIONS: "{% for item in default_config.production.mirror.multiarch.base_tags %}{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "{{ default_config.production.mirror.multiarch.postfix }}"
   OPP_MIRROR_INDEX_REGISTRY: "{{ default_config.production.mirror.registry }}"
   OPP_MIRROR_INDEX_ORGANIZATION: "{{ default_config.production.mirror.organization }}"
