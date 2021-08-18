@@ -38,7 +38,8 @@ env:
   OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_MIRROR_INDEX_NAME: "catalog_prod"
   # OPP_MIRROR_INDEX_ENABLED: "1"
-  OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry:v4.5"
+  OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry"
+  OPP_MULTIARCH_SUPPORTED_VERSIONS: "v4.5 v4.6 v4.7"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
   IIB_INPUT_REGISTRY_USER: "mavala"
   OPP_REGISTRY_MIRROR_USER: "framework_automation"
@@ -280,7 +281,6 @@ jobs:
         env:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
-          OPP_MULTIARCH_SUPPORTED_VERSION: "v4.5 v4.6 v4.7"
         run: |
           echo "openshift: ${{ matrix.index-tag }}"
           bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
