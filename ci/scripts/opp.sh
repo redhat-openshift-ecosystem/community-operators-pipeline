@@ -188,6 +188,24 @@ function run() {
         fi
 }
 
+function handleMultiarchTag() {
+    # Handle OPP_MULTIARCH_SUPPORTED_VERSIONS
+    if [ -n "$OPP_MULTIARCH_SUPPORTED_VERSIONS" ];then
+        if [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ];then
+            OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_PRODUCTION_INDEX_IMAGE_TAG
+            v_last=
+            for v in $OPP_MULTIARCH_SUPPORTED_VERSIONS;do
+                echo "OPP_MULTIARCH_SUPPORTED_VERSIONS=[$OPP_MULTIARCH_SUPPORTED_VERSIONS] $v $OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
+                v_last=$v
+                [ "$v" = "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && break
+            done
+            OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$v_last
+        fi
+        echo "OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
+    fi
+    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
+}
+
 
 [ "$OPP_RUN_MODE" = "privileged" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--privileged --net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
 [ "$OPP_RUN_MODE" = "user" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
@@ -380,25 +398,10 @@ function ExecParameters() {
         [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e supported_cluster_versions=$OPP_PRODUCTION_INDEX_IMAGE_TAG -e bundle_index_image_version=$OPP_PRODUCTION_INDEX_IMAGE_TAG"
     fi
 
-    # Handle OPP_MULTIARCH_SUPPORTED_VERSION
-    if [ -n "$OPP_MULTIARCH_SUPPORTED_VERSION" ];then
-        if [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ];then
-            OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_PRODUCTION_INDEX_IMAGE_TAG
-            v_last=
-            for v in $OPP_MULTIARCH_SUPPORTED_VERSION;do
-                echo "OPP_MULTIARCH_SUPPORTED_VERSION=[$OPP_MULTIARCH_SUPPORTED_VERSION] $v $OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-                v_last=$v
-                [ "$v" = "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && break
-            done
-            OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$v_last
-        fi
-        echo "OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-    fi
-    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSION=$OPP_MULTIARCH_SUPPORTED_VERSION)"; exit 1; }
-
 
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
+            handleMultiarchTag
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
@@ -411,6 +414,7 @@ function ExecParameters() {
 
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 1 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
+            handleMultiarchTag
             OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
             [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|$OPP_REGISTRY_MIRROR_USER|$REGISTRY_MIRROR_PW|$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
