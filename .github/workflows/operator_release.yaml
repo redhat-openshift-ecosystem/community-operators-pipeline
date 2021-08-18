@@ -179,7 +179,7 @@ jobs:
 
   release-k8s:
     name: "Index / k8s"
-    needs: [ pr-check, bundles-k8s ]
+    needs: [ pr-check, operators-k8s, bundles-k8s ]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-k8s.outputs.opp_uncomplete_operators != ''
 
     runs-on: ubuntu-latest
