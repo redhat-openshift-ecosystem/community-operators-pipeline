@@ -14,7 +14,11 @@ production:
   mirror:
     enabled: 0
     multiarch:
-      base: registry.redhat.io/openshift4/ose-operator-registry:v4.5
+      base: registry.redhat.io/openshift4/ose-operator-registry
+      base_tags:
+        - v4.5
+        - v4.6
+        - v4.7
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
