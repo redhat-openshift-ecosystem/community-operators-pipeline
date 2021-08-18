@@ -97,8 +97,7 @@ export GODEBUG=${GODEBUG-x509ignoreCN=0}
 
 
 [ -n "$OPP_MIRROR_INDEX_MULTIARCH_BASE" ] && OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d ':' -f 2) && OPP_MIRROR_INDEX_MULTIARCH_BASE=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d ':' -f 1)
-
-
+[ "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" = "$OPP_MIRROR_INDEX_MULTIARCH_BASE" ] && OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=
 
 function help() {
     echo ""
@@ -589,13 +588,14 @@ for t in $TESTS;do
     $DRY_RUN_CMD $OPP_CONTAINER_TOOL rm -f $OPP_NAME > /dev/null 2>&1
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL run -d --rm $OPP_CONTAINER_OPT --name $OPP_NAME $OPP_CONAINER_RUN_DEFAULT_ARGS $OPP_CONTAINER_RUN_EXTRA_ARGS $OPP_IMAGE
     [[ $OPP_RESET -eq 1 ]] && run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $HOME/.kube $OPP_NAME:/root/
+    set -e
     if [ -n "$OPP_FORCE_OPERATORS" ];then
         echo "Generating config file"
         GenerateOperatorConfigFile
         run $DRY_RUN_CMD $OPP_CONTAINER_TOOL cp $OPP_UNCOMPLETE $OPP_NAME:$OPP_UNCOMPLETE
         OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
     else
-        set -e
+        
         if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
@@ -612,7 +612,6 @@ for t in $TESTS;do
         fi
     fi
     [[ $OPP_IIB_INSTALL -eq 1 ]] && [[ $IIB_INSTALLED -eq 0 ]] && iib_install && IIB_INSTALLED=1
- 
     echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA $OPP_EXEC_USER"
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA $OPP_EXEC_USER $OPP_EXEC_USER_SECRETS"
     set +e
