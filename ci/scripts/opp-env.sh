@@ -27,6 +27,7 @@ OPP_CHANGES_STREAM_UPSTREAM=0
 OPP_CI_YAML_CHANGED=0
 OPP_CI_YAML_ONLY=0
 OPP_CI_YAML_MODIFIED=0
+OPP_CHANGES_PACKAGE_FILE=0
 OPP_ALLOW_SERIOUS_CHANGES=0
 OPP_IS_OPERATOR=0
 OPP_IS_NEW_OPERATOR=0
@@ -127,7 +128,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == community-operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
-    [[ $sf == *package.yaml ]] && continue
+    [[ $sf == *package.yaml ]] && OPP_CHANGES_PACKAGE_FILE=1 && continue
     [[ $sf == *ci.yaml ]] && { OPP_CI_YAML_CHANGED=1; continue; }
     # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' !!! Exiting ..."; OPP_RELEASE_READY=0; }
     FILES="$FILES $(echo $sf | cut -d '/' -f 1-3)"
@@ -211,7 +212,7 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
   # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
 
-  [[ $sf == *package.yaml ]] && continue
+  [[ $sf == *package.yaml ]] && OPP_CHANGES_PACKAGE_FILE=1 && continue
   [[ $sf == *ci.yaml ]] && OPP_CI_YAML_CHANGED=1 && continue
   [[ $sf == *mkdocs.yml ]] && continue
 
@@ -272,6 +273,26 @@ if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]]
   echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
   echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
   echo "Only ci.yaml was changed : ${OPP_ADDED_MODIFIED_FILES}"
+
+elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -eq 1 ]] && [ ! -n "$FILES" ];then
+  OPP_CHANGES_PACKAGE_FILE_ONLY=1
+  OPP_RELEASE_READY=1
+  OPP_OP_DELETE=1
+  OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
+  if [[ $OPP_CHANGES_PACKAGE_FILE_ONLY -eq 1 ]];then
+    if [[ $OPP_PROD -ge 1 ]];then
+      OPP_OPERATOR_VERSION="sync"
+    else
+      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+    fi
+    OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+  fi
+
+  # Act same way as it would be ci.yaml only file change
+  echo "::set-output name=opp_ci_yaml_only::${OPP_CHANGES_PACKAGE_FILE_ONLY}"
+  echo "::set-output name=opp_ci_yaml_changed::${OPP_CHANGES_PACKAGE_FILE}"
+  echo "Only package file was changed : ${OPP_ADDED_MODIFIED_FILES}"
 
 else
   echo "FILES: $FILES"
@@ -395,6 +416,7 @@ OPP_PR_TITLE="$OPP_OPERATORS_DIR"
 [[ $OPRT -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && [[ $OPP_IS_NEW_OPERATOR -eq 0 ]] && OPP_PR_TITLE="$OPP_PR_TITLE [R]"
 [[ $OPRT -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && [[ $OPP_IS_NEW_OPERATOR -eq 1 ]] && OPP_PR_TITLE="$OPP_PR_TITLE [N]"
 [[ $OPRT -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]] && OPP_PR_TITLE="$OPP_PR_TITLE [CI]"
+[[ $OPRT -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE_ONLY -eq 1 ]] && OPP_PR_TITLE="$OPP_PR_TITLE [PK]"
 OPP_PR_TITLE="$OPP_PR_TITLE $OPP_OPERATOR_NAME"
 [[ $OPP_CI_YAML_ONLY -eq 0 ]] && OPP_PR_TITLE="$OPP_PR_TITLE ($OPP_OPERATOR_VERSIONS)"
 
