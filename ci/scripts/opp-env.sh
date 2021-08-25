@@ -276,6 +276,7 @@ if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]]
 
 elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -eq 1 ]] && [ ! -n "$FILES" ];then
   OPP_CHANGES_PACKAGE_FILE_ONLY=1
+  OPP_RELEASE_READY=1
   OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
   if [[ $OPP_CHANGES_PACKAGE_FILE_ONLY -eq 1 ]];then
     if [[ $OPP_PROD -ge 1 ]];then
