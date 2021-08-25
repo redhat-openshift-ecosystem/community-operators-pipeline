@@ -288,8 +288,8 @@ elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -
   fi
 
   # Act same way as it would be ci.yaml only file change
-  echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
-  echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
+  echo "::set-output name=opp_ci_yaml_only::${OPP_CHANGES_PACKAGE_FILE_ONLY}"
+  echo "::set-output name=opp_ci_yaml_changed::${OPP_CHANGES_PACKAGE_FILE}"
   echo "Only package file was changed : ${OPP_ADDED_MODIFIED_FILES}"
 
 else
