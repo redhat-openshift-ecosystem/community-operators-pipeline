@@ -212,7 +212,7 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
   # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
 
-  [[ $sf == *package.yaml ]] && continue
+  [[ $sf == *package.yaml ]] && OPP_CHANGES_PACKAGE_FILE=1 && continue
   [[ $sf == *ci.yaml ]] && OPP_CI_YAML_CHANGED=1 && continue
   [[ $sf == *mkdocs.yml ]] && continue
 
