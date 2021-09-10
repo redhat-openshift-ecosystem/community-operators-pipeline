@@ -348,7 +348,7 @@ function ExecParameters() {
     [[ $1 == kiwi* ]] && [[ $OPP_DEPLOY_LONGER -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pod_start_retries=$OPP_POD_START_RETRIES_LONG_DEPLOYMENT_WAIT_RETRIES"
     [[ $1 == kiwi* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e enable_bundle_validate_community=true"
     [[ $1 == lemon* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
-    [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
+    [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags operator_info,deploy_bundles -e cluster_type=$OPP_PRODUCTION_TYPE"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
 
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/openshift-community-operators"
