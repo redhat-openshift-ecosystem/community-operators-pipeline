@@ -438,6 +438,7 @@ function ExecParameters() {
 
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false"
     
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 1 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && OPP_FORCE_INDEX_UPDATE=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true"
