@@ -74,7 +74,7 @@ spec:
 
     This Operator is based on a Helm chart for CockroachDB. It supports reconfiguration
     for some parameters, but notably does not handle scale down of the replica count
-    in a seamless manner. Scale up works great.
+    in a seamless manner. Scale up works great..
 
     '
   displayName: CockroachDB
