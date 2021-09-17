@@ -76,6 +76,8 @@ OPP_MIRROR_INDEX_MULTIARCH_POSTFIX=${OPP_MIRROR_INDEX_MULTIARCH_POSTFIX-""}
 OPP_MIRROR_LATEST_TAG=${OPP_MIRROR_LATEST_TAG-"v4.6"}
 OPP_MIRROR_INDEX_ENABLED=${OPP_MIRROR_INDEX_ENABLED-0}
 
+OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=${OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL-0}
+
 OPP_VER_OVERWRITE=${OPP_VER_OVERWRITE-0}
 OPP_RECREATE=${OPP_RECREATE-0}
 OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
@@ -351,6 +353,7 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags operator_info,deploy_bundles"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
 
+    [[ $OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e automatic_cluster_version_label=true" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e automatic_cluster_version_label=true"
 
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/openshift-community-operators"
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "upstream-community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/operatorhubio"
