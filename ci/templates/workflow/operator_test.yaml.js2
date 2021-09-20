@@ -119,6 +119,8 @@ jobs:
             $ cat <path-to-operator>/ci.yaml
             packagemanifestClusterVersionLabel: auto
             ```
+            More info [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#automatic-cluster-version-label-ocp-packagemanifest-only).
+
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
