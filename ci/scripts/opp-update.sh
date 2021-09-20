@@ -16,7 +16,7 @@ OPP_ANSIBLE_EXTRA_ARGS=""
 
 OPP_INDEX_IMAGE_POSTFIX=${OPP_INDEX_IMAGE_POSTFIX-"s"}
 
-[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e empty_index=quay.io/operator_testing/index_empty"
+[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e empty_index=quay.io/operator_testing/index_empty" && shift
 
 OPP_TMP_DIR="/tmp/opp-update"
 
