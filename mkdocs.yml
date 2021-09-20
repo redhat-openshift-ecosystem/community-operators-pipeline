@@ -19,6 +19,7 @@ nav:
       - 'Updating existing Operators' : operator-version-update.md
       - 'Updating published Operator version' : operator-overwrite.md
       - 'How do i deploy operator faster?' : self-merge-updates.md
+      - 'OKD/OpenShift Catalogs criteria and options' : packaging-required-criteria-ocp.md
     - 'Release process' : operator-release-process.md
     - 'Github Action' : action.md
     - 'Best practices' : best-practices.md
