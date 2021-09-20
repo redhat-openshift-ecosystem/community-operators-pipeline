@@ -22,8 +22,10 @@ OPP_TMP_DIR="/tmp/opp-update"
 
 if [ -n "$1" ];then
     cd ci
-    [ -f pipeline-config-${CLUSTER_TYPE}.yaml ] || mv pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
-    ln -sfn pipeline-config-${CLUSTER_TYPE}.yaml pipeline-config.yaml
+    if [ ! -f pipeline-config-${CLUSTER_TYPE}.yaml ]; then
+        mv pipeline-config.yaml ci/pipeline-config-${CLUSTER_TYPE}.yaml
+        ln -sfn pipeline-config-${CLUSTER_TYPE}.yaml pipeline-config.yaml
+    fi
     cd -
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
