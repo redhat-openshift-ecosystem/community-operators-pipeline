@@ -3,4 +3,4 @@
 updateGraph: replaces-mode
 reviewers:
   - guyyakir
-packagemanifestClusterVersionLabel: auto
+# packagemanifestClusterVersionLabel: auto
