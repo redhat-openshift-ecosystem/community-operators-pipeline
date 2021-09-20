@@ -340,6 +340,8 @@ OPP_CHECK_STEAM_OK=0
 
 [[ $OPP_CHECK_STEAM_OK -eq 0 ]] && { echo "Error : Unknwn value for 'OPP_STREAM=$OPP_STREAM' !!!"; exit 1; }
 
+[[ $OPP_PROD -eq 1 ]] && OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1
+
 function ExecParameters() {
     OPP_EXEC_USER=
     OPP_EXEC_USER_SECRETS=
