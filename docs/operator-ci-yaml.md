@@ -53,7 +53,7 @@ Starting OCP v4.9 (based on k8s 1.22) some old API were deprecated ([Deprecated 
 ```
 $ cat <path-to-operators>/<name>/<version/metadata>/annotations.yaml
 annotations:
-    com.redhat.openshift.versions=v4.6-v4.8
+    com.redhat.openshift.versions: "v4.6-v4.8"
 ```
 For packagemanifest format it is not possible and community-operators pipeline can automatically set such label to the bundle. User have to allow it by putting `packagemanifestClusterVersionLabel: auto` in `ci.yaml` file
 ```
