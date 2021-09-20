@@ -106,6 +106,8 @@ jobs:
         with:
           message: |
             Autolabel comment !!!
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
