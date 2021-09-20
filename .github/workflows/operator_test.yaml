@@ -98,7 +98,7 @@ jobs:
         if: always()
         run: |
           echo "::set-output name=opp_check_err_cluster_version_autolabel::0"
-          [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1"
+          [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1" || true
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1'
