@@ -91,13 +91,13 @@ jobs:
           OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
         run: |
           OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
-          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_remove_catalog_repo=false upstream/local.yml --tags operator_info -e operator_dir=$PWD/operators/${{ steps.op-traffic-light.outputs.opp_name }} -e cluster_type=$OPP_PRODUCTION_TYPE
+          ls -al operators/${{ steps.op-traffic-light.outputs.opp_name }}
+          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_remove_catalog_repo=false upstream/local.yml --tags operator_info -e operator_dir=operators/${{ steps.op-traffic-light.outputs.opp_name }} -e cluster_type=$OPP_PRODUCTION_TYPE
       - name: Operator info (result)
         id: op-info-result
         if: always()
         run: |
           echo "::set-output name=opp_check_err_cluster_version_autolabel::0"
-          ls -al /tmp/operator-test/op_auto_labels.yaml
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1"
       - name: Operator info (comment)
         id: op-info-comment
