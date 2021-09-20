@@ -88,11 +88,13 @@ jobs:
           OPP_OPRT_SHA: "${{ github.event.pull_request.head.sha }}"
           OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
           OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
+          OPP_AUTO_LABEL: "${{ steps.op-traffic-light.outputs.opp_auto_packagemanifest_cluster_version_label }}"
         run: |
           OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
+          [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
           ls -al operators/
           ls -al operators/operators/${{ steps.op-traffic-light.outputs.opp_name }}
-          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info -e operator_dir=$PWD/operators/operators/${{ steps.op-traffic-light.outputs.opp_name }} -e cluster_type=$OPP_PRODUCTION_TYPE
+          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info -e operator_dir=$PWD/operators/operators/${{ steps.op-traffic-light.outputs.opp_name }} -e cluster_type=$OPP_PRODUCTION_TYPE $ANSIBLE_ARGS
       - name: Operator info (result)
         id: op-info-result
         if: always()
@@ -105,7 +107,21 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            Autolabel comment !!!
+            ## Automatic Cluster Version Label (OCP) - packagemanifest only
+
+            Starting OCP v4.9 (based on k8s 1.22) some old API were deprecated ([Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22), [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md)). User can set `com.redhat.openshift.versions: <versions>` in its bundle annotations.yaml file to limit specific operator version to be visible on certain cluster. Following example will install operator bundle for versions `v4.6, v4.6, v4.8`
+            ```
+            $ cat <path-to-operators>/<name>/<version/metadata>/annotations.yaml
+            annotations:
+                com.redhat.openshift.versions=v4.6-v4.8
+            ```
+            For packagemanifest format it is not possible and community-operators pipeline can automatically set such label to the bundle. User have to allow it by putting `packagemanifestClusterVersionLabel: auto` in `ci.yaml` file
+            ```
+            $ cat <path-to-operator>/ci.yaml
+            packagemanifestClusterVersionLabel: auto
+            ```
+            More info [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#automatic-cluster-version-label-ocp-packagemanifest-only).
+
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
