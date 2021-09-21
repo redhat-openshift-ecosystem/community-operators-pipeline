@@ -111,6 +111,7 @@ jobs:
       opp_op_delete: "${{ steps.op-traffic-light.outputs.opp_op_delete }}"
       opp_release_delete_appreg: "${{ steps.op-traffic-light.outputs.opp_release_delete_appreg }}"
       opp_pr_title: "${{ steps.op-traffic-light.outputs.opp_pr_title }}"
+      opp_auto_packagemanifest_cluster_version_label: "${{ steps.op-traffic-light.outputs.opp_auto_packagemanifest_cluster_version_label }}"
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 
@@ -125,6 +126,7 @@ jobs:
         if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
@@ -133,6 +135,7 @@ jobs:
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -151,6 +154,7 @@ jobs:
         id: operators
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_INDEX_CHECK_ONLY: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -173,6 +177,7 @@ jobs:
       - name: Build bundles
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_SKIP_INDEX: 1
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
@@ -194,6 +199,7 @@ jobs:
       - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_FORCE_INDEX_UPDATE: 1
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
@@ -221,6 +227,7 @@ jobs:
         if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -230,6 +237,7 @@ jobs:
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
@@ -250,6 +258,7 @@ jobs:
         id: operators
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 {% endraw %}
@@ -286,6 +295,7 @@ jobs:
       - name: Build bundles
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: latest
@@ -316,6 +326,7 @@ jobs:
       - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           OPP_FORCE_INDEX_UPDATE: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
@@ -376,6 +387,7 @@ jobs:
         id: openshift-vars
         env:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
         run: |
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
           OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} | jq -r ".Digest")

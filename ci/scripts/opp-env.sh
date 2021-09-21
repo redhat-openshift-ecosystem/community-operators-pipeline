@@ -35,6 +35,7 @@ OPP_PR_TITLE=
 OPP_AUTHORIZED_CHANGES=0
 OPP_REVIEVERS=""
 OPP_CHANGES_DOCKERFILE=0
+OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=0
 
 # Error codes:
 #   [1] overwrite and recreate labels set at same time
@@ -65,6 +66,7 @@ echo "OPP_LABELS=$OPP_LABELS"
 
 echo "::set-output name=opp_error_code::$OPP_ERROR_CODE"
 echo "::set-output name=opp_recreate::${OPP_RECREATE}"
+echo "::set-output name=opp_auto_packagemanifest_cluster_version_label::$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
 
 
 for l in $(echo $OPP_LABELS);do
@@ -409,6 +411,14 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   fi
 fi
 
+if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then
+  echo "File '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' exitst"
+  PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq -r '.packagemanifestClusterVersionLabel')
+  echo "packagemanifestClusterVersionLabel : $PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
+  [ "$PACKAGEMANIFEST_CLUSTER_VERSION_LABEL" == "auto" ] && OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1
+fi
+
+
 [[ $OPP_VER_OVERWRITE -eq 0 ]] && [[ $OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE -eq 1 ]] && OPP_VER_OVERWRITE=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE
 
 OPP_PR_TITLE="$OPP_OPERATORS_DIR"
@@ -433,6 +443,8 @@ echo "OPP_CHANGES_DOC=$OPP_CHANGES_DOCS"
 echo "OPP_CHANGES_IN_OPERATORS_DIR=$OPP_CHANGES_IN_OPERATORS_DIR"
 echo "OPP_CHANGES_STREAM_UPSTREAM=$OPP_CHANGES_STREAM_UPSTREAM"
 echo "OPP_CHANGES_DOCKERFILE=$OPP_CHANGES_DOCKERFILE"
+
+echo "OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
 
 echo "opp_test_ready=${OPP_TEST_READY}"
 echo "opp_release_ready=${OPP_RELEASE_READY}"
@@ -484,6 +496,8 @@ echo "::set-output name=opp_modified_others::$OPP_MODIFIED_OTHERS"
 echo "::set-output name=opp_error_code::$OPP_ERROR_CODE"
 echo "::set-output name=opp_authorized_changes::${OPP_AUTHORIZED_CHANGES}"
 echo "::set-output name=opp_dockerfile_changed::$OPP_CHANGES_DOCKERFILE"
+echo "::set-output name=opp_auto_packagemanifest_cluster_version_label::$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
+
 
 echo "All done"
 exit 0
