@@ -49,7 +49,7 @@ updateGraph: replaces-mode
 
 ## Automatic Cluster Version Label (OCP) - packagemanifest only
 
-Starting OCP v4.9 (based on k8s 1.22) some old API were deprecated ([Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22), [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md)). User can set `com.redhat.openshift.versions: <versions>` in its bundle annotations.yaml file to limit specific operator version to be visible on certain cluster. Following example will install operator bundle for versions `v4.6, v4.6, v4.8`
+Starting OCP v4.9 (based on k8s 1.22) some old API were deprecated ([Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22), [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md)). User can set `com.redhat.openshift.versions: <versions>` in its bundle annotations.yaml file to limit specific operator version to be visible on certain cluster. Following example will install operator bundle for versions `v4.6, v4.7, v4.8`
 ```
 $ cat <path-to-operators>/<name>/<version/metadata>/annotations.yaml
 annotations:
