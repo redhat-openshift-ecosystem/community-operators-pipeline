@@ -27,11 +27,11 @@ env:
   OPP_RELEASE_INDEX_NAME: "catalog"
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry:v4.5"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
-  IIB_INPUT_REGISTRY_USER: "jbreza"
+  IIB_INPUT_REGISTRY_USER: "mavala"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "v1.21.1"
-  OPP_PRODUCTION_TYPE: "k8s"
+  OPP_PRODUCTION_TYPE: "ocp"
   OPP_REVIEWERS_ENABLED: 0
 
 
@@ -185,11 +185,16 @@ jobs:
           allow-repeats: true
 
 
-  test-lemon:
+  test-lemon-openshift:
     name: "lemon / Deploy from scratch"
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index-tag: ['v4.6', 'v4.7', 'v4.8', 'v4.9']
+
+      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -199,17 +204,23 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
-          echo "lemon operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 
 
 
-  test-orange-latest:
-    name: "orange / Deploy k8s latest"
+  test-orange-openshift:
+    name: "orange / Deploy o7t"
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_op_delete == '0'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index-tag: ['v4.6', 'v4.7', 'v4.8', 'v4.9']
+
+      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -219,15 +230,19 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          OPP_MIRROR_INDEX_ENABLED: 1
+          OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
         run: |
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 
 
   test-summary:
     name: "Summary"
-    
-    needs: [ pr-check, test-kiwi, test-lemon, test-orange-latest]
+
+    needs: [ pr-check, test-kiwi, test-lemon-openshift, test-orange-openshift ]
 
     if: always()
     runs-on: ubuntu-latest
