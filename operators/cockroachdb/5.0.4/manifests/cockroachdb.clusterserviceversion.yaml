@@ -222,6 +222,10 @@ spec:
 
 
 
+
+
+
+
     ## Core capabilities
     * **StatefulSet** - Sets up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet
     * **Expand Replicas** - Supports expanding the set of replicas by simply editing your object
