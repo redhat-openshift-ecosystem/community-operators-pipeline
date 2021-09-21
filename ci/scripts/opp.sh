@@ -76,6 +76,8 @@ OPP_MIRROR_INDEX_MULTIARCH_POSTFIX=${OPP_MIRROR_INDEX_MULTIARCH_POSTFIX-""}
 OPP_MIRROR_LATEST_TAG=${OPP_MIRROR_LATEST_TAG-"v4.6"}
 OPP_MIRROR_INDEX_ENABLED=${OPP_MIRROR_INDEX_ENABLED-0}
 
+OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=${OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL-0}
+
 OPP_VER_OVERWRITE=${OPP_VER_OVERWRITE-0}
 OPP_RECREATE=${OPP_RECREATE-0}
 OPP_FORCE_DEPLOY_ON_K8S=${OPP_FORCE_DEPLOY_ON_K8S-0}
@@ -338,6 +340,8 @@ OPP_CHECK_STEAM_OK=0
 
 [[ $OPP_CHECK_STEAM_OK -eq 0 ]] && { echo "Error : Unknwn value for 'OPP_STREAM=$OPP_STREAM' !!!"; exit 1; }
 
+[[ $OPP_PROD -eq 1 ]] && OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1
+
 function ExecParameters() {
     OPP_EXEC_USER=
     OPP_EXEC_USER_SECRETS=
@@ -348,8 +352,10 @@ function ExecParameters() {
     [[ $1 == kiwi* ]] && [[ $OPP_DEPLOY_LONGER -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pod_start_retries=$OPP_POD_START_RETRIES_LONG_DEPLOYMENT_WAIT_RETRIES"
     [[ $1 == kiwi* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e enable_bundle_validate_community=true"
     [[ $1 == lemon* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
-    [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
+    [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags operator_info,deploy_bundles"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
+
+    [[ $OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e automatic_cluster_version_label=true" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e automatic_cluster_version_label=true"
 
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/openshift-community-operators"
     # [[ $1 == orange* ]] && [ "$OPP_STREAM" = "upstream-community-operators" ] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=quay.io/operatorhubio"
@@ -424,6 +430,8 @@ function ExecParameters() {
         fi
     fi
 
+    [ -n "$OPP_PRODUCTION_TYPE" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e cluster_type=$OPP_PRODUCTION_TYPE" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK  -e cluster_type=$OPP_PRODUCTION_TYPE"
+
     [[ OP_ALLOW_BIG_CHANGES_TO_EXISTING -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e allow_big_changes_to_existing=true"
 
     # Failing test when upstream and orgage_<version> (not supported yet)
@@ -438,6 +446,7 @@ function ExecParameters() {
 
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false"
     
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_FORCE_INDEX_UPDATE=1
     [[ $1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 1 ]] && [ "$OPP_VERSION" == "sync" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
     [[ $1 == orange* ]] && [[ $OPP_VER_OVERWRITE -eq 0 ]] && [ "$OPP_VERSION" = "update" ] && OPP_FORCE_INDEX_UPDATE=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e fail_on_no_index_change=false -e strict_mode=true"
@@ -463,7 +472,7 @@ function ExecParameters() {
     [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e enable_bundle_validate_community=false"
 
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER="$OPP_EXEC_USER --tags deploy_bundles -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e production_registry_namespace=$OPP_PRODUCTION_REGISTRY_NAMESPACE -e index_force_update=true -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME -e op_test_operator_version=$OPP_VERSION"
-    [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"    
+    [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream -e automatic_cluster_version_label=true"    
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_appregistry_api_token=$QUAY_APPREG_TOKEN -e quay_appregistry_courier_token=$QUAY_COURIER_TOKEN"
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && [[ OPP_DELETE_APPREG -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e delete_appreg='true'"
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Push to quay is not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
@@ -603,7 +612,9 @@ for t in $TESTS;do
         if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
-            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || { set +e && continue; }
+            echo "Checking insync operators ..."
+            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" || true
+            $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || { echo "Noting to run !!!";set +e; continue; }
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
