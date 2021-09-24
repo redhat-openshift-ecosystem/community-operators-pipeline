@@ -91,7 +91,7 @@ jobs:
           OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
           OPP_AUTO_LABEL: "${{ steps.op-traffic-light.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           ANSIBLE_FORCE_COLOR: 1
-          DISPLAY_SKIPPED_HOSTS: 0
+          ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
           # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
