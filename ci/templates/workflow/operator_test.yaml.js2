@@ -94,8 +94,7 @@ jobs:
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
-          #OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
-          OPP_ANSIBLE_PULL_BRANCH="op-info-tweaks"
+          OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           #echo 'ls /home/runner/work/community-operators-pipeline/community-operators-pipeline/operators/operators/community-kubevirt-hyperconverged'
           #ls /home/runner/work/community-operators-pipeline/community-operators-pipeline/operators/operators/community-kubevirt-hyperconverged
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
