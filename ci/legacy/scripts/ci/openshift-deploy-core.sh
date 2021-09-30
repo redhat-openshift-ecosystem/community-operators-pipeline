@@ -170,11 +170,15 @@ echo "OP_VER=$OP_VER"
 echo "Preparing temp index ..."
 [[ $TEST_MODE -ne 1 ]] && OP_TOKEN=$(cat /var/run/cred/op_token_quay_test)
 echo
+
+# timeout up to 10s to improve GH API resilience
+sleep $[ ( $RANDOM % 10 )  + 1 ]s
+
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
 -X POST \
 -H "Accept: application/vnd.github.v3+json" \
-"https://api.github.com/repos/$PR_TARGET_REPO/dispatches" --data "{\"event_type\": \"index-for-openshift-test\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\"}}"  && echo "Temp index initiated ..."
-echo "Temp index triggered [OK]"
+"https://api.github.com/repos/$PR_TARGET_REPO/dispatches" --data "{\"event_type\": \"index-for-openshift-test\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\"}}"  && echo "Temp index initiated ... [OK]"
+
 CHECK_TEMP_INDEX=1
 while [ "$CHECK_TEMP_INDEX" -le "$MAX_LIMIT_FOR_INDEX_WAIT" ]; do
   echo "Checking index $QUAY_HASH presence ... $CHECK_TEMP_INDEX minutes."
