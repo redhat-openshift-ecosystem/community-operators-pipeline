@@ -116,6 +116,9 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator_test/operators
+      - shell: bash
+        run: |
+          ls /tmp/operator_test/
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
