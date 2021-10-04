@@ -109,15 +109,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: operator_info
-          path: /tmp/operator_test/op_info.yaml
+          path: /tmp/operator-test/op_info.yaml
       - name: Upload converted operators
         uses: actions/upload-artifact@v2
         with:
           name: operators_converted
-          path: /tmp/operator_test/operators
+          path: /tmp/operator-test/operators
       - shell: bash
         run: |
-          ls /tmp/operator_test/
+          ls /tmp/operator-test/
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
