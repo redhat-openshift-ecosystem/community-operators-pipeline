@@ -119,6 +119,7 @@ jobs:
       - shell: bash
         run: |
           ls ${ARTEFACT_PATH}/
+          cat /tmp/operator-test/op_info.yaml
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
