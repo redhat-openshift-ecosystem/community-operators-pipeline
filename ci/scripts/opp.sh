@@ -89,7 +89,8 @@ OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=${OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH-""}
 OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
 OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
-OP_INFO_FILE="/tmp/operator-test/op_info.yaml"
+OP_INFO_FILE_LOCATION="/tmp/operator-test"
+OP_INFO_FILE_CONTAINER_ARGS=""
 
 export GODEBUG=${GODEBUG-x509ignoreCN=0}
 
@@ -209,9 +210,13 @@ function handleMultiarchTag() {
     [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
 }
 
+if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then
+  OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info=$OP_INFO_FILE_LOCATION/op_info.yaml"
+  OP_INFO_FILE_CONTAINER_ARGS="$OP_INFO_FILE_CONTAINER_ARGS -v $OP_INFO_FILE_LOCATION/op_info.yaml:$OP_INFO_FILE_LOCATION/op_info.yaml -v $OP_INFO_FILE_LOCATION/operators:$OP_INFO_FILE_LOCATION/operators"
+fi
 
-[ "$OPP_RUN_MODE" = "privileged" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--privileged --net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
-[ "$OPP_RUN_MODE" = "user" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
+[ "$OPP_RUN_MODE" = "privileged" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--privileged --net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker $OP_INFO_FILE_CONTAINER_ARGS"
+[ "$OPP_RUN_MODE" = "user" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker $OP_INFO_FILE_CONTAINER_ARGS"
 
 checkExecutable $OPP_BASE_DEP
 
