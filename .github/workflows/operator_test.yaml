@@ -140,13 +140,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Degug artefacts 1
-        shell: bash
-        run: |
-          echo ${ARTEFACT_PATH}/
-          cat "${ARTEFACT_PATH}/op_info.yaml"
-          echo 123
-          cat ${ARTEFACT_PATH}/op_info.yaml
       - name: Download operator_info
         uses: actions/download-artifact@v2
         with:
