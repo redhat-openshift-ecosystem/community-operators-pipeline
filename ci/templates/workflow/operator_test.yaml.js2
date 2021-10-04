@@ -111,12 +111,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: operator_info
-          path: ${ARTEFACT_PATH}/op_info.yaml
+          path: "${ARTEFACT_PATH}/op_info.yaml"
       - name: Upload converted operators
         uses: actions/upload-artifact@v2
         with:
           name: operators_converted
-          path: ${ARTEFACT_PATH}/operators
+          path: "${ARTEFACT_PATH}/operators"
       - shell: bash
         run: |
           ls ${ARTEFACT_PATH}/
@@ -145,16 +145,19 @@ jobs:
         shell: bash
         run: |
           echo ${ARTEFACT_PATH}/
+          cat "${ARTEFACT_PATH}/op_info.yaml"
+          echo 123
+          cat ${ARTEFACT_PATH}/op_info.yaml
       - name: Download operator_info
         uses: actions/download-artifact@v2
         with:
           name: operator_info
-          path: ${ARTEFACT_PATH}/
+          path: "${ARTEFACT_PATH}/"
       - name: Download converted operators
         uses: actions/download-artifact@v2
         with:
           name: operators_converted
-          path: ${ARTEFACT_PATH}/operators
+          path: "${ARTEFACT_PATH}/operators"
       - name: Degug artefacts
         shell: bash
         run: |
