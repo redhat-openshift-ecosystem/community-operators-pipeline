@@ -42,30 +42,12 @@ jobs:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
     steps:
-      # Checks out a copy of your repository on the ubuntu-latest machine
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-      # - id: files
-      #   uses: jitterbit/get-changed-files@v1
-      #   continue-on-error: true
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       - name: Install dependencies
         run: python -m pip install --upgrade pip yq
-      # - name: Operator traffic light
-      #   id: op-traffic-light
-      #   env:
-      #     OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
-      #     OPP_MODIFIED_FILES: "${{ steps.files.outputs.modified }}"
-      #     OPP_ADDED_MODIFIED_FILES: "${{ steps.files.outputs.added_modified }}"
-      #     OPP_RENAMED_FILES: "${{ steps.files.outputs.renamed }}"
-      #     OPP_REMOVED_FILES: "${{ steps.files.outputs.removed }}"
-      #   run: |
-      #     echo "Using script '$OPP_SCRIPT_ENV_URL' ..."
-      #     echo "global labels $OPP_LABELS"
-      #     bash <(curl -sL $OPP_SCRIPT_ENV_URL)
       - name: Operator traffic light
         id: op-traffic-light
         env:
@@ -124,6 +106,16 @@ jobs:
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+      - name: Upload operator_info
+        uses: actions/upload-artifact@v2
+        with:
+          name: operator_info
+          path: /tmp/operator_test/op_info.yaml
+      - name: Upload converted operators
+        uses: actions/upload-artifact@v2
+        with:
+          name: operators_converted
+          path: /tmp/operator_test/operators
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
@@ -198,6 +190,21 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Download operator_info
+        uses: actions/download-artifact@v2
+        with:
+          name: operator_info
+          path: /tmp/operator_test/op_info.yaml
+      - name: Download converted operators
+        uses: actions/download-artifact@v2
+        with:
+          name: operators_converted
+          path: /tmp/operator_test/operators
+      - name: Degug artefacts
+        shell: bash
+        run: |
+          ls /tmp/operator_test/operators
+          head /tmp/operator_test/op_info.yaml
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
