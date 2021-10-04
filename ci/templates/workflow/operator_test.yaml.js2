@@ -111,15 +111,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: operator_info
-          path: $ARTEFACT_PATH/op_info.yaml
+          path: "$ARTEFACT_PATH"/op_info.yaml
       - name: Upload converted operators
         uses: actions/upload-artifact@v2
         with:
           name: operators_converted
-          path: $ARTEFACT_PATH/operators
+          path: "$ARTEFACT_PATH"/operators
       - shell: bash
         run: |
-          ls $ARTEFACT_PATH/
+          ls "$ARTEFACT_PATH"/
 
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
@@ -224,17 +224,17 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: operator_info
-          path: $ARTEFACT_PATH/
+          path: "$ARTEFACT_PATH"/
       - name: Download converted operators
         uses: actions/download-artifact@v2
         with:
           name: operators_converted
-          path: $ARTEFACT_PATH/operators
+          path: "$ARTEFACT_PATH"/operators
       - name: Degug artefacts
         shell: bash
         run: |
-          ls $ARTEFACT_PATH/operators
-          head $ARTEFACT_PATH/op_info.yaml
+          ls "$ARTEFACT_PATH"/operators
+          head "$ARTEFACT_PATH"/op_info.yaml
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
@@ -290,17 +290,17 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: operator_info
-          path: $ARTEFACT_PATH/
+          path: "$ARTEFACT_PATH"/
       - name: Download converted operators
         uses: actions/download-artifact@v2
         with:
           name: operators_converted
-          path: $ARTEFACT_PATH/operators
+          path: "$ARTEFACT_PATH"/operators
       - name: Degug artefacts
         shell: bash
         run: |
-          ls $ARTEFACT_PATH/operators
-          head $ARTEFACT_PATH/op_info.yaml
+          ls "$ARTEFACT_PATH"/operators
+          head "$ARTEFACT_PATH"/op_info.yaml
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
