@@ -1,7 +1,7 @@
 # Operator tests
 
 ## Running tests
-Run tests by entering 'community-operators' project directory and run following command with these options. Use `OPP_PRODUCTION_TYPE=ocp` for Openshift operators and `k8s` for Kubernetes operators. '<git repo>' and '<git branch>' options are optional.
+Run tests by entering 'community-operators' project directory and run following command using options bellow. Specify `OPP_PRODUCTION_TYPE=ocp` for Openshift operators and `k8s` for Kubernetes operators. '<git repo>' and '<git branch>' options are optional.
 ```
 cd <community-operators>
 OPP_PRODUCTION_TYPE=<k8s/ocp> bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
