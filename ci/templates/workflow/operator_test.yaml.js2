@@ -152,7 +152,7 @@ jobs:
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
-      - name: Degug artefacts
+      - name: Debug artefacts
         shell: bash
         run: |
           ls /tmp/operator-test/operators
@@ -246,7 +246,7 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
-      - name: Degug artefacts
+      - name: Debug artefacts
         shell: bash
         run: |
           ls /tmp/operator-test/operators
@@ -312,7 +312,7 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
-      - name: Degug artefacts
+      - name: Debug artefacts
         shell: bash
         run: |
           ls /tmp/operator-test/operators

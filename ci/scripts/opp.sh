@@ -361,7 +361,7 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags operator_info,deploy_bundles"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
 
-    if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info=$OP_INFO_FILE_LOCATION/op_info.yaml"; fi
+    if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info_file=$OP_INFO_FILE_LOCATION/op_info.yaml"; fi
 
     [[ $OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e automatic_cluster_version_label=true" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e automatic_cluster_version_label=true"
 
