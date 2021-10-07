@@ -7,7 +7,7 @@ on:
 
 env:
   AUTOMERGE_ENABLED: "1"
-  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "k8s"
   OPP_SCRIPT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp.sh"
   OPP_SCRIPT_ENV_OPRT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-oprt.sh"
   OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-env.sh"
