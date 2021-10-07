@@ -268,16 +268,6 @@ jobs:
 {% raw %}
       fail-fast: false
     steps:
-      - name: Download operator_info
-        uses: actions/download-artifact@v2
-        with:
-          name: operator_info
-          path: /tmp/operator-test/
-      - name: Download converted operators
-        uses: actions/download-artifact@v2
-        with:
-          name: operators_converted
-          path: /tmp/operator-test/operators
       - name: Remove operator from index
         if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
         env:
@@ -309,16 +299,6 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-      - name: Download operator_info
-        uses: actions/download-artifact@v2
-        with:
-          name: operator_info
-          path: /tmp/operator-test/
-      - name: Download converted operators
-        uses: actions/download-artifact@v2
-        with:
-          name: operators_converted
-          path: /tmp/operator-test/operators
       - name: List of missing operators
         id: operators
         env:
