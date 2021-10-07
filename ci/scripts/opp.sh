@@ -514,7 +514,7 @@ function ExecParameters() {
 }
 
 function GenerateOperatorConfigFile() {
-    echo "operator_base_dir: /tmp/community-operators-for-catalog/operators" > $OPP_UNCOMPLETE
+    [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ] && echo "operator_base_dir: $OP_INFO_FILE_LOCATION/operators" > $OPP_UNCOMPLETE || echo "operator_base_dir: /tmp/community-operators-for-catalog/operators" > $OPP_UNCOMPLETE
     echo "operators:" >> $OPP_UNCOMPLETE
     for o in $OPP_FORCE_OPERATORS;do
         echo "- $o" >> $OPP_UNCOMPLETE
