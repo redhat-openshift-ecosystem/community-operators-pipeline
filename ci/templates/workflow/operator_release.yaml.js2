@@ -170,6 +170,9 @@ jobs:
         id: op-info
         env:
           OPP_FORCE_OPERATORS: ${{ steps.operators.outputs.opp_uncomplete_operators }}
+          ANSIBLE_FORCE_COLOR: 1
+          ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
+          ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
           OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
@@ -329,6 +332,9 @@ jobs:
         id: op-info
         env:
           OPP_FORCE_OPERATORS: ${{ steps.operators.outputs.opp_uncomplete_operators }}
+          ANSIBLE_FORCE_COLOR: 1
+          ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
+          ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
           OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
