@@ -85,7 +85,8 @@ jobs:
 {% endraw %}
 {% else %}
 {% raw %}
-        ANSIBLE_ARGS="$ANSIBLE_ARGS -e stream_kind=openshift_upstream"
+          ANSIBLE_ARGS="$ANSIBLE_ARGS -e stream_kind=openshift_upstream"
+          echo $ANSIBLE_ARGS
 {% endraw %}
 {% endif %}
 {% raw %}
