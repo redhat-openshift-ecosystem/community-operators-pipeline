@@ -8,7 +8,7 @@ on:
       - index-for-openshift-test
 
 env:
-  OPP_PRODUCTION_TYPE: "k8s"
+  OPP_PRODUCTION_TYPE: "ocp"
   OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:dev"
 
 
