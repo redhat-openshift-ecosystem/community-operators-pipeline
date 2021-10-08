@@ -66,6 +66,7 @@ $CONTAINER_TOOL run -d --net=host --privileged -e STORAGE_DRIVER=vfs --rm -t --n
 $CONTAINER_TOOL exec -t \
 -e automatic_cluster_version_label=true \
 -e bundle_force_rebuild=true \
+-e cluster_type=ocp \
 -e OP_STREAM="$STREAM_NAME" \
 -e OP_NAME="$OP_NAME" \
 -e OP_VERSION="$OP_VER" \
