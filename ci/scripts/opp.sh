@@ -89,6 +89,8 @@ OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=${OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH-""}
 OPP_INDEX_CHECK_ONLY=${OPP_INDEX_CHECK_ONLY-0}
 OPP_DELETE_APPREG=${OPP_DELETE_APPREG-0}
 OPP_DEPLOY_LONGER=${OPP_DEPLOY_LONGER-0}
+OP_INFO_FILE_LOCATION="/tmp/operator-test"
+OP_INFO_FILE_CONTAINER_ARGS=""
 
 export GODEBUG=${GODEBUG-x509ignoreCN=0}
 
@@ -208,9 +210,13 @@ function handleMultiarchTag() {
     [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
 }
 
+if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then
+#  OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info=$OP_INFO_FILE_LOCATION/op_info.yaml"
+  OP_INFO_FILE_CONTAINER_ARGS="$OP_INFO_FILE_CONTAINER_ARGS -v $OP_INFO_FILE_LOCATION/op_info.yaml:$OP_INFO_FILE_LOCATION/op_info.yaml -v $OP_INFO_FILE_LOCATION/operators:$OP_INFO_FILE_LOCATION/operators"
+fi
 
-[ "$OPP_RUN_MODE" = "privileged" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--privileged --net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
-[ "$OPP_RUN_MODE" = "user" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker"
+[ "$OPP_RUN_MODE" = "privileged" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--privileged --net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker $OP_INFO_FILE_CONTAINER_ARGS"
+[ "$OPP_RUN_MODE" = "user" ] && OPP_CONAINER_RUN_DEFAULT_ARGS="--net host -v $OPP_CERT_DIR:/usr/share/pki/ca-trust-source/anchors -e STORAGE_DRIVER=vfs -e BUILDAH_FORMAT=docker $OP_INFO_FILE_CONTAINER_ARGS"
 
 checkExecutable $OPP_BASE_DEP
 
@@ -354,6 +360,8 @@ function ExecParameters() {
     [[ $1 == lemon* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags operator_info,deploy_bundles"
     [[ $1 == orange* ]] &&  [ "$OPP_VERSION" = "sync" ] && OPP_EXEC_USER="--tags deploy_bundles"
+
+    if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info_file=$OP_INFO_FILE_LOCATION/op_info.yaml"; fi
 
     [[ $OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e automatic_cluster_version_label=true" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e automatic_cluster_version_label=true"
 
@@ -506,7 +514,7 @@ function ExecParameters() {
 }
 
 function GenerateOperatorConfigFile() {
-    echo "operator_base_dir: /tmp/community-operators-for-catalog/operators" > $OPP_UNCOMPLETE
+    [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ] && echo "operator_base_dir: $OP_INFO_FILE_LOCATION/operators" > $OPP_UNCOMPLETE || echo "operator_base_dir: /tmp/community-operators-for-catalog/operators" > $OPP_UNCOMPLETE
     echo "operators:" >> $OPP_UNCOMPLETE
     for o in $OPP_FORCE_OPERATORS;do
         echo "- $o" >> $OPP_UNCOMPLETE
