@@ -11,11 +11,7 @@ on:
       release:
         description: 'Force to run release'
         required: true
-        default: '0'
-      mirror:
-        description: 'Force mirror index'
-        required: true
-        default: '0'        
+        default: '0'   
       delete:
         description: 'Delete operator (cockroachdb or cockroachdb/5.0.4) for debuging only'
         required: false
@@ -465,7 +461,7 @@ jobs:
     name: "Index production / {{ default_config.production.type }}"
     needs: [ pr-check, release-{{ default_config.production.type }} ]
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1' || github.event.inputs.mirror == '1'
+    if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     strategy:
       matrix:
