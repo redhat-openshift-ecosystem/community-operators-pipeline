@@ -205,8 +205,7 @@ jobs:
           path: "/tmp/operator-test/operators"
       - shell: bash
         run: |
-          ls /tmp/operator-test/
-          cat /tmp/operator-test/op_info.yaml
+          [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
       opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
@@ -316,6 +315,16 @@ jobs:
 
       fail-fast: false
     steps:
+      - name: Download operator_info
+        uses: actions/download-artifact@v2
+        with:
+          name: operator_info
+          path: /tmp/operator-test/
+      - name: Download converted operators
+        uses: actions/download-artifact@v2
+        with:
+          name: operators_converted
+          path: /tmp/operator-test/operators
       - name: Release sha
         env:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
