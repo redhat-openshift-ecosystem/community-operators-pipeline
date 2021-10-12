@@ -2,7 +2,7 @@
 
 Operators submitted to this repo are automatically tested on a Kubernetes cluster before being merged. The Kubernetes distribution used for testing depends on which directory the operator is submitted to. Ideally all tests should pass before merging.
 
-You can test operators locally using [following](https://github.com/redhat-operator-ecosystem/operator-test-playbooks/blob/upstream-community/doc/upstream/users/README.md)
+You can test operators locally using [following](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/master/docs/upstream/users/README.md)
  documentation.
 
 ### CI test scripts
