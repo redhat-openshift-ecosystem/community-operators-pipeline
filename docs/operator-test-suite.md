@@ -4,7 +4,7 @@
 Run tests by entering 'community-operators' project directory and run following command using options bellow. Specify `OPP_PRODUCTION_TYPE=ocp` for Openshift operators and `k8s` for Kubernetes operators. '<git repo>' and '<git branch>' options are optional.
 ```
 cd <community-operators>
-OPP_PRODUCTION_TYPE=<k8s/ocp> bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
+OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1 OPP_PRODUCTION_TYPE=<k8s/ocp> bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
 <test-type1,test-type2,...,test-typeN> \
 <operator-version-dir-relative-to-community-operators-project> \
 [<git repo>] [<git branch>]
