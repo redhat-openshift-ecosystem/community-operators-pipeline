@@ -11,7 +11,7 @@ on:
       release:
         description: 'Force to run release'
         required: true
-        default: '0'
+        default: '0'   
       delete:
         description: 'Delete operator (cockroachdb or cockroachdb/5.0.4) for debuging only'
         required: false
