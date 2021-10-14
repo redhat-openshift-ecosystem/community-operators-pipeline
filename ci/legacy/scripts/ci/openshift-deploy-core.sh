@@ -186,9 +186,14 @@ curl --connect-timeout 20 \
 chmod +x /tmp/opertor-sdk
 
 K8S_VERSION=${OCP2K8S[{CURRENT_OPENSHIFT_RUN}]}
-/tmp/opm  alpha bundle generate --directory community-operators/$OP_NAME/$OP_VER/ -u community-operators/$OP_NAME --package $OP_NAME
+pwd
+ls
+echo "test 1"
+ls community-operators || true
+echo "test 2"
+/tmp/opm  alpha bundle generate --directory $OP_NAME/$OP_VER/ -u $OP_NAME --package $OP_NAME
 mkdir -p /tmp/$OP_NAME/$OP_VER
-cp -a community-operators/$OP_NAME/metadata community-operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
+cp -a $OP_NAME/metadata $OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER--select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
