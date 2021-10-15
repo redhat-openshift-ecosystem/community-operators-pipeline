@@ -186,6 +186,8 @@ curl --connect-timeout 20 \
 chmod +x /tmp/opertor-sdk
 
 K8S_VERSION=${OCP2K8S[{OCP_CLUSTER_VERSION}]}
+echo "OCP_CLUSTER_VERSION=$OCP_CLUSTER_VERSION"
+echo "K8S_VERSION=$K8S_VERSION"
 echo "Current directory"
 pwd
 
@@ -206,7 +208,13 @@ ls /tmp/$OP_NAME/$OP_VER/manifests||true
 echo '/tmp/$OP_NAME/$OP_VER/metadata'
 ls /tmp/$OP_NAME/$OP_VER/metadata||true
 
+echo "original"
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
+
+echo "1.21"
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=1.21||true
+echo "1.22"
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=1.22||true
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
   echo "This operator is not valid for testing due to deprecated API. Test is green then, operator will not be included in the current index, exit."
