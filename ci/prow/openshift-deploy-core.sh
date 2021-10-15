@@ -196,26 +196,13 @@ pwd
 mkdir -p /tmp/$OP_NAME/$OP_VER
 cp -a operators/$OP_NAME/metadata operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
 
-echo 'ls operators/$OP_NAME/$OP_VER/'
-ls operators/$OP_NAME/$OP_VER/ ||true
-echo 'operators/$OP_NAME/$OP_VER/manifests'
-ls operators/$OP_NAME/$OP_VER/manifests||true
-echo 'operators/$OP_NAME/$OP_VER/metadata'
-ls operators/$OP_NAME/$OP_VER/metadata||true
-echo '/tmp/$OP_NAME/$OP_VER'
-ls /tmp/$OP_NAME/$OP_VER||true
-echo '/tmp/$OP_NAME/$OP_VER/manifests'
-ls /tmp/$OP_NAME/$OP_VER/manifests||true
-echo '/tmp/$OP_NAME/$OP_VER/metadata'
-ls /tmp/$OP_NAME/$OP_VER/metadata||true
-
-echo "original"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
-
 echo "1.21"
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.21||true
 echo "1.22"
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.22||true
+
+echo "original"
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=$K8S_VERSION || EXIT_NEEDED=1
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
   echo "This operator is not valid for testing due to deprecated API. Test is green then, operator will not be included in the current index, exit."
@@ -224,6 +211,8 @@ if [[ "$EXIT_NEEDED" == "1" ]]; then
   -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/$PR_TARGET_REPO/dispatches" --data "{\"event_type\": \"openshift-test-status\", \"client_payload\": {\"source_pr\": \"$PULL_NUMBER\", \"remove_labels\": [\"openshift-started$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-failed$OCP_CLUSTER_VERSION_SUFFIX\", \"installation-validated\"], \"add_labels\": [\"installation-validated$OCP_CLUSTER_VERSION_SUFFIX\"]}}"
   exit 0
+else
+  echo "API valid [OK]"
 fi
 
 #Prepare temp index
