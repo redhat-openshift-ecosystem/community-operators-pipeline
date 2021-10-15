@@ -185,7 +185,7 @@ curl --connect-timeout 20 \
     -L -o /tmp/opertor-sdk -s  https://github.com/operator-framework/operator-sdk/releases/download/$OPERATOR_SDK_VERSION/operator-sdk_linux_amd64
 chmod +x /tmp/opertor-sdk
 
-K8S_VERSION=${OCP2K8S[{CURRENT_OPENSHIFT_RUN}]}
+K8S_VERSION=${OCP2K8S[{OCP_CLUSTER_VERSION}]}
 echo "Current directory"
 pwd
 
