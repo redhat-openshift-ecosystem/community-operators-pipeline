@@ -196,12 +196,7 @@ pwd
 mkdir -p /tmp/$OP_NAME/$OP_VER
 cp -a operators/$OP_NAME/metadata operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
 
-echo "1.21"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.21||true
-echo "1.22"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.22||true
-
-echo "original"
+echo "Checking API validity ..."
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=$K8S_VERSION || EXIT_NEEDED=1
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
