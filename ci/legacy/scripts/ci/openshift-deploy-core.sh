@@ -9,7 +9,7 @@ echo "OCP_CLUSTER_VERSION_SUFFIX=$OCP_CLUSTER_VERSION_SUFFIX"
 EXIT_NEEDED=0
 
 OPM_VERSION='v1.17.5'
-OPERATOR_SDK_VERSION='v1.8.0'
+OPERATOR_SDK_VERSION='v1.13.1'
 JQ_VERSION='1.6'
 MAX_LIMIT_FOR_INDEX_WAIT=20
 EXTRA_ARGS=''
@@ -185,7 +185,7 @@ curl --connect-timeout 20 \
     -L -o /tmp/opertor-sdk -s  https://github.com/operator-framework/operator-sdk/releases/download/$OPERATOR_SDK_VERSION/operator-sdk_linux_amd64
 chmod +x /tmp/opertor-sdk
 
-K8S_VERSION=${OCP2K8S[{OCP_CLUSTER_VERSION}]}
+K8S_VERSION=${OCP2K8S[${OCP_CLUSTER_VERSION}]}
 echo "OCP_CLUSTER_VERSION=$OCP_CLUSTER_VERSION"
 echo "K8S_VERSION=$K8S_VERSION"
 echo "CURRENT_OPENSHIFT_RUN=$CURRENT_OPENSHIFT_RUN"
@@ -210,12 +210,12 @@ echo '/tmp/$OP_NAME/$OP_VER/metadata'
 ls /tmp/$OP_NAME/$OP_VER/metadata||true
 
 echo "original"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
 
 echo "1.21"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=1.21||true
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.21||true
 echo "1.22"
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=1.22||true
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional name=alpha-deprecated-apis  --optional-values=k8s-version=1.22||true
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
   echo "This operator is not valid for testing due to deprecated API. Test is green then, operator will not be included in the current index, exit."
