@@ -8,7 +8,7 @@ PLAYBOOK_REPO_BRANCH='upstream-community'
 echo "OCP_CLUSTER_VERSION_SUFFIX=$OCP_CLUSTER_VERSION_SUFFIX"
 EXIT_NEEDED=0
 
-OPM_VERSION='v1.19.0'
+OPM_VERSION='v1.17.5'
 OPERATOR_SDK_VERSION='v1.8.0'
 JQ_VERSION='1.6'
 MAX_LIMIT_FOR_INDEX_WAIT=20
@@ -186,11 +186,9 @@ curl --connect-timeout 20 \
 chmod +x /tmp/opertor-sdk
 
 K8S_VERSION=${OCP2K8S[{CURRENT_OPENSHIFT_RUN}]}
+echo "Current directory"
 pwd
-ls
-echo "test 1"
-ls operators || true
-echo "test 2"
+
 /tmp/opm  alpha bundle generate --directory operators/$OP_NAME/$OP_VER/ -u operators/$OP_NAME --package $OP_NAME
 mkdir -p /tmp/$OP_NAME/$OP_VER
 cp -a operators/$OP_NAME/metadata operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
