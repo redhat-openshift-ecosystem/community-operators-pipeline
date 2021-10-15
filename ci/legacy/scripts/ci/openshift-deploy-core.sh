@@ -192,7 +192,21 @@ pwd
 /tmp/opm  alpha bundle generate --directory operators/$OP_NAME/$OP_VER/ -u operators/$OP_NAME --package $OP_NAME
 mkdir -p /tmp/$OP_NAME/$OP_VER
 cp -a operators/$OP_NAME/metadata operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
-/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER--select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
+
+echo 'ls operators/$OP_NAME/$OP_VER/'
+ls operators/$OP_NAME/$OP_VER/
+echo 'operators/$OP_NAME/$OP_VER/manifests'
+ls operators/$OP_NAME/$OP_VER/manifests
+echo 'operators/$OP_NAME/$OP_VER/metadata'
+ls operators/$OP_NAME/$OP_VER/metadata
+echo '/tmp/$OP_NAME/$OP_VER'
+ls /tmp/$OP_NAME/$OP_VER
+echo '/tmp/$OP_NAME/$OP_VER/manifests'
+ls /tmp/$OP_NAME/$OP_VER/manifests
+echo '/tmp/$OP_NAME/$OP_VER/metadata'
+ls /tmp/$OP_NAME/$OP_VER/metadata
+
+/tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
 
 if [[ "$EXIT_NEEDED" == "1" ]]; then
   echo "This operator is not valid for testing due to deprecated API. Test is green then, operator will not be included in the current index, exit."
