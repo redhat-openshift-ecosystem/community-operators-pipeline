@@ -194,17 +194,17 @@ mkdir -p /tmp/$OP_NAME/$OP_VER
 cp -a operators/$OP_NAME/metadata operators/$OP_NAME/manifests/ /tmp/$OP_NAME/$OP_VER
 
 echo 'ls operators/$OP_NAME/$OP_VER/'
-ls operators/$OP_NAME/$OP_VER/
+ls operators/$OP_NAME/$OP_VER/ ||true
 echo 'operators/$OP_NAME/$OP_VER/manifests'
-ls operators/$OP_NAME/$OP_VER/manifests
+ls operators/$OP_NAME/$OP_VER/manifests||true
 echo 'operators/$OP_NAME/$OP_VER/metadata'
-ls operators/$OP_NAME/$OP_VER/metadata
+ls operators/$OP_NAME/$OP_VER/metadata||true
 echo '/tmp/$OP_NAME/$OP_VER'
-ls /tmp/$OP_NAME/$OP_VER
+ls /tmp/$OP_NAME/$OP_VER||true
 echo '/tmp/$OP_NAME/$OP_VER/manifests'
-ls /tmp/$OP_NAME/$OP_VER/manifests
+ls /tmp/$OP_NAME/$OP_VER/manifests||true
 echo '/tmp/$OP_NAME/$OP_VER/metadata'
-ls /tmp/$OP_NAME/$OP_VER/metadata
+ls /tmp/$OP_NAME/$OP_VER/metadata||true
 
 /tmp/opertor-sdk bundle validate /tmp/$OP_NAME/$OP_VER --select-optional suite=operatorframework  --optional-values=k8s-version=$K8S_VERSION | grep 'using APIs which were deprecated and removed in' && EXIT_NEEDED=1 || echo "API valid [OK]"
 
