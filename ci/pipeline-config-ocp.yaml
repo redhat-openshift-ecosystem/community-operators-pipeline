@@ -38,7 +38,7 @@ pipeline:
   image: quay.io/operator_testing/operator-test-playbooks:dev
   playbooks:
     repo: https://github.com/redhat-openshift-ecosystem/operator-test-playbooks
-    branch: "upstream-community"
+    branch: "upstream-community-dev"
   automerge:
     enabled: 1
   reviewers:
