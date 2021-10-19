@@ -27,8 +27,8 @@ env:
   OPP_SCRIPT_CLEANUP_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-disk-cleanup-on-startup.sh"
   OPP_SCRIPT_TRIGGER_OHIO_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-trigger-operatorhubio-ci.sh"
   OPP_IMAGE: "{{ default_config.pipeline.image }}"
-  OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/"
-  OPP_ANSIBLE_PULL_BRANCH: "upstream-community"
+  OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
+  OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
   OPP_PROD: 1
   OPP_MIRROR_LATEST_TAG: "{{ default_config.production.index.latest }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
@@ -175,7 +175,7 @@ jobs:
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
-          OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
+          # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
           echo $OPP_FORCE_OPERATORS
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
@@ -337,7 +337,7 @@ jobs:
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
-          OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
+          # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
           echo $OPP_FORCE_OPERATORS
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
