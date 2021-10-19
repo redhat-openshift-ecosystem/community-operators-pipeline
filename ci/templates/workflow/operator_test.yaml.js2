@@ -26,7 +26,8 @@ env:
   OPP_RELEASE_INDEX_REGISTRY: "{{ default_config.production.index.registry }}"
   OPP_RELEASE_INDEX_ORGANIZATION: "{{ default_config.production.index.organization }}"
   OPP_RELEASE_INDEX_NAME: "{{ default_config.production.index.name }}"
-  OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry:v4.5"
+  OPP_MIRROR_INDEX_MULTIARCH_BASE: "{{ default_config.production.mirror.multiarch.base }}"
+  OPP_MULTIARCH_SUPPORTED_VERSIONS: "{% for item in default_config.production.mirror.multiarch.base_tags %}{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
   IIB_INPUT_REGISTRY_USER: "{{ default_config.production.mirror.username.in }}"
   OPP_PROD: 0
