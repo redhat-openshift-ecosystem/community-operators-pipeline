@@ -55,8 +55,8 @@ yq --version
 MY_ANSIBLE_PULL_REPO=$(yq '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r )
 MY_ANSIBLE_PULL_BRANCH=$(yq '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r)
 
-MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\\\\/}
-MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\\\\/}
+MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\\/}
+MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\\/}
 
 echo "MY_ANSIBLE_PULL_REPO=$MY_ANSIBLE_PULL_REPO"
 echo "MY_ANSIBLE_PULL_BRANCH=$MY_ANSIBLE_PULL_BRANCH"
