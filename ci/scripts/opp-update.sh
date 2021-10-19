@@ -51,8 +51,12 @@ done
 
 [ -d $PWD/$OPP_CI_SCRIPTS_DIR ] || mkdir -p $PWD/$OPP_CI_SCRIPTS_DIR
 
-MY_ANSIBLE_PULL_REPO=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.repo')
-MY_ANSIBLE_PULL_BRANCH=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.branch')
+
+MY_ANSIBLE_PULL_REPO=$(yq e '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml)
+MY_ANSIBLE_PULL_BRANCH=$(yq e '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml)
+
+#MY_ANSIBLE_PULL_REPO=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.repo')
+#MY_ANSIBLE_PULL_BRANCH=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.branch')
 
 for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$OPP_CI_SCRIPTS_DIR/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
