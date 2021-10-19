@@ -54,6 +54,8 @@ done
 for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$OPP_CI_SCRIPTS_DIR/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
     cp $OPP_TMP_DIR/opp-input/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    sed -i 's/^PLAYBOOK_REPO=.*/PLAYBOOK_REPO=\"'$OPP_ANSIBLE_PULL_REPO'\"/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    sed -i 's/^PLAYBOOK_REPO_BRANCH=.*/PLAYBOOK_REPO_BRANCH=\"'$OPP_ANSIBLE_PULL_BRANCH'\"/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
 done
 
 rm -rf $PWD/scripts
