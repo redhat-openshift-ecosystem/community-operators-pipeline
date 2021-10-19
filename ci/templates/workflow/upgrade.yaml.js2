@@ -26,6 +26,8 @@ env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
 {% endraw %}
+  OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
+  OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
   OPP_SCRIPT_UPGRADE_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-update.sh"
 {% raw %}
 
