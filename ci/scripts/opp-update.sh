@@ -55,8 +55,8 @@ yq --version
 MY_ANSIBLE_PULL_REPO=$(yq '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r )
 MY_ANSIBLE_PULL_BRANCH=$(yq '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r)
 
-# MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\\/}
-# MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\\/}
+MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\\\\/}
+MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\\\\/}
 
 echo "MY_ANSIBLE_PULL_REPO=$MY_ANSIBLE_PULL_REPO"
 echo "MY_ANSIBLE_PULL_BRANCH=$MY_ANSIBLE_PULL_BRANCH"
@@ -65,9 +65,9 @@ for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$OPP_CI_SCRIPTS_DIR/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
     cp $OPP_TMP_DIR/opp-input/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
     echo "1"
-    sed -i 's/^PLAYBOOK_REPO=.*/PLAYBOOK_REPO='${MY_ANSIBLE_PULL_REPO//\//\\\\/}'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    sed -i 's/^PLAYBOOK_REPO=.*/PLAYBOOK_REPO='"$MY_ANSIBLE_PULL_REPO"'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
     echo "2"
-    sed -i 's/^PLAYBOOK_REPO_BRANCH=.*/PLAYBOOK_REPO_BRANCH='${MY_ANSIBLE_PULL_BRANCH//\//\\\\/}'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    sed -i 's/^PLAYBOOK_REPO_BRANCH=.*/PLAYBOOK_REPO_BRANCH='"$MY_ANSIBLE_PULL_BRANCH"'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
 done
 
 rm -rf $PWD/scripts
