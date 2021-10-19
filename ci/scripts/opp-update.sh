@@ -52,8 +52,8 @@ done
 [ -d $PWD/$OPP_CI_SCRIPTS_DIR ] || mkdir -p $PWD/$OPP_CI_SCRIPTS_DIR
 
 yq --version
-MY_ANSIBLE_PULL_REPO=$(yq '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml)
-MY_ANSIBLE_PULL_BRANCH=$(yq '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml)
+MY_ANSIBLE_PULL_REPO=$(yq '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r )
+MY_ANSIBLE_PULL_BRANCH=$(yq '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r)
 
 #MY_ANSIBLE_PULL_REPO=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.repo')
 #MY_ANSIBLE_PULL_BRANCH=$(cat $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml | yq '.pipeline.playbooks.branch')
