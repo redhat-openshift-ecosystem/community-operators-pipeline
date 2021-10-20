@@ -11,6 +11,24 @@ on:
 env:
   OPP_PRODUCTION_TYPE: "ocp"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
+  OPP_DEBUG: 1
+  OPP_CONTAINER_OPT: "-t"
+  OPP_SCRIPT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp.sh"
+  OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-env.sh"
+  OPP_SCRIPT_ENV_OPRT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-oprt.sh"
+  OPP_IMAGE: "quay.io/operator_testing/operator-test-playbooks:dev"
+  OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"
+  OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
+  OPP_THIS_REPO_BASE: "https://github.com"
+  OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
+  OPP_THIS_BRANCH: "main"
+  OPP_PROD: 0
+  OPP_DRY_RUN: 0
+  KIND_KUBE_VERSION: "v1.21.1"
+  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_REVIEWERS_ENABLED: 0
+
+
 
   
 jobs:
@@ -33,15 +51,29 @@ jobs:
         run: |
           echo "OPP_THIS_PR=$OPP_THIS_PR"
           curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews | jq '[.[] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user'
+      - name: Operator traffic light
+        id: op-traffic-light
+        env:
+          OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_PR_AUTHOR: "${{ github.event.pull_request.user.login }}"
+          OPP_OPRT_REPO: "${{ github.event.pull_request.head.repo.full_name }}"
+          OPP_OPRT_SHA: "${{ github.event.pull_request.head.sha }}"
+          OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
+          OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
+          OPP_THIS_PR: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
+          echo "global labels $OPP_LABELS"
+          bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
-      - name: "Mention reviewers if exist"
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            PR approved
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false
+      # - name: "Mention reviewers if exist"
+      #   uses: mshick/add-pr-comment@v1
+      #   with:
+      #     message: |
+      #       PR approved
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+      #     allow-repeats: false
 
       # - name: "Setting authorized-changes label"
       #   uses: actions/github-script@v3
