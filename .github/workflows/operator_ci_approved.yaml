@@ -24,7 +24,7 @@ env:
   OPP_DRY_RUN: 0
   KIND_KUBE_VERSION: "v1.21.1"
   OPP_PRODUCTION_TYPE: "ocp"
-  OPP_REVIEWERS_ENABLED: 1
+  OPP_REVIEWERS_ENABLED: 0
 
 
 
@@ -63,6 +63,20 @@ jobs:
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
+
+      - name: "Setting authorized-changes label"
+        uses: actions/github-script@v3
+        continue-on-error: true
+        if: steps.op-traffic-light.outputs.opp_authorized_changes == '1'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: [ 'authorized-changes' ]
+            })
 
       # - name: "Mention reviewers if exist"
       #   uses: mshick/add-pr-comment@v1

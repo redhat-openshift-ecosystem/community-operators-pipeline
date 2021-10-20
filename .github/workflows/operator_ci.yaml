@@ -14,7 +14,7 @@ env:
   OPP_SCRIPT_COSMETICS_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-oprt-cosmetics.sh"
   OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
-  OPP_REVIEWERS_ENABLED: 1
+  OPP_REVIEWERS_ENABLED: 0
 
   
 jobs:
