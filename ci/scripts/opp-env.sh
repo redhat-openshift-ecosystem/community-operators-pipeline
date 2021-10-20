@@ -390,7 +390,7 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
       echo "OPP_APPROVED_LIST=$OPP_APPROVED_LIST"
       for row in $(echo "${TEST_REVIEWERS}" | yq -r '.[]'); do
         for approver in $OPP_APPROVED_LIST;do
-          echo "checking if reviewer '$row' is pr author '$approver' ..."
+          echo "checking if reviewer '$row' is approver '$approver' ..."
           if [ "${approver,,}" == "${row,,}" ];then
             echo "[AUTHORIZED_CHANGES=1] : Approver '${approver,,}' is in reviewer list" && OPP_AUTHORIZED_CHANGES=1
           else
