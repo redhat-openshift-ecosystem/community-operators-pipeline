@@ -1,0 +1,68 @@
+
+name: Operator CI APPROVED
+
+on:
+ pull_request_review:
+   types: [submitted, dismissed]
+
+env:
+  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
+
+  
+jobs:
+  authorized-changes-handler:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.state == 'open' && github.event.action == 'submitted'
+    steps:
+
+     - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip yq
+      - name: Check approved list
+        id: op-approved-list
+        continue-on-error: true
+        env:
+          OPP_THIS_PR: ${{ github.event.pull_request.number }}
+        run: |
+          echo "OPP_THIS_PR=$OPP_THIS_PR"
+          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews | jq '[.[] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user'
+
+      - name: "Mention reviewers if exist"
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            PR approved
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: false
+
+      # - name: "Setting authorized-changes label"
+      #   uses: actions/github-script@v3
+      #   if: steps.op-traffic-light.outputs.opp_authorized_changes == '1'
+      #   with:
+      #     github-token: ${{secrets.GITHUB_TOKEN}}
+      #     script: |
+      #       github.issues.addLabels({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         labels: [ 'authorized-changes' ]
+      #       })
+
+      # - name: Try to automerge
+      #   uses: actions/github-script@v3
+      #   continue-on-error: true
+      #   with:
+      #     github-token: ${{ secrets.FRAMEWORK_MERGE }}
+      #     script: |
+      #       github.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: '/merge possible'
+      #       })
+
