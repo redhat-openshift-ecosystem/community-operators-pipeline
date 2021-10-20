@@ -12,6 +12,24 @@ env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
   OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
+  OPP_DEBUG: 1
+  OPP_CONTAINER_OPT: "-t"
+  OPP_SCRIPT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp.sh"
+  OPP_SCRIPT_ENV_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-env.sh"
+  OPP_SCRIPT_ENV_OPRT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-oprt.sh"
+  OPP_IMAGE: "{{ default_config.pipeline.image }}"
+  OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
+  OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
+  OPP_THIS_REPO_BASE: "{{ default_config.pipeline.base }}"
+  OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
+  OPP_THIS_BRANCH: "{{ default_config.pipeline.branch }}"
+  OPP_PROD: 0
+  OPP_DRY_RUN: 0
+  KIND_KUBE_VERSION: "{{ default_config.tools.kind_kube_version }}"
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
+  OPP_REVIEWERS_ENABLED: {{ default_config.pipeline.reviewers.enabled }}
+
+
 {% raw %}
   
 jobs:
@@ -34,6 +52,20 @@ jobs:
         run: |
           echo "OPP_THIS_PR=$OPP_THIS_PR"
           curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews | jq '[.[] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user'
+      - name: Operator traffic light
+        id: op-traffic-light
+        env:
+          OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_PR_AUTHOR: "${{ github.event.pull_request.user.login }}"
+          OPP_OPRT_REPO: "${{ github.event.pull_request.head.repo.full_name }}"
+          OPP_OPRT_SHA: "${{ github.event.pull_request.head.sha }}"
+          OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
+          OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
+          OPP_THIS_PR: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
+          echo "global labels $OPP_LABELS"
+          bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
       - name: "Mention reviewers if exist"
         uses: mshick/add-pr-comment@v1

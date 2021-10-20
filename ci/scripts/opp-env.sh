@@ -384,6 +384,12 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
       OPP_REVIEVERS=$(echo $OPP_REVIEVERS | sed 's/\(.*\),/\1 /')
       [[ $OPP_AUTHORIZED_CHANGES -eq 1 ]] && OPP_REVIEVERS=""
     fi
+    if [ -n "$OPP_APPROVED_LIST" ];then
+      TEST_REVIEWERS=$(cat  $CI_YAML_REMOTE_LOCAL | yq '.reviewers')
+      echo "TEST_REVIEWERS=$TEST_REVIEWERS"
+      echo "OPP_APPROVED_LIST=$OPP_APPROVED_LIST"
+    fi
+
   else
     echo "File '$CI_YAML_REMOTE' was not found ..."
   fi
