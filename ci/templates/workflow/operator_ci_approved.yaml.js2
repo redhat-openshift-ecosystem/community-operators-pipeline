@@ -26,10 +26,7 @@ env:
   KIND_KUBE_VERSION: "{{ default_config.tools.kind_kube_version }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
   OPP_REVIEWERS_ENABLED: {{ default_config.pipeline.reviewers.enabled }}
-
-
 {% raw %}
-  
 jobs:
   approved-list-handler:
     runs-on: ubuntu-latest
