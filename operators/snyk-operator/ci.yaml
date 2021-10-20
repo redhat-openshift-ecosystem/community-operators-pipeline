@@ -4,6 +4,4 @@ updateGraph: replaces-mode
 
 addReviewers: true
 reviewers:
-  - ivanstanev
-  - dkontorovskyy
-  - jmickey
+  - mvalarh

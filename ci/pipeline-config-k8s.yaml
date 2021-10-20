@@ -39,7 +39,7 @@ pipeline:
   automerge:
     enabled: 1
   reviewers:
-    enabled: 0
+    enabled: 1
   notifications:
     slack: 0
 operatorhubio:
