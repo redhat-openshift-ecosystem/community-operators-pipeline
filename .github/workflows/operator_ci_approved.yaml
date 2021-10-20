@@ -2,8 +2,11 @@
 name: Operator CI APPROVED
 
 on:
- pull_request_review:
-   types: [submitted, dismissed]
+  pull_request_target:
+    types: [ready_for_review]
+    branches:
+      - master
+      - main
 
 env:
   OPP_PRODUCTION_TYPE: "ocp"
@@ -13,7 +16,7 @@ env:
 jobs:
   authorized-changes-handler:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.state == 'open' && github.event.action == 'submitted'
+    if: github.event.pull_request.state == 'open' && github.event.action == 'ready_for_review'
     steps:
 
       - name: Set up Python
