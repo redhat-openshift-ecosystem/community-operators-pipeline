@@ -16,7 +16,7 @@ jobs:
     if: github.event.pull_request.state == 'open' && github.event.action == 'submitted'
     steps:
 
-     - name: Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
