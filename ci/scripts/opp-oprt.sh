@@ -48,4 +48,10 @@ echo "BRANCH_NAME=$BRANCH_NAME"
 
 [ -z $OPP_ADDED_FILES ] && [ -z $OPP_MODIFIED_FILES ] && [ -z $OPP_REMOVED_FILES ] && [ -z $OPP_RENAMED_FILES ] && [ -z $OPP_ADDED_MODIFIED_FILES ] && [ -z $OPP_ADDED_MODIFIED_RENAMED_FILES ] && { echo "ERROR: No change detected in PR !!! Contact project maintainers about this error !!!"; exit 1; }
 
+
+echo "OPP_THIS_PR=$OPP_THIS_PR"
+curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews > /tmp/approved_list.json
+cat /tmp/approved_list.json
+export OPP_APPROVED_LIST=$(cat /tmp/approved_list.json | jq -r '[.[-1] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user' | tr '\n' ' ')
+echo "OPP_APPROVED_LIST=$OPP_APPROVED_LIST"
 bash <(curl -sL $OPP_SCRIPT_ENV_URL)
