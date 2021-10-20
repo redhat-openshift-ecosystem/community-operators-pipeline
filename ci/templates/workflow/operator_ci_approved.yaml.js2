@@ -67,14 +67,14 @@ jobs:
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
-      - name: "Mention reviewers if exist"
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            PR approved
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false
+      # - name: "Mention reviewers if exist"
+      #   uses: mshick/add-pr-comment@v1
+      #   with:
+      #     message: |
+      #       PR approved
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+      #     allow-repeats: false
 
       # - name: "Setting authorized-changes label"
       #   uses: actions/github-script@v3
