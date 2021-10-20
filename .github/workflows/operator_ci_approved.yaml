@@ -30,7 +30,7 @@ env:
 
   
 jobs:
-  authorized-changes-handler:
+  approved-list-handler:
     runs-on: ubuntu-latest
     if: github.event.pull_request.state == 'open' && github.event.action == 'ready_for_review'
     steps:
@@ -41,14 +41,14 @@ jobs:
           python-version: '3.x'
       - name: Install dependencies
         run: python -m pip install --upgrade pip yq
-      - name: Check approved list
-        id: op-approved-list
-        continue-on-error: true
-        env:
-          OPP_THIS_PR: ${{ github.event.pull_request.number }}
-        run: |
-          echo "OPP_THIS_PR=$OPP_THIS_PR"
-          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews | jq '[.[] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user'
+      # - name: Check approved list
+      #   id: op-approved-list
+      #   continue-on-error: true
+      #   env:
+      #     OPP_THIS_PR: ${{ github.event.pull_request.number }}
+      #   run: |
+      #     echo "OPP_THIS_PR=$OPP_THIS_PR"
+      #     curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews | jq '[.[] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user'
       - name: Operator traffic light
         id: op-traffic-light
         env:
