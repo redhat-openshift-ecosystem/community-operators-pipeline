@@ -65,6 +65,20 @@ jobs:
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
+      - name: "Setting authorized-changes label"
+        uses: actions/github-script@v3
+        continue-on-error: true
+        if: steps.op-traffic-light.outputs.opp_authorized_changes == '1'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: [ 'authorized-changes' ]
+            })
+
       # - name: "Mention reviewers if exist"
       #   uses: mshick/add-pr-comment@v1
       #   with:
