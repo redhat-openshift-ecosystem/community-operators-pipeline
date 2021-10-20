@@ -13,6 +13,9 @@ env:
   OPP_SCRIPT_ENV_OPRT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-oprt.sh"
   OPP_SCRIPT_ENV_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-env.sh"
   OPP_SCRIPT_COSMETICS_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-oprt-cosmetics.sh"
+  OPP_THIS_REPO_BASE: "{{ default_config.pipeline.base }}"
+  OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
+  OPP_THIS_BRANCH: "{{ default_config.pipeline.branch }}"
   OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
   OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
   OPP_REVIEWERS_ENABLED: {{ default_config.pipeline.reviewers.enabled }}
