@@ -31,7 +31,7 @@ env:
 {% raw %}
   
 jobs:
-  authorized-changes-handler:
+  approved-list-handler:
     runs-on: ubuntu-latest
     if: github.event.pull_request.state == 'open' && github.event.action == 'ready_for_review'
     steps:
