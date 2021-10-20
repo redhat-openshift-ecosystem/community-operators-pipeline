@@ -384,6 +384,23 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
       OPP_REVIEVERS=$(echo $OPP_REVIEVERS | sed 's/\(.*\),/\1 /')
       [[ $OPP_AUTHORIZED_CHANGES -eq 1 ]] && OPP_REVIEVERS=""
     fi
+    if [ -n "$OPP_APPROVED_LIST" ];then
+      TEST_REVIEWERS=$(cat  $CI_YAML_REMOTE_LOCAL | yq '.reviewers')
+      echo "TEST_REVIEWERS=$TEST_REVIEWERS"
+      echo "OPP_APPROVED_LIST=$OPP_APPROVED_LIST"
+      for row in $(echo "${TEST_REVIEWERS}" | yq -r '.[]'); do
+        for approver in $OPP_APPROVED_LIST;do
+          echo "checking if reviewer '$row' is approver '$approver' ..."
+          if [ "${approver,,}" == "${row,,}" ];then
+            echo "[AUTHORIZED_CHANGES=1] : Approver '${approver,,}' is in reviewer list" && OPP_AUTHORIZED_CHANGES=1
+          else
+            OPP_REVIEVERS="@$row,$OPP_REVIEVERS"
+          fi
+        done
+      done
+    
+    fi
+    echo "OPP_AUTHORIZED_CHANGES=$OPP_AUTHORIZED_CHANGES"
   else
     echo "File '$CI_YAML_REMOTE' was not found ..."
   fi
