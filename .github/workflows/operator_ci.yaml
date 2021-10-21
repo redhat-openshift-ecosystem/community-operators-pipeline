@@ -17,7 +17,7 @@ env:
   OPP_THIS_BRANCH: "main"
   OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
-  OPP_REVIEWERS_ENABLED: 1
+  OPP_REVIEWERS_ENABLED: 0
 
   
 jobs:
