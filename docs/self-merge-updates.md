@@ -28,7 +28,7 @@ Learn more [here](./operator-ci-yaml.md#reviewers). Remember that modifications 
 In this case `authorized_label` is set automatically and PR will be automerged when all tests will pass
 
 ### Author is not in reviewer list
-In this case reviewer can approved PR by gitlab (PR review mechanizm)[https://docs.github.com/en/github/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews]. Since reviewer doesn't have write access to repository it is not possible to set label. But there are some ways to set `authorized_label` label by our pipeline. Reviewer can do following
+In this case reviewer can approved PR by gitlab [PR review mechanizm](https://docs.github.com/en/github/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews). Since reviewer doesn't have write access to repository it is not possible to set label. But there are some ways to set `authorized_label` label by our pipeline. Reviewer can do following
 
 1. approve
 2. `/hold`
