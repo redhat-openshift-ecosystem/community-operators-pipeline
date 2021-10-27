@@ -469,6 +469,9 @@ function ExecParameters() {
     # Handle OPP_RECREATE
     [[ $1 == orange* ]] && [[ $OPP_RECREATE -eq 1 ]] && [[ $OPP_PROD -eq 0 ]] && OPP_SKIP=1
 
+
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_PRODUCTION_INDEX_IMAGE_TAG" == "v4.9" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e skip_iib_index=true"
+
     # Skipping when version is not defined in case OPP_VER_OVERWRITE=1
     [[ $OPP_VER_OVERWRITE -eq 1 ]] && [ -z $OPP_VERSION ] && { echo "Warning: OPP_VER_OVERWRITE=1 and no version specified 'OPP_VERSION=$OPP_VERSION' !!! Skipping ..."; OPP_SKIP=1; }
 
@@ -490,7 +493,7 @@ function ExecParameters() {
 
     [[ $1 == ohio_image* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags app_registry -e bundle_index_image=$OHIO_INPUT_CATALOG_IMAGE -e index_export_parallel=true -e app_registry_image=$OHIO_REGISTRY_IMAGE -e quay_api_token=$OHIO_REGISTRY_TOKEN"
 
-    [[ $1 == op_delete* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags remove_operator -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
+    [[ $1 == op_delete* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags remove_operator -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_info_file="
     # [[ $1 == op_delete* ]] && [[ $OPP_PROD -eq 1 ]] && [ "$OPP_STREAM" = "community-operators" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=quay.io -e bundle_image_namespace=openshift-community-operators -e bundle_index_image_namespace=openshift-community-operators -e bundle_index_image_name=catalog"
     # [[ $1 == op_delete* ]] && [[ $OPP_PROD -eq 1 ]] && [ "$OPP_STREAM" = "upstream-community-operators" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=quay.io -e bundle_image_namespace=operatorhubio -e bundle_index_image_namespace=operatorhubio -e bundle_index_image_name=catalog"
     # [[ $1 == op_delete* ]] && [[ $OPP_PROD -eq 1 ]] && [ "$OPP_STREAM" = "community-operators" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP"
