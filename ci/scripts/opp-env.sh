@@ -126,8 +126,8 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     [[ $sf == scripts* ]] && OPP_CHANGES_CI=1 && continue
     [[ $sf == ci* ]] && OPP_CHANGES_CI=1 && continue
     [[ $sf == docs* ]] && OPP_CHANGES_DOCS=1 && continue
-    [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
     [[ $sf == operators* ]] ||  { echo "Not alloved changes outisde operators. Affected file : '$sf' !!! Exiting ..."; exit 1; }
+    [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
     [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == community-operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
@@ -212,8 +212,8 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   [[ $sf == scripts* ]] && OPP_CHANGES_CI=1 && continue
   [[ $sf == ci* ]] && OPP_CHANGES_CI=1 && continue
   [[ $sf == docs* ]] && OPP_CHANGES_DOCS=1 && continue
-  [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
   [[ $sf == operators* ]] ||  { echo "Not alloved changes outisde operators. Affected file : '$sf' !!! Exiting ..."; exit 1; }
+  [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
   [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
   # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
 
