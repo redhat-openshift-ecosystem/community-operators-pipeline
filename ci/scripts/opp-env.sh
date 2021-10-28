@@ -127,12 +127,14 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     [[ $sf == ci* ]] && OPP_CHANGES_CI=1 && continue
     [[ $sf == docs* ]] && OPP_CHANGES_DOCS=1 && continue
     [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
+    [[ $sf == operators* ]] ||  { echo "Not alloved changes outisde operators. Affected file : '$sf' !!! Exiting ..."; exit 1; }
     [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == community-operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
     # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
     [[ $sf == *package.yaml ]] && OPP_CHANGES_PACKAGE_FILE=1 && continue
     [[ $sf == *ci.yaml ]] && { OPP_CI_YAML_CHANGED=1; continue; }
     # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' !!! Exiting ..."; OPP_RELEASE_READY=0; }
+
     FILES="$FILES $(echo $sf | cut -d '/' -f 1-3)"
     # Check if outdside of "community-operators" and "upstream-community-operators"
   done
@@ -211,6 +213,7 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   [[ $sf == ci* ]] && OPP_CHANGES_CI=1 && continue
   [[ $sf == docs* ]] && OPP_CHANGES_DOCS=1 && continue
   [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
+  [[ $sf == operators* ]] ||  { echo "Not alloved changes outisde operators. Affected file : '$sf' !!! Exiting ..."; exit 1; }
   [[ $sf == operators* ]] && OPP_CHANGES_IN_OPERATORS_DIR=1
   # [[ $sf == upstream-community-operators* ]] && OPP_CHANGES_STREAM_UPSTREAM=1
 
