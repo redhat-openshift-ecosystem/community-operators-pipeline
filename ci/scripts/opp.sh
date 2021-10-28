@@ -471,7 +471,7 @@ function ExecParameters() {
 
 
     # [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_PRODUCTION_INDEX_IMAGE_TAG" == "v4.9" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e skip_iib_index=true"
-    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e skip_iib_index=true"
+    # [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e skip_iib_index=true"
 
     # Skipping when version is not defined in case OPP_VER_OVERWRITE=1
     [[ $OPP_VER_OVERWRITE -eq 1 ]] && [ -z $OPP_VERSION ] && { echo "Warning: OPP_VER_OVERWRITE=1 and no version specified 'OPP_VERSION=$OPP_VERSION' !!! Skipping ..."; OPP_SKIP=1; }
