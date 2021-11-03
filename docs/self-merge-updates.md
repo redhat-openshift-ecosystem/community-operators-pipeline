@@ -23,12 +23,12 @@ Once your changes are final, post `/hold cancel` command/comment. Tests will be 
 
 Learn more [here](./operator-ci-yaml.md#reviewers). Remember that modifications to `ci.yaml` need to be reviewed by current reviewers or the maintainers (if no reviewers exist). Every time `ci.yaml` is checked for reviewers, we are checking from `operator-framework/community-operators` default branch. So reviewers should be added in a separate PR in advance.
 
-## How do i approve PR? 
+## How can I approve a PR against my operator?
 ### Auhtor is in reviewer list
 In this case `authorized_label` is set automatically and PR will be automerged when all tests will pass
 
 ### Author is not in reviewer list
-In this case reviewer can approved PR by gitlab [PR review mechanizm](https://docs.github.com/en/github/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews). Since reviewer doesn't have write access to repository it is not possible to set label. But there are some ways to set `authorized_label` label by our pipeline. Reviewer can do following
+In this case reviewer can approved PR by gitlab [PR review mechanizm](https://docs.github.com/en/github/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews). Since reviewer doesn't have write access to repository it is not possible to set label. But there are some ways to set `authorized_changes` label by our pipeline. Reviewer can do following
 
 1. approve
 2. `/hold`
