@@ -113,7 +113,7 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['olm.targetNamespaces']
-                image: quay.io/3scale/prometheus-exporter-operator:v0.3.4
+                image: quay.io/3scale/prometheus-exporter-operatorrr
                 livenessProbe:
                   httpGet:
                     path: /healthz
