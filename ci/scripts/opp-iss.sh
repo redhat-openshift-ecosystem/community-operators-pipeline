@@ -97,7 +97,7 @@ OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_image_version=$OPP_PRODUCTION_INDE
 OPP_EXEC_USER_SECRETS="-e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
 
 [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=$IIB_INPUT_REGISTRY_USER -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
-[ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_token='$IIB_INPUT_REGISTRY_TOKEN'"
+[ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_token=\"$IIB_INPUT_REGISTRY_TOKEN\""
 
 if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info_file=$OP_INFO_FILE_LOCATION/op_info.yaml"; fi
 
