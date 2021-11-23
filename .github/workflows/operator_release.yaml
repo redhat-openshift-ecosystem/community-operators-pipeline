@@ -39,7 +39,7 @@ env:
   OPP_MIRROR_INDEX_REGISTRY: "quay.io"
   OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_MIRROR_INDEX_NAME: "catalog"
-  # OPP_MIRROR_INDEX_ENABLED: "1"
+  OPP_MIRROR_INDEX_ENABLED: "1"
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry"
   OPP_MULTIARCH_SUPPORTED_VERSIONS: "v4.9"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
@@ -250,12 +250,4 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-
-      - name: Release sha
-        env:
-          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-          IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
-        run: |
-          echo "k8s: latest"
-          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift latest
 
