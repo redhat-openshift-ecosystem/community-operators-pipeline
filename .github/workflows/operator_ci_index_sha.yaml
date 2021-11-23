@@ -18,15 +18,15 @@ env:
   OPP_SCRIPT_ISS_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-iss.sh"
   GODEBUG: x509ignoreCN=0
   OPP_INDEX_MIRROR: 1
-  OPP_MIRROR_LATEST_TAG: ""
-  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_MIRROR_LATEST_TAG: "latest"
+  OPP_PRODUCTION_TYPE: "k8s"
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "registry.redhat.io/openshift4/ose-operator-registry"
-  OPP_MULTIARCH_SUPPORTED_VERSIONS: "v4.5 v4.6 v4.7 v4.8 v4.9"
+  OPP_MULTIARCH_SUPPORTED_VERSIONS: "v4.5 v4.6 v4.7"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
   OPP_MIRROR_INDEX_REGISTRY: "quay.io"
   OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_MIRROR_INDEX_NAME: "catalog_prod"
-  IIB_INPUT_REGISTRY_USER: "mavala"
+  IIB_INPUT_REGISTRY_USER: "jbreza"
   OPP_REGISTRY_MIRROR_USER: "framework_automation"
 
   #QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP: ${{ secrets.QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP }}
@@ -51,7 +51,7 @@ jobs:
     timeout-minutes: 3600
     strategy:
       matrix:
-        index-tag: [ v4.6, v4.7, v4.8, v4.9 ]
+        index-tag: [ latest ]
 
       fail-fast: false
     steps:
