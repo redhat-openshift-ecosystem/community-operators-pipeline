@@ -445,6 +445,36 @@ function ExecParameters() {
         fi
     fi
 
+
+    if [ "$OPP_CLUSTER_TYPE" = "k8s" ] && [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]];then
+        if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
+            handleMultiarchTag
+            # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
+            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_sa"
+            [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+        else
+
+            echo "Ignoring: -e sis_index_add_skip=true"
+            #OPP_EXEC_USER="$OPP_EXEC_USER -e sis_index_add_skip=true"    
+        fi
+    fi
+
+    if [ "$OPP_CLUSTER_TYPE" = "k8s" ] && [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]];then
+        if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
+            handleMultiarchTag
+            OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
+            [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|$OPP_REGISTRY_MIRROR_USER|$REGISTRY_MIRROR_PW|$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|$OPP_REGISTRY_MIRROR_USER|$REGISTRY_MIRROR_PW|$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+        else
+            echo "Ignoring: -e sis_index_add_skip=true"
+            #OPP_EXEC_USER="$OPP_EXEC_USER -e sis_index_add_skip=true"    
+        fi
+    fi
+
+
     [ -n "$OPP_PRODUCTION_TYPE" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e cluster_type=$OPP_PRODUCTION_TYPE" && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK  -e cluster_type=$OPP_PRODUCTION_TYPE"
 
     [[ OP_ALLOW_BIG_CHANGES_TO_EXISTING -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e allow_big_changes_to_existing=true"
