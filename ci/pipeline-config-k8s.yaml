@@ -22,7 +22,7 @@ production:
     organization: community-operators-pipeline
     name: catalog
     username:
-      in: mvala
+      in: mavala
       out: framework_automation
 
 pipeline:
