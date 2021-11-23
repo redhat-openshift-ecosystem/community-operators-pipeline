@@ -6,7 +6,7 @@ production:
   index:
     registry: quay.io
     organization: community-operators-pipeline
-    name: catalog
+    name: catalog_sa
     tags:
       - latest
     latest: latest
@@ -16,15 +16,13 @@ production:
     multiarch:
       base: registry.redhat.io/openshift4/ose-operator-registry
       base_tags:
-        - v4.5
-        - v4.6
-        - v4.7
+        - v4.9
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
-    name: catalog_prod
+    name: catalog
     username:
-      in: jbreza
+      in: mvala
       out: framework_automation
 
 pipeline:
