@@ -421,7 +421,7 @@ function ExecParameters() {
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
             handleMultiarchTag
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
-            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
+            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
             [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
             [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
@@ -450,7 +450,7 @@ function ExecParameters() {
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
             handleMultiarchTag
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
-            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_sa"
+            OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
             [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
             [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
