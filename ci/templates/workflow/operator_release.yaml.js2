@@ -40,7 +40,7 @@ env:
   OPP_MIRROR_INDEX_REGISTRY: "{{ default_config.production.mirror.registry }}"
   OPP_MIRROR_INDEX_ORGANIZATION: "{{ default_config.production.mirror.organization }}"
   OPP_MIRROR_INDEX_NAME: "{{ default_config.production.mirror.name }}"
-  # OPP_MIRROR_INDEX_ENABLED: "{{ default_config.production.mirror.enabled }}"
+  OPP_MIRROR_INDEX_ENABLED: "{{ default_config.production.mirror.enabled }}"
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "{{ default_config.production.mirror.multiarch.base }}"
   OPP_MULTIARCH_SUPPORTED_VERSIONS: "{% for item in default_config.production.mirror.multiarch.base_tags %}{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "{{ default_config.production.mirror.multiarch.postfix }}"
@@ -251,6 +251,9 @@ jobs:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_FORCE_INDEX_UPDATE: 1
+          OPP_IIB_INSTALL: 1
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
+          IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
@@ -258,6 +261,7 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+
 {% endraw %}
 {% else %}
   remove-{{ default_config.production.type }}:
@@ -425,6 +429,7 @@ jobs:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
+          OPP_MIRROR_INDEX_ENABLED: 0
           OPP_FORCE_INDEX_UPDATE: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
