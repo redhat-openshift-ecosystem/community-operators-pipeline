@@ -69,10 +69,6 @@ See the [scorecard test documentation][scorecard-test-docs] for more information
 
 **Note**: no explicit number of points or percentage is necessary to achieve before merging _yet_. These are suggestions to improve your operator.
 
-#### operator-courier
-
-The [`operator-courier verify`][courier] command verifies that a set of files is valid and can be bundled and pushed to [quay.io][quay]. Read the [docs][courier-docs] for more information.
-
 ### Upstream operators
 
 Operators submitted to the `upstream-community-operators/` directory are tested against a [`KIND`][kind] instance deployed on a [Travis CI][travis-ci] environment. The OLM is installed locally in this case.
@@ -84,17 +80,13 @@ Operators submitted to the `community-operators/` directory are tested against a
 [olm]:https://github.com/operator-framework/otest-script-docsperator-lifecycle-manager/
 [sdk-scorecard]:https://github.com/operator-framework/operator-sdk/blob/master/doc/test-framework/scorecard.md
 [scorecard-test-docs]:https://github.com/operator-framework/operator-sdk/blob/master/doc/test-framework/scorecard.md#basic-operator
-[courier]:https://github.com/operator-framework/operator-courier/
 [kind]:https://github.com/kubernetes-sigs/kind
 [github-actions]:https://docs.github.com/en/actions
 [ci-operator]: https://github.com/openshift/release/tree/master/ci-operator
 [scripts-ci]:../scripts/ci/
 [registry-bundle]:https://github.com/operator-framework/operator-registry#manifest-format
-[courier-verify]:https://github.com/operator-framework/operator-courier/#command-line-interface
 [registry]:https://github.com/operator-framework/operator-registry/tree/release-4.3
 [olm-alm-examples]:https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/building-your-csv.md#crd-templates
-[courier-docs]:https://github.com/operator-framework/operator-courier/#operator-courier
 [quay]:https://quay.io
 [quay-create-repo]:https://docs.quay.io/guides/create-repo.html
-[operator-courier]:https://github.com/operator-framework/operator-courier/#usage
 [test-script-docs]:./using-scripts.md

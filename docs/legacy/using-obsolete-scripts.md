@@ -30,28 +30,6 @@ The `Makefile` supports two test modes. Both have these supported options:
 
 ` VERBOSE ` - enable verbose output of executed subcommands
 
-### Linting metadata only
-
-Using `operator-courier`, this test verifies your CSV and the package definition. More details can be found in the [docs](https://github.com/operator-framework/operator-courier). As part of this test nothing will be changed on your system.
-
-Example, run from the top-level directory of this repository:
-
-```
-make operator.verify OP_PATH=upstream-community-operators/cockroachdb VERBOSE=1
-
-Pulling docker image                              [  Processing  ]
-Using default tag: latest
-latest: Pulling from dmesser/operator-testing
-Digest: sha256:457953575cd7bd2af60e55fb95f0413195e526c3bbe74b6de30faaf2f10a0585
-Status: Image is up to date for quay.io/dmesser/operator-testing:latest
-Pulling docker image                              [  OK  ]
-Lint Operator metadata                            [  Processing  ]
-WARNING: csv metadata.annotations.certified not defined. [2.0.9/cockroachdb.v2.0.9.clusterserviceversion.yaml]
-WARNING: csv metadata.annotations.certified not defined. [2.1.1/cockroachdb.v2.1.1.clusterserviceversion.yaml]
-Lint Operator metadata                            [  OK  ]
-
-```
-
 ### Deploying and Testing your Operator
 
 Using the [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) (OLM) your Operator will be packaged into a temporary catalog, containing all currently published community operators and yours. OLM will be installed for you if not present.

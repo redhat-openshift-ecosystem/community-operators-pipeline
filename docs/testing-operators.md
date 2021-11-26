@@ -46,8 +46,6 @@ These instructions walk you through how to manually test that your Operator depl
 
 > The tests described in this document can also be executed automatically in a single step using a [test suite](./operator-test-suite.md)
 
-> A previous version of this document required quay.io, `operator-courier` and `operator-marketplace` to conduct the tests. This is no longer required.
-
 However, note that you can easily check and test your bundles via [`operator-sdk bundle validate`][sdk-cli-bundle-validate]:
 
 ```sh
@@ -188,7 +186,7 @@ cp -R my-operator/2.0.0 community-operators/upstream-community-operators/my-oper
 
 ## Operator Metadata Validation
 
-If you are using `packagemanifest` format you will need to convert your metadata to `bundle` format for the validation step. In theory the previous `operator-courier` tool still works but it is no longer maintained.
+If you are using `packagemanifest` format you will need to convert your metadata to `bundle` format for the validation step.
 
 ### Temporary conversion of packagemanifest to bundle
 
