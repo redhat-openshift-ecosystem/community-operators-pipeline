@@ -30,7 +30,7 @@ production:
     name: catalog
     username:
       in: mavala
-      out: framework_automation
+      out: mavala
 
 pipeline:
   base: https://github.com
