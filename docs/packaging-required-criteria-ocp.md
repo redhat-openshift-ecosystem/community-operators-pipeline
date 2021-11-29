@@ -40,29 +40,35 @@ com.redhat.openshift.versions: "v4.6-v4.8"
 
 This option is also useful when you know that the current version of your project will not work well on some specific OpenShift version. By using it you defined the Openshift versions where the Operator should be distributed and the Operator will not appear in a catalog of an Openshift version which is outside of the range. You must use it if you are distributing a solution that contains deprecated API(s) and will no longer be available in later versions. For more information see [Managing OpenShift Versions][managing-openshift-versions].
 
-### Validate criteria with SDK
+### Validate the bundle with the common criteria to distribute via OLM with SDK
 
-Also, you can check the bundle via [`operator-sdk bundle validate`][sdk-cli-bundle-validate] against the experimental optional Validator [Community Operators][optional-validators]. This validator checks the manifests which are shipped in the bundle. In this way, if any manifests using the [Deprecated/Removed API(s) in 1.22][k8s-deprecated-guide] be found it will verify if your bundle is configured accordingly as described above:
+Also, you can check the bundle via [`operator-sdk bundle validate`][sdk-cli-bundle-validate] against the suite  Validator [Community Operators][optional-validators] and the K8s Version that you are intended to publish:
 
 ```sh
-operator-sdk bundle validate ./bundle --select-optional name=community
+operator-sdk bundle validate ./bundle --select-optional suite=operatorframework --optional-values=k8s-version=1.22
+```
+**NOTE:** The validators only checks the manifests which are shipped in the bundle. They are unable to ensure that the project's code does not use the [Deprecated/Removed API(s) in 1.22][k8s-deprecated-guide] and/or that it does not have as dependency another operator that uses them.
+
+### Validate the bundle with the specific criteria to distribute in Openshift catalogs
+
+**Pre-requirement**
+Download the [binary](https://github.com/redhat-openshift-ecosystem/ocp-olm-catalog-validator/releases). You might want to keep it in your `$GOPTH/bin`
+
+Then, we can use the experimental [OpenShift OLM Catalog Validator](https://github.com/redhat-openshift-ecosystem/ocp-olm-catalog-validator) to check your Operator bundle.
+In this case, we need to inform the bundle and the annotations.yaml file paths:
+
+```
+$ ocp-olm-catalog-validator my-bundle-path/bundle  --optional-values="file=bundle-path/bundle/metadata/annotations.yaml"
 ```
 
-The labels which are added in `bundle/metadata/annotations.yaml` are going to be added to the bundle image that  the pipeline will generate and by which your Operator is added to the catalog. However, if you want to build your own bundle image via the `bundle.Dockerfile` you should add those labels via the `LABEL` directive.
+Following an example of an Operator bundle which uses the removed APIs in 1.22 and is not configured accordingly:
 
-> If you used `operator-sdk` to develop your Operator and to [create or update a bundle](https://sdk.operatorframework.io/docs/olm-integration/quickstart-bundle/#creating-a-bundle) you are using the target `make bundle` then, you will see that the annotation, `com.redhat.openshift.versions`, going to end up in the index image (`bundle.Dockerfile`): 
-
+```sh
+$ ocp-olm-catalog-validator bundle/ --optional-values="file=bundle/metadata/annotations.yaml"
+WARN[0000] Warning: Value memcached-operator.v0.0.1: this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the API(s) for CRD: (["memcacheds.cache.example.com"]) 
+ERRO[0000] Error: Value : (memcached-operator.v0.0.1) olm.maxOpenShiftVersion csv.Annotations not specified with an OCP version lower than 4.9. This annotation is required to prevent the user from upgrading their OCP cluster before they have installed a version of their operator which is compatible with 4.9. For further information see https://docs.openshift.com/container-platform/4.8/operators/operator_sdk/osdk-working-bundle-images.html#osdk-control-compat_osdk-working-bundle-images 
+ERRO[0000] Error: Value : (memcached-operator.v0.0.1) this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the APIs for this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the API(s) for CRD: (["memcacheds.cache.example.com"]) or provide compatible version(s) via the labels. (e.g. LABEL com.redhat.openshift.versions='4.6-4.8') 
 ```
-LABEL com.redhat.openshift.versions=v4.6-v4.8
-```
-
-You can use your (`bundle.Dockerfile`) to check it:
-
-```
-$ operator-sdk bundle validate ./bundle --select-optional name=community --optional-values=index-path=bundle.Dockerfile
-```
-
-**NOTE:** The validators only checks the manifests which are shipped in the bundle. They are unable to ensure that the project's code does not use the [Deprecated/Removed API(s) in 1.22][k8s-deprecated-guide] and/or that it does not have as dependency another operator that uses them. 
 
 [sdk-cli-bundle-validate]: https://sdk.operatorframework.io/docs/cli/operator-sdk_bundle_validate/
 [managing-openshift-versions]: https://redhat-connect.gitbook.io/certified-operator-guide/ocp-deployment/operator-metadata/bundle-directory/managing-openshift-versions
