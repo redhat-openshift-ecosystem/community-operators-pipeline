@@ -333,7 +333,7 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
-          echo "Operators ({{ item }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
+          echo "Operators ({{ item.split('-') }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-') | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
       - name: Operator info
