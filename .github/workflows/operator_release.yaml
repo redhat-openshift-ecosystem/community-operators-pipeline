@@ -167,25 +167,22 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-          OPERATOR_INDEX_TAG: "orange_v4.6-db orange_v4.7-db orange_v4.8-db orange_v4.9-db orange_v4.10-rc"
+          OPERATOR_INDEX_TAG: "orange_['v4.6', 'db'] orange_['v4.7', 'db'] orange_['v4.8', 'db'] orange_['v4.9', 'db'] orange_['v4.10', 'rc']"
 
           OPP_INDEX_CHECK_ONLY: 1
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          FAKE_RC=false
-          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
-          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
-          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
+          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
           
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
-          echo "Operators (v4.6-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_6-db }}"
-          echo "Operators (v4.7-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_7-db }}"
-          echo "Operators (v4.8-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_8-db }}"
-          echo "Operators (v4.9-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_9-db }}"
-          echo "Operators (v4.10-rc) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_10-rc }}"
+          echo "Operators (['v4.6', 'db']) : ${{ steps.operators.outputs.opp_uncomplete_operators_['v4_6', 'db'] }}"
+          echo "Operators (['v4.7', 'db']) : ${{ steps.operators.outputs.opp_uncomplete_operators_['v4_7', 'db'] }}"
+          echo "Operators (['v4.8', 'db']) : ${{ steps.operators.outputs.opp_uncomplete_operators_['v4_8', 'db'] }}"
+          echo "Operators (['v4.9', 'db']) : ${{ steps.operators.outputs.opp_uncomplete_operators_['v4_9', 'db'] }}"
+          echo "Operators (['v4.10', 'rc']) : ${{ steps.operators.outputs.opp_uncomplete_operators_['v4_10', 'rc'] }}"
 
       - name: Operator info
         id: op-info
