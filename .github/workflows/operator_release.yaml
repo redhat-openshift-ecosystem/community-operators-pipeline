@@ -213,11 +213,11 @@ jobs:
           [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
-      opp_uncomplete_operators_v4_6-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6-db }}"
-      opp_uncomplete_operators_v4_7-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7-db }}"
-      opp_uncomplete_operators_v4_8-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8-db }}"
-      opp_uncomplete_operators_v4_9-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_9-db }}"
-      opp_uncomplete_operators_v4_10-rc: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_10-rc }}"
+      opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
+      opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
+      opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
+      opp_uncomplete_operators_v4_9: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_9 }}"
+      opp_uncomplete_operators_v4_10: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_10 }}"
 
   bundles-ocp:
     name: "Bundles / ocp"
@@ -288,11 +288,11 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           # OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
           OPP_FORCE_OPERATORS: ""
-          OPP_FORCE_OPERATORS_v4_6-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6-db }}"
-          OPP_FORCE_OPERATORS_v4_7-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7-db }}"
-          OPP_FORCE_OPERATORS_v4_8-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8-db }}"
-          OPP_FORCE_OPERATORS_v4_9-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_9-db }}"
-          OPP_FORCE_OPERATORS_v4_10-rc: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_10-rc }}"
+          OPP_FORCE_OPERATORS_v4_6: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6 }}"
+          OPP_FORCE_OPERATORS_v4_7: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7 }}"
+          OPP_FORCE_OPERATORS_v4_8: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8 }}"
+          OPP_FORCE_OPERATORS_v4_9: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_9 }}"
+          OPP_FORCE_OPERATORS_v4_10: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_10 }}"
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
