@@ -320,7 +320,7 @@ jobs:
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 {% endraw %}
-          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item.split('-') }}{%- if not loop.last %} {% endif %}{% endfor %}"
+          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item.split('-')[0] }}{%- if not loop.last %} {% endif %}{% endfor %}"
 {% raw %}
           OPP_INDEX_CHECK_ONLY: 1
         run: |
@@ -333,7 +333,7 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
-          echo "Operators ({{ item.split('-') }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-') | replace('.','_') }} {{ '}}' }}"
+          echo "Operators ({{ item.split('-')[0] }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
       - name: Operator info
