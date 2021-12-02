@@ -623,7 +623,7 @@ for t in $TESTS;do
     t1=$(echo $t | cut -d '-' -f 1)
     t2=$(echo $t | cut -d '-' -f 2)
 
-    OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t/orange_/}
+    OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t1/orange_/}
     OPP_FORCE_OPERATORS_TMP=${OPP_FORCE_OPERATORS_TMP//./_}
 
     [[ $t1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}

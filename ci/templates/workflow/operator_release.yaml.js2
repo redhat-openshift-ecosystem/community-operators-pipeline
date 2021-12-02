@@ -326,10 +326,7 @@ jobs:
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          FAKE_RC=false
-          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
-          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
-          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
+          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
           
       - name: Index check
         run: |
