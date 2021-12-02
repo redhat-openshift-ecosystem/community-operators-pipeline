@@ -169,7 +169,10 @@ jobs:
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
+          bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
           
       - name: Index check
         run: |
@@ -245,8 +248,11 @@ jobs:
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
   release-ocp:
     name: "Index / ocp"
@@ -289,8 +295,11 @@ jobs:
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
   push-to-quay-ocp:
     name: "Push to quay / ocp"
@@ -331,11 +340,16 @@ jobs:
           path: /tmp/operator-test/operators
       - name: Release sha
         env:
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
         run: |
-          echo "openshift: ${{ matrix.index-tag }}"
-          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
+
+          echo "openshift: $OPERATOR_INDEX_TAG"
+          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift $OPERATOR_INDEX_TAG || $FAKE_RC
 
       - name: Prepare variables for the sign process
         id: openshift-vars
