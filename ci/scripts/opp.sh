@@ -623,6 +623,8 @@ for t in $TESTS;do
     t1=$(echo $t | cut -d '-' -f 1)
     t2=$(echo $t | cut -d '-' -f 2)
 
+    echo "t1=$t1 t2=$t2"
+
     OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t1/orange_/}
     OPP_FORCE_OPERATORS_TMP=${OPP_FORCE_OPERATORS_TMP//./_}
 
