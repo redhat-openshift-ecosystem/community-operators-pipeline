@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        index-tag: ['v4.6', 'v4.7', 'v4.8', 'v4.9']
+        index-tag: ['v4.6-db', 'v4.7-db', 'v4.8-db', 'v4.9-db', 'v4.10-rc']
 
       fail-fast: false
     steps:
@@ -163,7 +163,7 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-          OPERATOR_INDEX_TAG: "orange_v4.6 orange_v4.7 orange_v4.8 orange_v4.9"
+          OPERATOR_INDEX_TAG: "orange_v4.6-db orange_v4.7-db orange_v4.8-db orange_v4.9-db orange_v4.10-rc"
 
           OPP_INDEX_CHECK_ONLY: 1
         run: |
@@ -174,10 +174,11 @@ jobs:
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
-          echo "Operators (v4.6) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
-          echo "Operators (v4.7) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
-          echo "Operators (v4.8) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
-          echo "Operators (v4.9) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_9 }}"
+          echo "Operators (v4.6-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_6-db }}"
+          echo "Operators (v4.7-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_7-db }}"
+          echo "Operators (v4.8-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_8-db }}"
+          echo "Operators (v4.9-db) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_9-db }}"
+          echo "Operators (v4.10-rc) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_10-rc }}"
 
       - name: Operator info
         id: op-info
@@ -208,10 +209,11 @@ jobs:
           [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
-      opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
-      opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
-      opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
-      opp_uncomplete_operators_v4_9: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_9 }}"
+      opp_uncomplete_operators_v4_6-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6-db }}"
+      opp_uncomplete_operators_v4_7-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7-db }}"
+      opp_uncomplete_operators_v4_8-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8-db }}"
+      opp_uncomplete_operators_v4_9-db: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_9-db }}"
+      opp_uncomplete_operators_v4_10-rc: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_10-rc }}"
 
   bundles-ocp:
     name: "Bundles / ocp"
@@ -254,7 +256,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        index-tag: ['v4.6', 'v4.7', 'v4.8', 'v4.9']
+        index-tag: ['v4.6-db', 'v4.7-db', 'v4.8-db', 'v4.9-db', 'v4.10-rc']
 
       fail-fast: false
     steps:
@@ -279,10 +281,11 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           # OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
           OPP_FORCE_OPERATORS: ""
-          OPP_FORCE_OPERATORS_v4_6: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6 }}"
-          OPP_FORCE_OPERATORS_v4_7: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7 }}"
-          OPP_FORCE_OPERATORS_v4_8: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8 }}"
-          OPP_FORCE_OPERATORS_v4_9: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_9 }}"
+          OPP_FORCE_OPERATORS_v4_6-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6-db }}"
+          OPP_FORCE_OPERATORS_v4_7-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7-db }}"
+          OPP_FORCE_OPERATORS_v4_8-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8-db }}"
+          OPP_FORCE_OPERATORS_v4_9-db: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_9-db }}"
+          OPP_FORCE_OPERATORS_v4_10-rc: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_10-rc }}"
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
@@ -312,7 +315,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        index-tag: ['v4.6', 'v4.7', 'v4.8', 'v4.9']
+        index-tag: ['v4.6-db', 'v4.7-db', 'v4.8-db', 'v4.9-db', 'v4.10-rc']
 
       fail-fast: false
     steps:
