@@ -675,7 +675,7 @@ for t in $TESTS;do
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo $OPP_UNCOMPLETE_OPERATORS_CURRENT | xargs)
             echo "[$t1] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
-            OPP_MY_VER=${t/orange_/}
+            OPP_MY_VER=${t1/orange_/}
             OPP_MY_VER=${OPP_MY_VER//./_}
             [[ $t1 == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${OPP_MY_VER}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
             [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }

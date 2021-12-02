@@ -320,7 +320,7 @@ jobs:
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 {% endraw %}
-          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
+          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item.split('-') }}{%- if not loop.last %} {% endif %}{% endfor %}"
 {% raw %}
           OPP_INDEX_CHECK_ONLY: 1
         run: |
