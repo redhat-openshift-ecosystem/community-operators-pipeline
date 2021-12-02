@@ -8,10 +8,11 @@ production:
     organization: community-operators-pipeline
     name: catalog_sa
     tags:
-      - v4.6
-      - v4.7
-      - v4.8
-      - v4.9
+      - v4.6-db
+      - v4.7-db
+      - v4.8-db
+      - v4.9-db
+      - v4.10-rc
     latest: ""
     signature: 1
   mirror:
