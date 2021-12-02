@@ -367,7 +367,7 @@ jobs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
-      opp_uncomplete_operators_{{ item | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
+      opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 
   bundles-{{ default_config.production.type }}:
