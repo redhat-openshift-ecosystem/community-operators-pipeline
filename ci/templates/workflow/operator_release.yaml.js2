@@ -297,8 +297,12 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == rc* ]] && FAKE_RC=true || true
+
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
 {% endraw %}
   operators-{{ default_config.production.type }}:
