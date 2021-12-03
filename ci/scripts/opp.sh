@@ -353,8 +353,11 @@ function ExecParameters() {
     OPP_EXEC_USER_SECRETS=
     OPP_EXEC_USER_INDEX_CHECK=
     OPP_SKIP=0
+    OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX
 
-    [[ $2 == rc* ]] && [[ $OPP_PROD -eq 0 ]] && { echo "Skipping '$1-$2' ..."; exit 0; }
+    [[ $2 == *rc* ]] && [[ $OPP_PROD -eq 0 ]] && { echo "Skipping '$1-$2' ..."; exit 0; }
+
+    [[ $2 == *db* ]] || OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL="${OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL}f" 
 
     [[ $1 == kiwi* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_version=$OPP_VERSION --tags pure_test -e operator_channel_force=optest"
     [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
@@ -426,8 +429,8 @@ function ExecParameters() {
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
-            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL|$OPP_MIRROR_INDEX_IMAGE:latest\""
         else
 
             echo "Ignoring: -e sis_index_add_skip=true"
@@ -633,6 +636,9 @@ for t in $TESTS;do
     [ ! -n "$OPP_FORCE_OPERATORS" ] && [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
 
     ExecParameters $t1 $t2
+
+    echo "OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL"
+
     [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
 
     [ -z "$OPP_EXEC_USER" ] && { echo "Error: Unknown test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' !!! Exiting ..."; help; }
