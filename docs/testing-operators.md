@@ -60,9 +60,24 @@ And then, if you used [operator-sdk](https://github.com/operator-framework/opera
 operator-sdk scorecard bundle
 ```
 
+### FOR K8S COMMUNITY OPERATORS (OperatorHub.io)
+
+For K8s community operators make sure you understand and performed the required additional checks before publish your 
+PR in the repository [k8s-operatorhub/community-operators](https://github.com/k8s-operatorhub/community-operators).
+to distribute your Operator in [OperatorHub.io](https://operatorhub.io/).
+
+In this case, you can verify it specific criteria to distribute your Operator in this Index Catalog by also checking 
+your bundle with the [K8S Community Bundle Validator](https://github.com/k8s-operatorhub/bundle-validator), e.g:
+
+```sh
+k8s-community-bundle-validator <bundle-path>
+```
+
 ### FOR OPENSHIFT COMMUNITY OPERATORS
 
-For Openshift community operators make sure you understand and performed the required additional checks before publish your PR. See [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md).
+For Openshift community operators make sure you understand and performed the required additional checks before publish 
+your PR in the repository [redhat-openshift-ecosystem/community-operators-prod](https://github.com/redhat-openshift-ecosystem/community-operators-prod) 
+to distribute your Operator in Openshift and OKD catalogs. See [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md).
 
 ## Accepted Contribution formats
 
