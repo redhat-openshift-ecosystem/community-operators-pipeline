@@ -297,8 +297,12 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
+
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
 {% endraw %}
   operators-{{ default_config.production.type }}:
@@ -316,7 +320,7 @@ jobs:
           OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 {% endraw %}
-          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
+          OPERATOR_INDEX_TAG: "{% for item in default_config.production.index.tags %}orange_{{ item.split('-')[0] }}{%- if not loop.last %} {% endif %}{% endfor %}"
 {% raw %}
           OPP_INDEX_CHECK_ONLY: 1
         run: |
@@ -329,7 +333,7 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
-          echo "Operators ({{ item }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
+          echo "Operators ({{ item.split('-')[0] }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
       - name: Operator info
@@ -363,7 +367,7 @@ jobs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
-      opp_uncomplete_operators_{{ item | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item | replace('.','_') }} {{ '}}' }}"
+      opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 
   bundles-{{ default_config.production.type }}:
@@ -397,8 +401,11 @@ jobs:
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
           echo "OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
 {% endraw %}
   release-{{ default_config.production.type }}:
@@ -437,13 +444,16 @@ jobs:
           # OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
           OPP_FORCE_OPERATORS: ""
 {% for item_ver in default_config.production.index.tags %}
-          OPP_FORCE_OPERATORS_{{ item_ver | replace('.','_') }}: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators_{{ item_ver | replace('.','_') }} {{ '}}' }}"
+          OPP_FORCE_OPERATORS_{{ item_ver.split('-')[0] | replace('.','_') }}: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators_{{ item_ver.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
 {% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 {% endraw %}
 
   push-to-quay-{{ default_config.production.type }}:
@@ -487,11 +497,16 @@ jobs:
           path: /tmp/operator-test/operators
       - name: Release sha
         env:
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
         run: |
-          echo "openshift: ${{ matrix.index-tag }}"
-          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift ${{ matrix.index-tag }}
+          FAKE_RC=false
+          FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
+          [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
+
+          echo "openshift: $OPERATOR_INDEX_TAG"
+          bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift $OPERATOR_INDEX_TAG || $FAKE_RC
 {% endraw %}
 {% if default_config.production.index.signature == 1 %}
 {% raw %}

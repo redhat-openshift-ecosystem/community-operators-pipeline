@@ -353,6 +353,12 @@ function ExecParameters() {
     OPP_EXEC_USER_SECRETS=
     OPP_EXEC_USER_INDEX_CHECK=
     OPP_SKIP=0
+    OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX
+
+    [[ $2 == *rc* ]] && [[ $OPP_PROD -eq 0 ]] && { echo "Skipping '$1-$2' ..."; exit 0; }
+
+    [[ $2 == *db* ]] || OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL="${OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL}f" 
+
     [[ $1 == kiwi* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_version=$OPP_VERSION --tags pure_test -e operator_channel_force=optest"
     [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
     [[ $1 == kiwi* ]] && [[ $OPP_DEPLOY_LONGER -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pod_start_retries=$OPP_POD_START_RETRIES_LONG_DEPLOYMENT_WAIT_RETRIES"
@@ -423,8 +429,8 @@ function ExecParameters() {
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog_prod"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
-            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL|$OPP_MIRROR_INDEX_IMAGE:latest\""
         else
 
             echo "Ignoring: -e sis_index_add_skip=true"
@@ -617,20 +623,28 @@ OPP_SKIP=0
 IIB_INSTALLED=0
 for t in $TESTS;do
     
-    OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t/orange_/}
+    t1=$(echo $t | cut -d '-' -f 1)
+    t2=$(echo $t | cut -d '-' -f 2)
+
+    echo "t1=$t1 t2=$t2"
+
+    OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t1/orange_/}
     OPP_FORCE_OPERATORS_TMP=${OPP_FORCE_OPERATORS_TMP//./_}
 
-    [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
+    [[ $t1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [ -n "${!OPP_FORCE_OPERATORS_TMP}" ] && OPP_FORCE_OPERATORS=${!OPP_FORCE_OPERATORS_TMP}
     echo "Using Varialble : OPP_FORCE_OPERATORS_TMP=$OPP_FORCE_OPERATORS_TMP (${!OPP_FORCE_OPERATORS_TMP}) -> OPP_FORCE_OPERATORS=$OPP_FORCE_OPERATORS"
     [ ! -n "$OPP_FORCE_OPERATORS" ] && [[ "${OPP_FORCE_OPERATORS-x}" != "x" ]] && continue
 
-    ExecParameters $t
-    [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
+    ExecParameters $t1 $t2
 
-    [ -z "$OPP_EXEC_USER" ] && { echo "Error: Unknown test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' !!! Exiting ..."; help; }
-    echo -e "Test '$t' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..."
+    echo "OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL"
+
+    [[ $OPP_SKIP -eq 1 ]] && echo "Skipping test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..." && continue
+
+    [ -z "$OPP_EXEC_USER" ] && { echo "Error: Unknown test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' !!! Exiting ..."; help; }
+    echo -e "Test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..."
     if [[ $OPP_RESET -eq 1 ]];then
-        echo -e "[$t] Reseting kind cluster ..."
+        echo -e "[$t1] Reseting kind cluster ..."
         run $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false -e kind_kube_version=$KIND_KUBE_VERSION --tags reset
     fi
     if [ -n "$OPP_PRETEST_CUSTOM_SCRIPT" ];then
@@ -640,7 +654,7 @@ for t in $TESTS;do
         run $OPP_PRETEST_CUSTOM_SCRIPT
         echo "Custom script '$OPP_PRETEST_CUSTOM_SCRIPT' done ..."
     fi
-    echo -e "[$t] Running test ..."
+    echo -e "[$t1] Running test ..."
     [[ $OPP_DEBUG -ge 3 ]] && echo "OPP_EXEC_EXTRA=$OPP_EXEC_EXTRA"
 
     # Pull container
@@ -658,7 +672,7 @@ for t in $TESTS;do
         OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
     else
         
-        if [[ $t == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
+        if [[ $t1 == orange* ]] && [[ $OPP_PROD -ge 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && [ "$OPP_VERSION" = "sync" ];then
             echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA --tags index_check $OPP_EXEC_USER_INDEX_CHECK"
             echo "Checking insync operators ..."
@@ -668,10 +682,10 @@ for t in $TESTS;do
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo $OPP_UNCOMPLETE_OPERATORS_CURRENT | xargs)
-            echo "[$t] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
-            OPP_MY_VER=${t/orange_/}
+            echo "[$t1] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
+            OPP_MY_VER=${t1/orange_/}
             OPP_MY_VER=${OPP_MY_VER//./_}
-            [[ $t == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${OPP_MY_VER}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            [[ $t1 == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${OPP_MY_VER}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
             [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }
         fi
     fi
