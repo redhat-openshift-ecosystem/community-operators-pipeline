@@ -35,7 +35,7 @@ env:
   OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"
   OPP_RELEASE_INDEX_REGISTRY: "quay.io"
   OPP_RELEASE_INDEX_ORGANIZATION: "community-operators-pipeline"
-  OPP_RELEASE_INDEX_NAME: "catalog_sa"
+  OPP_RELEASE_INDEX_NAME: "catalog_tmp"
   OPP_MIRROR_INDEX_REGISTRY: "quay.io"
   OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_MIRROR_INDEX_NAME: "catalog"
