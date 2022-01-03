@@ -9,5 +9,4 @@ upstream.Dockerfile
 *.pdf
 reseult.json
 docs
-
-
+.idea
