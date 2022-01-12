@@ -1,7 +1,6 @@
 {% raw %}
 {% endraw %}
-{{ puct_custom_var }}
-name: Operator release {% if puct_custom_var == 'manual_release' %} manual {% endif %}
+name: Operator release {% if puct_custom_var is defined and puct_custom_var == 'manual_release' %} manual {% endif %}
 {% raw %}
 
 on:
