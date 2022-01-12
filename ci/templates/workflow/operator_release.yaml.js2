@@ -289,7 +289,9 @@ jobs:
         index-tag: {{ default_config.production.index.tags }}
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
+{% raw %}
         index-tag: {{ github.event.inputs.index }}
+{% endraw %}
 {% endif %}
 {% raw %}
       fail-fast: false
