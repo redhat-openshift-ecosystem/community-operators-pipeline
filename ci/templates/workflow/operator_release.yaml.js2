@@ -1,5 +1,5 @@
+name: Operator release {% if puct_custom_var == 'manual_release' %} manual {% endif %}
 {% raw %}
-name: Operator release
 
 on:
   push:
