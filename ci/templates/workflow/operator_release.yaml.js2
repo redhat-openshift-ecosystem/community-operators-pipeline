@@ -19,7 +19,7 @@ on:
         required: false
         default: ''
 {% endraw %}
-{% if puct_custom_var != 'manual_release' %}
+{% if puct_custom_var == 'manual_release' %}
       index:
         description: 'Target index (e.g. v4.10)'
         required: true
