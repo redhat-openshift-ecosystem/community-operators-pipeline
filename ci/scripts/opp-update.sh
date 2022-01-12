@@ -39,6 +39,7 @@ ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSI
 -e workflow_config_path="$PWD/ci" \
 -e workflow_templates_path="$OPP_TMP_DIR/opp-input/ci/templates/workflow" \
 -e workflow_output_path="$PWD/.github/workflows" \
+-e workflow_extra_scripts="operator_release.yaml.js2:operator_release_manual.yaml:manual_release"
 -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN \
 -e container_tool=$OPP_CONTAINER_TOOL \
 -e pu_postfix=$OPP_INDEX_IMAGE_POSTFIX \
