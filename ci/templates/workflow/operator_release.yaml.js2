@@ -1,11 +1,13 @@
 name: Operator release {% if puct_custom_var == 'manual_release' %}manual {% endif %}
-{% raw %}
 
 on:
+{% if puct_custom_var != 'manual_release' %}
   push:
     branches:
       - master
       - main
+{% endif %}
+{% raw %}
   workflow_dispatch:
     inputs:
       release:
@@ -16,9 +18,19 @@ on:
         description: 'Delete operator (cockroachdb or cockroachdb/5.0.4) for debuging only'
         required: false
         default: ''
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+      index:
+        description: 'Target index (e.g. v4.10)'
+        required: true
+        default: 'v4.10'
+      list_of_operators:
+        description: 'Following operators will be added from git to index specified above (e.g. aqua,ripsaw)'
+        required: true
+        default: ''
+{% endif %}
 
 env:
-{% endraw %}
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
   OPP_SCRIPT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp.sh"
@@ -273,7 +285,12 @@ jobs:
     strategy:
       matrix:
 {% endraw %}
+{% if puct_custom_var != 'manual_release' %}
         index-tag: {{ default_config.production.index.tags }}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+        index-tag: {{ github.event.inputs.index }}
+{% endif %}
 {% raw %}
       fail-fast: false
     steps:
@@ -312,6 +329,9 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
       - name: List of missing operators
         id: operators
         env:
@@ -327,7 +347,10 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-          
+{% endraw %}
+{% endif %}
+{% raw %}
+
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
