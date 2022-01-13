@@ -303,7 +303,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ${{ github.event.inputs.index }}
+        index-tag: ['${{ github.event.inputs.index }}']
 {% endraw %}
 {% endif %}
 {% raw %}
