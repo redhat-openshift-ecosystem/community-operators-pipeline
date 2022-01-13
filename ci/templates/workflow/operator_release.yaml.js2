@@ -450,7 +450,14 @@ jobs:
     strategy:
       matrix:
 {% endraw %}
+{% if puct_custom_var != 'manual_release' %}
         index-tag: {{ default_config.production.index.tags }}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+        index-tag: ['${{ github.event.inputs.index }}']
+{% endraw %}
+{% endif %}
 {% raw %}
       fail-fast: false
     steps:
@@ -514,7 +521,14 @@ jobs:
     strategy:
       matrix:
 {% endraw %}
+{% if puct_custom_var != 'manual_release' %}
         index-tag: {{ default_config.production.index.tags }}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+        index-tag: ['${{ github.event.inputs.index }}']
+{% endraw %}
+{% endif %}
 {% raw %}
       fail-fast: false
     steps:
