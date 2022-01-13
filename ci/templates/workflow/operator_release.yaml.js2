@@ -20,6 +20,7 @@ on:
         default: ''
 {% endraw %}
 {% if puct_custom_var == 'manual_release' %}
+{% raw %}
       index:
         description: 'Target index (e.g. v4.10)'
         required: true
@@ -28,6 +29,11 @@ on:
         description: 'Following operators will be added from git to index specified above (e.g. aqua,ripsaw)'
         required: true
         default: ''
+      mirror_index_to_final_location:
+        description: 'Recommended to disable mirror during a new manual index release to avoid production index overwrite with partial content'
+        required: true
+        default: '0'
+{% endraw %}
 {% endif %}
 
 env:
@@ -52,7 +58,12 @@ env:
   OPP_MIRROR_INDEX_REGISTRY: "{{ default_config.production.mirror.registry }}"
   OPP_MIRROR_INDEX_ORGANIZATION: "{{ default_config.production.mirror.organization }}"
   OPP_MIRROR_INDEX_NAME: "{{ default_config.production.mirror.name }}"
+{% if puct_custom_var != 'manual_release' %}
   OPP_MIRROR_INDEX_ENABLED: "{{ default_config.production.mirror.enabled }}"
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+  OPP_MIRROR_INDEX_ENABLED: "${{ github.event.inputs.mirror_index_to_final_location }}"
+{% endif %}
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "{{ default_config.production.mirror.multiarch.base }}"
   OPP_MULTIARCH_SUPPORTED_VERSIONS: "{% for item in default_config.production.mirror.multiarch.base_tags %}{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "{{ default_config.production.mirror.multiarch.postfix }}"
@@ -290,7 +301,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: {{ github.event.inputs.index }}
+        index-tag: ${{ github.event.inputs.index }}
 {% endraw %}
 {% endif %}
 {% raw %}
