@@ -331,11 +331,9 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     steps:
-{% endraw %}
-{% if puct_custom_var != 'manual_release' %}
-{% raw %}
       - name: List of missing operators
         id: operators
+        if: github.event.inputs.list_of_operators is not defined or github.event.inputs.list_of_operators == ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
@@ -349,9 +347,6 @@ jobs:
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-{% endraw %}
-{% endif %}
-{% raw %}
 
       - name: Index check
         run: |
