@@ -302,12 +302,12 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           # OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
           OPP_FORCE_OPERATORS: ""
-          OPP_FORCE_OPERATORS_v4_6: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_6 }}"
-          OPP_FORCE_OPERATORS_v4_7: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_7 }}"
-          OPP_FORCE_OPERATORS_v4_8: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_8 }}"
-          OPP_FORCE_OPERATORS_v4_9: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_9 }}"
-          OPP_FORCE_OPERATORS_v4_10: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_10 }}"
-          OPP_FORCE_OPERATORS_v4_11: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators_v4_11 }}"
+          OPP_FORCE_OPERATORS_v4_6: "${{ github.event.inputs.list_of_operators }}"
+          OPP_FORCE_OPERATORS_v4_7: "${{ github.event.inputs.list_of_operators }}"
+          OPP_FORCE_OPERATORS_v4_8: "${{ github.event.inputs.list_of_operators }}"
+          OPP_FORCE_OPERATORS_v4_9: "${{ github.event.inputs.list_of_operators }}"
+          OPP_FORCE_OPERATORS_v4_10: "${{ github.event.inputs.list_of_operators }}"
+          OPP_FORCE_OPERATORS_v4_11: "${{ github.event.inputs.list_of_operators }}"
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
