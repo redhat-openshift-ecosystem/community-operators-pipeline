@@ -488,7 +488,8 @@ jobs:
           OPP_FORCE_OPERATORS_{{ item_ver.split('-')[0] | replace('.','_') }}: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators_{{ item_ver.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
-          OPP_FORCE_OPERATORS_{{ item_ver.split('-')[0] | replace('.','_') }}: {% raw %}${{ github.event.inputs.list_of_operators }}{% endraw %}
+          OPP_FORCE_OPERATORS_: "abc"
+          {# OPP_FORCE_OPERATORS_{{ item_ver.split('-')[0] | replace('.','_') }}: {% raw %}${{ github.event.inputs.list_of_operators }}{% endraw %} #}
           {# OPP_FORCE_OPERATORS_{{ item_ver.split('-')[0] | replace('.','_') }}: "${{ '{{' }} {% raw %}${{ github.event.inputs.list_of_operators }}{% endraw %} {{ '}}' }}" #}
 {% endif %}
 {% endfor %}
