@@ -344,7 +344,9 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
-      - name: Release sha
+
+      - name: Release final index
+        if: github.event.inputs.mirror_index_to_final_location != '0'
         env:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
