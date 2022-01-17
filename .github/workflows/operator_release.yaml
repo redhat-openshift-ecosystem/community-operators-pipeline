@@ -326,7 +326,7 @@ jobs:
     name: "Index production / ocp"
     needs: [ pr-check, release-ocp ]
 
-    if: needs.pr-check.outputs.opp_release_ready == '1' and github.event.inputs.mirror_index_to_final_location != '0'
+    if: needs.pr-check.outputs.opp_release_ready == '1' && github.event.inputs.mirror_index_to_final_location != '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
