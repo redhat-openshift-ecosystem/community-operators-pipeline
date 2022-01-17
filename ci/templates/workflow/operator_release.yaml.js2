@@ -366,13 +366,30 @@ jobs:
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
 {% for item in default_config.production.index.tags %}
+{% if puct_custom_var != 'manual_release' %}
           echo "Operators ({{ item.split('-')[0] }}) : ${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+          echo "Operators ({{ item.split('-')[0] }}) : {% raw %}${{ github.event.inputs.list_of_operators }}"
+{% endraw %}
+{% endif %}
 {% endfor %}
 {% raw %}
       - name: Operator info
         id: op-info
         env:
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
           OPP_FORCE_OPERATORS: ${{ steps.operators.outputs.opp_uncomplete_operators }}
+{% endraw %}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+          OPP_FORCE_OPERATORS: "${{ github.event.inputs.list_of_operators }}"
+{% endraw %}
+{% endif %}
+{% raw %}
           OPP_AUTO_LABEL: 1
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
@@ -429,7 +446,14 @@ jobs:
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
 {% endraw %}
+{% if puct_custom_var != 'manual_release' %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+          OPP_FORCE_OPERATORS: "${{ github.event.inputs.list_of_operators }}"
+{% endraw %}
+{% endif %}
 {% raw %}
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
