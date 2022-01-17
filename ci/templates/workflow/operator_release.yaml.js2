@@ -61,11 +61,6 @@ env:
 {% if puct_custom_var != 'manual_release' %}
   OPP_MIRROR_INDEX_ENABLED: "{{ default_config.production.mirror.enabled }}"
 {% endif %}
-{% if puct_custom_var == 'manual_release' %}
-{% raw %}
-  OPP_MIRROR_INDEX_ENABLED: "${{ github.event.inputs.mirror_index_to_final_location }}"
-{% endraw %}
-{% endif %}
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "{{ default_config.production.mirror.multiarch.base }}"
   OPP_MULTIARCH_SUPPORTED_VERSIONS: "{% for item in default_config.production.mirror.multiarch.base_tags %}{{ item }}{%- if not loop.last %} {% endif %}{% endfor %}"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "{{ default_config.production.mirror.multiarch.postfix }}"
@@ -565,7 +560,9 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
-      - name: Release sha
+
+      - name: Release final index
+        if: github.event.inputs.mirror_index_to_final_location != '0'
         env:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
