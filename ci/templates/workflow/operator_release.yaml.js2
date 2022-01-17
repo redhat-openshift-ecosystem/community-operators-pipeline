@@ -532,7 +532,7 @@ jobs:
     name: "Index production / {{ default_config.production.type }}"
     needs: [ pr-check, release-{{ default_config.production.type }} ]
 {% raw %}
-    if: needs.pr-check.outputs.opp_release_ready == '1'
+    if: needs.pr-check.outputs.opp_release_ready == '1' and github.event.inputs.mirror_index_to_final_location != '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -560,7 +560,6 @@ jobs:
           path: /tmp/operator-test/operators
 
       - name: Release final index
-        if: github.event.inputs.mirror_index_to_final_location != '0'
         env:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
