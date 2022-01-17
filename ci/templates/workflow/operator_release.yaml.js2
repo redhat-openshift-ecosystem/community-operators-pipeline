@@ -346,7 +346,6 @@ jobs:
     steps:
       - name: List of missing operators
         id: operators
-        if: github.event.inputs.list_of_operators == ''
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
@@ -357,10 +356,20 @@ jobs:
 {% raw %}
           OPP_INDEX_CHECK_ONLY: 1
         run: |
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
-
+{% endraw %}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+          echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
+{% endraw %}
+{% endif %}
+{% raw %}
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
