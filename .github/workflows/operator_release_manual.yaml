@@ -189,17 +189,19 @@ jobs:
       - name: Index check
         run: |
           echo "Operators : ${{ steps.operators.outputs.opp_uncomplete_operators }}"
-          echo "Operators (v4.6) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
-          echo "Operators (v4.7) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
-          echo "Operators (v4.8) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
-          echo "Operators (v4.9) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_9 }}"
-          echo "Operators (v4.10) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_10 }}"
-          echo "Operators (v4.11) : ${{ steps.operators.outputs.opp_uncomplete_operators_v4_11 }}"
+          echo "Operators (v4.6) : ${{ github.event.inputs.list_of_operators }}"
+          echo "Operators (v4.7) : ${{ github.event.inputs.list_of_operators }}"
+          echo "Operators (v4.8) : ${{ github.event.inputs.list_of_operators }}"
+          echo "Operators (v4.9) : ${{ github.event.inputs.list_of_operators }}"
+          echo "Operators (v4.10) : ${{ github.event.inputs.list_of_operators }}"
+          echo "Operators (v4.11) : ${{ github.event.inputs.list_of_operators }}"
 
       - name: Operator info
         id: op-info
         env:
-          OPP_FORCE_OPERATORS: ${{ steps.operators.outputs.opp_uncomplete_operators }}
+
+          OPP_FORCE_OPERATORS: "${{ github.event.inputs.list_of_operators }}"
+
           OPP_AUTO_LABEL: 1
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
@@ -257,7 +259,8 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
-          OPP_FORCE_OPERATORS: "${{ needs.operators-ocp.outputs.opp_uncomplete_operators }}"
+
+          OPP_FORCE_OPERATORS: "${{ github.event.inputs.list_of_operators }}"
 
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
