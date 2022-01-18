@@ -22,9 +22,9 @@ on:
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
       index:
-        description: 'Target index (e.g. v4.10)'
+        description: 'Target index (e.g. v4.10-db)'
         required: true
-        default: 'v4.10'
+        default: 'v4.10-db'
       list_of_operators:
         description: 'Following operators will be added from git to index specified above (e.g. aqua,ripsaw)'
         required: true
