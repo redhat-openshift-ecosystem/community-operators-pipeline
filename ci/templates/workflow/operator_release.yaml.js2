@@ -26,7 +26,7 @@ on:
         required: true
         default: 'v4.10-db'
       list_of_operators:
-        description: 'Following operators will be added from git to index specified above (e.g. aqua,ripsaw)'
+        description: 'List of operators to be recreated in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
         required: true
         default: ''
       mirror_index_to_final_location:
@@ -360,6 +360,7 @@ jobs:
 {% if puct_custom_var == 'manual_release' %}
 {% raw %} 
           TARGET_INDEX_RAW=${{ github.event.inputs.index }}
+          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
           TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
           echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
           echo "::set-output name=opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE::${{ github.event.inputs.list_of_operators }}"
