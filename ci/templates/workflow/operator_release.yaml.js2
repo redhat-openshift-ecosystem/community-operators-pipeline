@@ -15,12 +15,16 @@ on:
         required: true
         default: '0'   
       delete:
-        description: 'Delete operator (cockroachdb or cockroachdb/5.0.4) for debuging only'
+        description: 'Delete operator virtually (cockroachdb or cockroachdb/5.0.4) for debuging only'
         required: false
         default: ''
 {% endraw %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
+      delete_for_renew:
+        description: 'Remove operator from index before run'
+        required: true
+        default: '0'
       index:
         description: 'Target index (e.g. v4.10-db)'
         required: true
@@ -308,7 +312,7 @@ jobs:
         if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
-        if: github.event.inputs.list_of_operators !=''
+        if: github.event.inputs.list_of_operators !='' && github.event.inputs.delete_for_renew == '1'
 {% endif %}
 {% raw %}
         env:
