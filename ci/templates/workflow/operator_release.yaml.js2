@@ -1,4 +1,4 @@
-name: Operator release {% if puct_custom_var == 'manual_release' %}manual {% endif %}
+name: Operator release {% if puct_custom_var == 'manual_release' %}manual for OCP{% endif %}
 
 on:
 {% if puct_custom_var != 'manual_release' %}
@@ -303,15 +303,37 @@ jobs:
       fail-fast: false
     steps:
       - name: Remove operator from index
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
         if: needs.pr-check.outputs.opp_op_delete == '1' && needs.pr-check.outputs.opp_name != ''
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+        if: github.event.inputs.list_of_operators !=''
+{% endif %}
+{% raw %}
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
           echo "OPP_LABELS=$OPP_LABELS"
           echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
+{% endraw %}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+          for operator_to_delete in ${{ github.event.inputs.list_of_operators }}; do
+          echo "OPP_LABELS=$OPP_LABELS"
+          echo "op_delete_${OPERATOR_INDEX_TAG} operators/$operator_to_delete/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/$operator_to_delete/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
+          done
+{% endraw %}
+{% endif %}
+
       - name: Operator release (operator version overwrite)
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
         env:
