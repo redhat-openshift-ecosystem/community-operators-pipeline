@@ -1,4 +1,5 @@
-name: Operator release {% if puct_custom_var == 'manual_release' %}manual for OCP{% endif %}
+name: Operator release {% if puct_custom_var == 'manual_release' %}manual for OCP
+{% endif %}
 
 on:
 {% if puct_custom_var != 'manual_release' %}
