@@ -195,7 +195,6 @@ jobs:
           TARGET_INDEX_RAW=${{ github.event.inputs.index }}
           TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
           TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
-          echo "::set-output name=opp_target_index_underline::$TARGET_INDEX_UNDERLINE"
           echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
           echo "::set-output name=opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE::${{ github.event.inputs.list_of_operators }}"
 
@@ -239,8 +238,12 @@ jobs:
           [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
+      opp_uncomplete_operators_v4_6: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_6 }}"
+      opp_uncomplete_operators_v4_7: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_7 }}"
+      opp_uncomplete_operators_v4_8: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_8 }}"
+      opp_uncomplete_operators_v4_9: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_9 }}"
+      opp_uncomplete_operators_v4_11: "${{ steps.operators.outputs.opp_uncomplete_operators_v4_11 }}"
 
-      opp_uncomplete_operators_${{ steps.operators.opp_target_index_underline }}: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
   bundles-ocp:
     name: "Bundles / ocp"
     needs: [ pr-check, remove-ocp, operators-ocp ]
@@ -322,6 +325,10 @@ jobs:
           FAKE_RC=false
           FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
           [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
+          TARGET_INDEX_RAW=${{ github.event.inputs.index }}
+          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
+          TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
+          export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}""
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
@@ -385,7 +392,6 @@ jobs:
         run: |
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
           OPERATOR_INDEX_TAG=$(echo ${OPERATOR_INDEX_TAG_RAW} |cut -d'-' -f1)
-          skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} > /dev/null # error out if needed
           OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} | jq -r ".Digest")
           OPERATOR_INDEX_RESOLVED="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}@${OPERATOR_INDEX_DIGEST}"
           OPERATOR_INDEX="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG}"
