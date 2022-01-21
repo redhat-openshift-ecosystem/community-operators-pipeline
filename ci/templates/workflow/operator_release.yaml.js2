@@ -391,6 +391,7 @@ jobs:
           TARGET_INDEX_RAW=${{ github.event.inputs.index }}
           TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
           TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
+          echo "::set-output name=opp_target_index_underline::$TARGET_INDEX_UNDERLINE"
           echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
           echo "::set-output name=opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE::${{ github.event.inputs.list_of_operators }}"
 {% endraw %}
@@ -445,10 +446,16 @@ jobs:
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
+{% if puct_custom_var != 'manual_release' %}
 {% for item in default_config.production.index.tags %}
       opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }}: "${{ '{{' }} steps.operators.outputs.opp_uncomplete_operators_{{ item.split('-')[0] | replace('.','_') }} {{ '}}' }}"
 {% endfor %}
-
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+      opp_uncomplete_operators_${{ steps.operators.opp_target_index_underline }}: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
+{% endraw %}
+{% endif %}
   bundles-{{ default_config.production.type }}:
     name: "Bundles / {{ default_config.production.type }}"
     needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }} ]
