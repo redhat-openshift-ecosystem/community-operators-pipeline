@@ -60,3 +60,13 @@ For packagemanifest format it is not possible and community-operators pipeline c
 $ cat <path-to-operator>/ci.yaml
 packagemanifestClusterVersionLabel: auto
 ```
+
+## Kubernetes max version in CSV
+
+Starting from kubernetes 1.22 some old API were deprecated ([Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22). User can set `operatorhub.io/ui-metadata-max-k8s-version: "<version>"` in its CSV file to inform its maximum supported kubernetes version. Following example will inform that operator is able to handle `1.21` as max kubernetes version
+```
+$ cat <path-to-operators>/<name>/<version>/.../my.clusterserviceversion.yaml
+metadata:
+  annotations:
+    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
+```
