@@ -102,17 +102,15 @@ jobs:
           echo "::set-output name=opp_check_err_cluster_version_autolabel::0"
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "::set-output name=opp_check_err_k8s_bundles::1" || true
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "::set-output name=opp_check_err_k8s_bundles_value::$(cat /tmp/operator-test/op_failed_k8s_bundles.yaml)" || true
+          [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && cat /tmp/operator-test/op_failed_k8s_bundles.yaml || true
+          
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          K8S_BUNDLES_ERROR: ${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles }}
-        uses: jdvr/action-add-comment@v1.0.1
+        uses: mshick/add-pr-comment@v1
         with:
-          comment: |
+          message: |
             ## Missing k8s max version for some
-            $K8S_BUNDLES_ERROR
 {% endraw %}
 {% else %}
 {% raw %}
