@@ -106,10 +106,14 @@ jobs:
           template-variables: |
             {
               "importantFileContent": ${{ toJSON(env.IMPORTANT_FILE_CONTENT) }},
+              "importnatFileHash": ${{ toJSON(hashFiles('/tmp/operator-test/op_failed_k8s_bundles.yaml')) }},
               "prAuthor": "${{ github.event.pull_request.user.login }}"
             }
           comment:
             snippets:
+              - id: snippet_{{ importnatFileHash }}}
+              - files:
+                - '/tmp/operator-test/op_failed_k8s_bundles.yaml'
               - body: |
                   This is very important:
                   {{ importantFileContent }}
