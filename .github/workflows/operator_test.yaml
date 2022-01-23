@@ -90,7 +90,7 @@ jobs:
           echo "::set-output name=opp_check_err_k8s_bundles::0"
           echo "::set-output name=opp_check_err_k8s_bundles_value::"
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "::set-output name=opp_check_err_k8s_bundles::1" || true
-          [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "::set-output name=opp_check_err_k8s_bundles_value::$(cat /tmp/operator-test/op_failed_k8s_bundles.yaml | yq -r '.operators' | @csv' | tr -d '"')" || true
+          [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "::set-output name=opp_check_err_k8s_bundles_value::$(cat /tmp/operator-test/op_failed_k8s_bundles.yaml | yq -r '.operators | @csv' | tr -d '"')" || true
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1'
