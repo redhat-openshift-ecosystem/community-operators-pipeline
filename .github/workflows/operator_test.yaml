@@ -101,6 +101,8 @@ jobs:
             ```
             ${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}
             ```
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
       - name: Upload operator_info
         uses: actions/upload-artifact@v2
