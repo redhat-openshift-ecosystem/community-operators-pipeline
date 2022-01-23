@@ -112,8 +112,7 @@ jobs:
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1'
-
-      - uses: exercism/pr-commenter-action@v1.3.0
+        uses: exercism/pr-commenter-action@v1.3.0
         with:
           github-token: "${{ github.token }}"
           template-variables: |
