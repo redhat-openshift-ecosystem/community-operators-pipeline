@@ -94,14 +94,13 @@ jobs:
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1'
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           K8S_BUNDLES_ERROR: ${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles }}
-        uses: mshick/add-pr-comment@v1
+        uses: jdvr/action-add-comment@v1.0.1
         with:
-          message: |
+          comment: |
             ## Missing k8s max version for some
             $K8S_BUNDLES_ERROR
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
       - name: Upload operator_info
         uses: actions/upload-artifact@v2
