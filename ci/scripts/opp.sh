@@ -553,6 +553,7 @@ function ExecParameters() {
 
     # Force strict mode (force to fail on 'bundle add' and 'index add')
     [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_mode=true"
+    [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_k8s_bundles=true"
 
     # FOR debuging only
     # echo "OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"
