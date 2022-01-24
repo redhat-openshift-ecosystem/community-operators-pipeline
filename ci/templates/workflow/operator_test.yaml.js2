@@ -110,7 +110,7 @@ jobs:
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
-            There are some operators version that are using **deprecated api** and kubernetes max versions (`operatorhub.io/ui-metadata-max-k8s-version`) is **NOT** set in annotation in CSV file.
+            There are some operators version that are using **deprecated api** and kubernetes max versions (`operatorhub.io/ui-metadata-max-k8s-version`) is **NOT** set correctly under annotation field in CSV file.
             
             Affected versions : `${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}`
             
