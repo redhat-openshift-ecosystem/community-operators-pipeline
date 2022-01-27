@@ -12,7 +12,7 @@ on:
         required: true
         default: '0'   
       delete:
-        description: 'Delete operator virtually (cockroachdb or cockroachdb/5.0.4) for debuging only'
+        description: 'Remove operator virtually from git (cockroachdb or cockroachdb/5.0.4) for debuging only'
         required: false
         default: ''
 
@@ -28,7 +28,7 @@ env:
   OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
   OPP_PROD: 1
-  OPP_MIRROR_LATEST_TAG: "latest"
+  OPP_MIRROR_LATEST_TAG: ""
   OPP_PRODUCTION_TYPE: "k8s"
   OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
   OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"

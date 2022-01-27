@@ -98,11 +98,11 @@ jobs:
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
-            There are some operators version that are using **deprecated api** and kubernetes max versions (`operatorhub.io/ui-metadata-max-k8s-version`) is **NOT** set in annotation in CSV file.
+            There are some operators version that are using **deprecated api** and kubernetes max versions (`operatorhub.io/ui-metadata-max-k8s-version`) is **NOT** set correctly under annotation field in CSV file.
             
             Affected versions : `${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}`
             
-            More info [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#kubernetes-max-version-in-csv).
+            More info in 'Kubernetes max version in CSV' section [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#kubernetes-max-version-in-csv).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
 
