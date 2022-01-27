@@ -627,6 +627,7 @@ for t in $TESTS;do
     t1=$(echo $t | cut -d '-' -f 1)
     t2=$(echo $t | cut -d '-' -f 2)
 
+    [[ $t2 == *lemon* ]] && t2=latest-db
     [[ $t2 == *orange* ]] && t2=latest-db
 
     echo "t1=$t1 t2=$t2"
