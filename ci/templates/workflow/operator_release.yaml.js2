@@ -32,9 +32,14 @@ on:
         description: 'Target index (e.g. latest or latest-db)'
         required: true
         default: 'latest'
+      list_of_operators:
+        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
+        required: true
+        default: ''
 {% endraw %}
 {% else %}
 {% raw %}
+      mirror_index_to_final_location:
         description: 'Target index (e.g. v4.10, v4.10-db)'
         required: true
         default: 'v4.10-db'
@@ -45,10 +50,6 @@ on:
 {% endraw %}
 {% else %}
 {% raw %}
-      list_of_operators:
-        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
-        required: true
-        default: ''
       mirror_index_to_final_location:
         description: 'Push final index to production'
         required: true
