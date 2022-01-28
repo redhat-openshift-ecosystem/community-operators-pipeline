@@ -315,7 +315,7 @@ jobs:
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
   test-orange-latest:
-    name: "orange / Deploy k8s latest"
+    name: "orange / Deploy k8s"
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_op_delete == '0'
     runs-on: ubuntu-latest
