@@ -1,5 +1,4 @@
-name: Operator release {% if puct_custom_var == 'manual_release' %}manual{% endif %} for {{ default_config.production.type }}
-
+name: Operator release {% if puct_custom_var == 'manual_release' %}manual{% endif %}
 on:
 {% if puct_custom_var != 'manual_release' %}
   push:
@@ -26,9 +25,25 @@ on:
         required: true
         default: '0'
       index:
-        description: 'Target index (e.g. v4.10-db)'
+{% endraw %}
+{% if default_config.production.type == 'k8s' %}
+{% raw %}
+        description: 'Target index (e.g. latest or latest-db)'
+        required: true
+        default: 'latest'
+{% endraw %}
+{% else %}
+{% raw %}
+        description: 'Target index (e.g. v4.10, v4.10-db)'
         required: true
         default: 'v4.10-db'
+{% endraw %}
+{% endif %}
+{% if default_config.production.type == 'k8s' %}
+{% raw %}
+{% endraw %}
+{% else %}
+{% raw %}
       list_of_operators:
         description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
         required: true
@@ -38,6 +53,7 @@ on:
         required: true
         default: '0'
 {% endraw %}
+{% endif %}
 {% endif %}
 
 env:
