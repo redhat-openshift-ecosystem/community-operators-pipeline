@@ -246,6 +246,12 @@ jobs:
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1'
     runs-on: ubuntu-latest
+strategy:
+      matrix:
+{% endraw %}
+        index-tag: {{ default_config.production.index.tags }}
+{% raw %}
+      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -255,9 +261,10 @@ jobs:
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
-          echo "lemon operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
 {% else %}
 {% raw %}
@@ -312,6 +319,12 @@ jobs:
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_op_delete == '0'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+{% endraw %}
+        index-tag: {{ default_config.production.index.tags }}
+{% raw %}
+      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -324,9 +337,10 @@ jobs:
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
+          OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
 {% else %}
 {% raw %}
