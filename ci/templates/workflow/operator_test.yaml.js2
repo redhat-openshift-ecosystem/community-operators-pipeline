@@ -246,7 +246,7 @@ jobs:
     needs: pr-check
     if: needs.pr-check.outputs.opp_test_ready == '1'
     runs-on: ubuntu-latest
-strategy:
+    strategy:
       matrix:
 {% endraw %}
         index-tag: {{ default_config.production.index.tags }}
