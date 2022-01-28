@@ -1,6 +1,4 @@
-name: Operator release manual for k8s
-
-on:
+name: Operator release manualon:
 
   workflow_dispatch:
     inputs:
@@ -18,17 +16,11 @@ on:
         required: true
         default: '0'
       index:
-        description: 'Target index (e.g. v4.10-db)'
+
+        description: 'Target index (e.g. latest or latest-db)'
         required: true
-        default: 'v4.10-db'
-      list_of_operators:
-        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
-        required: true
-        default: ''
-      mirror_index_to_final_location:
-        description: 'Push final index to production'
-        required: true
-        default: '0'
+        default: 'latest'
+
 
 env:
   OPP_DEBUG: 1

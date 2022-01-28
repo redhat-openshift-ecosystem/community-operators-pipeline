@@ -1,6 +1,4 @@
-name: Operator release  for k8s
-
-on:
+name: Operator release on:
   push:
     branches:
       - master
