@@ -25,26 +25,29 @@ on:
         description: 'Remove operator from index (allow/operator-recreate)'
         required: true
         default: '0'
-      index:
+
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
+      index:
         description: 'Target index (e.g. latest or latest-db)'
         required: true
         default: 'latest'
-      list_of_operators:
-        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
-        required: true
-        default: ''
 {% endraw %}
 {% else %}
 {% raw %}
-      mirror_index_to_final_location:
+      index:
         description: 'Target index (e.g. v4.10, v4.10-db)'
         required: true
         default: 'v4.10-db'
 {% endraw %}
 {% endif %}
+{% raw %}
+      list_of_operators:
+        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
+        required: true
+        default: ''
+{% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
 {% endraw %}
