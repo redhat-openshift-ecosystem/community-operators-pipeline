@@ -21,6 +21,10 @@ on:
         description: 'Target index (e.g. latest or latest-db)'
         required: true
         default: 'latest'
+      list_of_operators:
+        description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
+        required: true
+        default: ''
 
 
 env:
