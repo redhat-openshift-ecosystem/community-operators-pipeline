@@ -3,7 +3,7 @@ ci/prow
 results.json
 site/
 categories.json
-scripts/
+#scripts/
 upstream.Dockerfile
 *.png
 *.pdf
