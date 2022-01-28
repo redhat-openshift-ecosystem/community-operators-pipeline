@@ -1,4 +1,5 @@
-name: Operator release on:
+name: Operator release 
+on:
   push:
     branches:
       - master

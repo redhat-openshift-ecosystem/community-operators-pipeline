@@ -1,4 +1,5 @@
-name: Operator release manualon:
+name: Operator release manual
+on:
 
   workflow_dispatch:
     inputs:
