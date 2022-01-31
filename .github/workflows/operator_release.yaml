@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        index-tag: ['latest']
+        index-tag: ['latest-db']
 
       fail-fast: false
     steps:
@@ -256,7 +256,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        index-tag: ['latest']
+        index-tag: ['latest-db']
 
       fail-fast: false
     steps:
