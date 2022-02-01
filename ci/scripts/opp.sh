@@ -16,7 +16,8 @@ OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
 
 OPP_BASE_DEP="ansible curl openssl git"
 KIND_KUBE_VERSION=${KIND_KUBE_VERSION-"v1.19.11"}
-OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
+# OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
+OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"k8s"}
 OPP_CLUSTER_TYPE="k8s"
 OPP_OPERATORS_DIR=${OPP_OPERATORS_DIR-"operators"}
 
@@ -392,7 +393,7 @@ function ExecParameters() {
 
     [[ $1 == orange* ]] && OPP_EXEC_USER_INDEX_CHECK="-e run_prepare_catalog_repo_upstream=true -e bundle_index_image=$OPP_PRODUCTION_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG -e operator_base_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR"
     [[ $1 == orange* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e stream_kind=openshift_upstream"
-    [[ $1 == orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && { echo "Error: orange_xxx is not supported for 'kubernetes' cluster !!! Exiting ..."; exit 1; }
+    # [[ $1 == orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && { echo "Error: orange_xxx is not supported for 'kubernetes' cluster !!! Exiting ..."; exit 1; }
     
     # [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [ "$OPP_STREAM" = "community-operators" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=$OPP_RELEASE_BUNDLE_REGISTRY -e bundle_image_namespace=$OPP_RELEASE_BUNDLE_ORGANIZATION -e bundle_index_image_namespace=$OPP_RELEASE_INDEX_ORGANIZATION -e bundle_index_image_name=OPP_RELEASE_INDEX_NAME"    
     # Using default "-e use_cluster_filter=false -e supported_cluster_versions=latest" for k8s
@@ -458,8 +459,8 @@ function ExecParameters() {
             # OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             OPP_MIRROR_INDEX_IMAGE="kind-registry:5000/operator_testing/catalog"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
-            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL|$OPP_MIRROR_INDEX_IMAGE:latest\""
         else
 
             echo "Ignoring: -e sis_index_add_skip=true"
@@ -472,8 +473,8 @@ function ExecParameters() {
             handleMultiarchTag
             OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_apply=true"
             [[ $OPP_MIRROR_INDEX_MULTIARCH_BASE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
-            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ]&& OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX\""
-            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX|$OPP_MIRROR_INDEX_IMAGE:latest\""
+            [ "$OPP_MIRROR_LATEST_TAG" != "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL\""
+            [ "$OPP_MIRROR_LATEST_TAG" = "$OPP_PRODUCTION_INDEX_IMAGE_TAG" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e mirror_index_images=\"$OPP_MIRROR_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG|||$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL|$OPP_MIRROR_INDEX_IMAGE:latest\""
         else
             echo "Ignoring: -e sis_index_add_skip=true"
             #OPP_EXEC_USER="$OPP_EXEC_USER -e sis_index_add_skip=true"    
@@ -486,7 +487,7 @@ function ExecParameters() {
     [[ OP_ALLOW_BIG_CHANGES_TO_EXISTING -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e allow_big_changes_to_existing=true"
 
     # Failing test when upstream and orgage_<version> (not supported yet)
-    [[ $1 == orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="" && { echo "Warning: Index versions are not supported for 'upstream-community-operators' !!! Skipping ..."; OPP_SKIP=1; }
+    # [[ $1 == orange_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="" && { echo "Warning: Index versions are not supported for 'upstream-community-operators' !!! Skipping ..."; OPP_SKIP=1; }
 
     # Building index from bundle shas in production
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_sha_posfix=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX -e sis_allow_empty_index=true"
@@ -545,7 +546,7 @@ function ExecParameters() {
     [[ $1 == op_delete* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
 
     [[ $1 == op_delete_* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_image_version=${1/op_delete_/}"
-    [[ $1 == op_delete_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Removing specific version (not latest) not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
+    # [[ $1 == op_delete_* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Removing specific version (not latest) not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
     [[ $1 == op_delete* ]] && [[ $OPP_VER_OVERWRITE -eq 1 ]] && [ "$OPP_VERSION" != "sync" ] && [ "$OPP_VERSION" != "update" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_version=$OPP_VERSION"
 
     # index safety - avoid accidental index destroy
@@ -553,6 +554,7 @@ function ExecParameters() {
 
     # Force strict mode (force to fail on 'bundle add' and 'index add')
     [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_mode=true"
+    [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_k8s_bundles=true"
 
     # FOR debuging only
     # echo "OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"
@@ -625,6 +627,9 @@ for t in $TESTS;do
     
     t1=$(echo $t | cut -d '-' -f 1)
     t2=$(echo $t | cut -d '-' -f 2)
+
+    # [[ $t2 == *lemon* ]] && t2=latest-db
+    # [[ $t2 == *orange* ]] && t2=latest-db
 
     echo "t1=$t1 t2=$t2"
 
