@@ -2,7 +2,7 @@
 on: issue_comment
 name: Issue Comments
 env:
-  OPP_PRODUCTION_TYPE: "k8s"
+  OPP_PRODUCTION_TYPE: "ocp"
 
 jobs:
   handle_comments:
