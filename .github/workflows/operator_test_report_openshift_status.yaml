@@ -8,7 +8,7 @@ on:
       - openshift-test-status
 
 env:
-  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "k8s"
 
 
 jobs:
