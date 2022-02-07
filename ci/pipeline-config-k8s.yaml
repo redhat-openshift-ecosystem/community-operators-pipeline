@@ -26,7 +26,7 @@ production:
       out: mavala
   test:
     installation_skip:
-      - act-*
+      - ack-*
 
 pipeline:
   base: https://github.com
