@@ -11,8 +11,10 @@ OPP_OP_DELETE=${OPP_OP_DELETE-0}
 OPP_PR_AUTHOR=${OPP_PR_AUTHOR-""}
 DELETE_APPREG=${DELETE_APPREG-0}
 OPRT=${OPRT-0}
-OPP_CURRENT_PROJECT_REPO=${OPP_CURRENT_PROJECT_REPO-"operator-framework/community-operators"}
-OPP_CURRENT_PROJECT_BRANCH=${OPP_CURRENT_PROJECT_BRANCH-"main"}
+OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pipeline"}
+OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
+
+
 OPP_CURRENT_PROJECT_DOC=${OPP_CURRENT_PROJECT_DOC-"https://operator-framework.github.io/community-operators"}
 
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
@@ -368,7 +370,7 @@ echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
 yq --version || { echo "Command 'yq' could not be found !!!"; exit 1; } 
 
 if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
-  CI_YAML_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml"
+  CI_YAML_REMOTE="https://raw.githubusercontent.com/$OPP_THIS_REPO/$OPP_THIS_BRANCH/$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml"
   CI_YAML_REMOTE_LOCAL="/tmp/ci.yaml"
   echo "Downloading '$CI_YAML_REMOTE' to $CI_YAML_REMOTE_LOCAL ... "
   rm -f $CI_YAML_REMOTE_LOCAL || true
@@ -443,7 +445,7 @@ fi
 
 if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
   echo "[BEFORE] OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
-  CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
+  CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_THIS_REPO/$OPP_THIS_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
   CI_CONF_REMOTE_LOCAL="/tmp/pipeline-config.yaml"
   echo "Downloading '$CI_CONF_REMOTE' to $CI_CONF_REMOTE_LOCAL ... "
   rm -f $CI_CONF_REMOTE_LOCAL || true
