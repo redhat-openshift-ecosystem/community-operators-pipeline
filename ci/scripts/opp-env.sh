@@ -446,19 +446,23 @@ if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
   CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
   CI_CONF_REMOTE_LOCAL="/tmp/pipeline-config.yaml"
   echo "Downloading '$CI_CONF_REMOTE' to $CI_CONF_REMOTE_LOCAL ... "
-  rm -f $CI_CONF_REMOTE_LOCAL || true
-  curl -s -f -o $CI_CONF_REMOTE_LOCAL $CI_CONF_REMOTE || true
+  # rm -f $CI_CONF_REMOTE_LOCAL || true
+  # curl -s -f -o $CI_CONF_REMOTE_LOCAL $CI_CONF_REMOTE || true
 
   if [ -f $CI_CONF_REMOTE_LOCAL ];then
     echo "Searching 'production.test.installation_skip' in '$CI_CONF_REMOTE_LOCAL' ..."
-    TEST_INSTALLATION_SKIP=$(cat  $CI_CONF_REMOTE_LOCAL | yq '.production.test.installation_skip' || echo "[]")
-    for row in $(echo "${TEST_INSTALLATION_SKIP}" | yq -r '.[]'); do
-      echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME" 
-      if [[ $OPP_OPERATOR_NAME == $row* ]];then
-        INSTALLATION_SKIP_FOUND=1
-        break
-      fi
-    done
+    TEST_INSTALLATION_SKIP=$(cat  $CI_CONF_REMOTE_LOCAL | yq '.production.test.installation_skip')
+    if [[ $TEST_INSTALLATION_SKIP != null ]];then
+      for row in $(echo "${TEST_INSTALLATION_SKIP}" | yq -r '.[]'); do
+        echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME" 
+        if [[ $OPP_OPERATOR_NAME == $row* ]];then
+          INSTALLATION_SKIP_FOUND=1
+          break
+        fi
+      done
+    else
+      echo "Warning : .production.test.installation_skip is not found in '$CI_CONF_REMOTE'"
+    fi
   fi
 fi
 echo "INSTALLATION_SKIP_FOUND=$INSTALLATION_SKIP_FOUND"
