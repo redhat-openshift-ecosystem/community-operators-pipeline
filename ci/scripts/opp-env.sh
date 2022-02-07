@@ -19,7 +19,7 @@ OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
 OPP_OPERATORS_DIR=${OPP_OPERATORS_DIR-"operators"}
 OPP_REVIEWERS_ENABLED=${OPP_REVIEWERS_ENABLED-1}
 OPP_INSTALLATION_SKIPED=${OPP_INSTALLATION_SKIPED-1}
-INSTALLATION_SKIP_FOUND=${INSTALLATION_SKIP_FOUND-0}
+OPP_INSTALLATION_SKIP_FOUND=${OPP_INSTALLATION_SKIP_FOUND-0}
 
 OPP_CHANGES_GITHUB=0
 OPP_CHANGES_CI=0
@@ -442,7 +442,7 @@ fi
 
 
 if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
-  echo "[BEFORE] INSTALLATION_SKIP_FOUND=$INSTALLATION_SKIP_FOUND"
+  echo "[BEFORE] OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
   CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
   CI_CONF_REMOTE_LOCAL="/tmp/pipeline-config.yaml"
   echo "Downloading '$CI_CONF_REMOTE' to $CI_CONF_REMOTE_LOCAL ... "
@@ -456,7 +456,7 @@ if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
       for row in $(echo "${TEST_INSTALLATION_SKIP}" | yq -r '.[]'); do
         echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME" 
         if [[ $OPP_OPERATOR_NAME == $row* ]];then
-          INSTALLATION_SKIP_FOUND=1
+          OPP_INSTALLATION_SKIP_FOUND=1
           break
         fi
       done
@@ -465,8 +465,14 @@ if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
     fi
   fi
 fi
-echo "INSTALLATION_SKIP_FOUND=$INSTALLATION_SKIP_FOUND"
+echo "OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
 # exit 1
+
+if [[ $OPP_INSTALLATION_SKIP_FOUND -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
+  echo "::set-output name=opp_release_ready::0"
+  echo "Installation was skipped. No release ..."
+  exit 0
+fi
 
 [[ $OPP_VER_OVERWRITE -eq 0 ]] && [[ $OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE -eq 1 ]] && OPP_VER_OVERWRITE=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE
 
@@ -510,7 +516,7 @@ echo "opp_ci_yaml_changed=${OPP_CI_YAML_CHANGED}"
 echo "opp_op_delete=$OPP_OP_DELETE"
 echo "opp_ver_overwrite=$OPP_VER_OVERWRITE"
 echo "opp_recreate=${OPP_RECREATE}"
-echo "opp_installation_skipped=$INSTALLATION_SKIP_FOUND"
+echo "opp_installation_skipped=$OPP_INSTALLATION_SKIP_FOUND"
 echo "opp_set_label_operator_version_overwrite=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"
 echo "opp_set_label_operator_recreate=$OPP_SET_LABEL_OPERATOR_RECREATE"
 echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE"
@@ -536,7 +542,7 @@ echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
 echo "::set-output name=opp_op_delete::${OPP_OP_DELETE}"
 echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
 echo "::set-output name=opp_recreate::${OPP_RECREATE}"
-echo "::set-output name=opp_installation_skipped::${INSTALLATION_SKIP_FOUND}"
+echo "::set-output name=opp_installation_skipped::${OPP_INSTALLATION_SKIP_FOUND}"
 
 echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
 
