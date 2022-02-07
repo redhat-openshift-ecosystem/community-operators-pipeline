@@ -11,13 +11,17 @@ OPP_OP_DELETE=${OPP_OP_DELETE-0}
 OPP_PR_AUTHOR=${OPP_PR_AUTHOR-""}
 DELETE_APPREG=${DELETE_APPREG-0}
 OPRT=${OPRT-0}
-OPP_CURRENT_PROJECT_REPO=${OPP_CURRENT_PROJECT_REPO-"operator-framework/community-operators"}
-OPP_CURRENT_PROJECT_BRANCH=${OPP_CURRENT_PROJECT_BRANCH-"master"}
+OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pipeline"}
+OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
+
+
 OPP_CURRENT_PROJECT_DOC=${OPP_CURRENT_PROJECT_DOC-"https://operator-framework.github.io/community-operators"}
 
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
 OPP_OPERATORS_DIR=${OPP_OPERATORS_DIR-"operators"}
 OPP_REVIEWERS_ENABLED=${OPP_REVIEWERS_ENABLED-1}
+OPP_INSTALLATION_SKIPED=${OPP_INSTALLATION_SKIPED-1}
+OPP_INSTALLATION_SKIP_FOUND=${OPP_INSTALLATION_SKIP_FOUND-0}
 
 OPP_CHANGES_GITHUB=0
 OPP_CHANGES_CI=0
@@ -366,12 +370,12 @@ echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
 yq --version || { echo "Command 'yq' could not be found !!!"; exit 1; } 
 
 if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
-  # Hanlde remote ci.yaml for authorized changes
-  CI_YAML_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml"
+  CI_YAML_REMOTE="https://raw.githubusercontent.com/$OPP_THIS_REPO/$OPP_THIS_BRANCH/$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml"
   CI_YAML_REMOTE_LOCAL="/tmp/ci.yaml"
   echo "Downloading '$CI_YAML_REMOTE' to $CI_YAML_REMOTE_LOCAL ... "
-  rm -f $CI_YAML_REMOTE_LOCAL
+  rm -f $CI_YAML_REMOTE_LOCAL || true
   curl -s -f -o $CI_YAML_REMOTE_LOCAL $CI_YAML_REMOTE || true
+  # Hanlde remote ci.yaml for authorized changes
   if [ -f $CI_YAML_REMOTE_LOCAL ];then
     echo "File '$CI_YAML_REMOTE' was found ..."
     if [ -n "$OPP_PR_AUTHOR" ];then
@@ -439,6 +443,39 @@ if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then
 fi
 
 
+if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
+  echo "[BEFORE] OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
+  CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_THIS_REPO/$OPP_THIS_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
+  CI_CONF_REMOTE_LOCAL="/tmp/pipeline-config.yaml"
+  echo "Downloading '$CI_CONF_REMOTE' to $CI_CONF_REMOTE_LOCAL ... "
+  rm -f $CI_CONF_REMOTE_LOCAL || true
+  curl -s -f -o $CI_CONF_REMOTE_LOCAL $CI_CONF_REMOTE || true
+
+  if [ -f $CI_CONF_REMOTE_LOCAL ];then
+    echo "Searching 'production.test.installation_skip' in '$CI_CONF_REMOTE_LOCAL' ..."
+    TEST_INSTALLATION_SKIP=$(cat  $CI_CONF_REMOTE_LOCAL | yq '.production.test.installation_skip')
+    if [[ $TEST_INSTALLATION_SKIP != null ]];then
+      for row in $(echo "${TEST_INSTALLATION_SKIP}" | yq -r '.[]'); do
+        echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME" 
+        if [[ $OPP_OPERATOR_NAME == $row* ]];then
+          OPP_INSTALLATION_SKIP_FOUND=1
+          break
+        fi
+      done
+    else
+      echo "Warning : .production.test.installation_skip is not found in '$CI_CONF_REMOTE'"
+    fi
+  fi
+fi
+echo "OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
+# exit 1
+
+if [[ $OPP_INSTALLATION_SKIP_FOUND -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
+  echo "::set-output name=opp_release_ready::0"
+  echo "Installation was skipped. No release ..."
+  exit 0
+fi
+
 [[ $OPP_VER_OVERWRITE -eq 0 ]] && [[ $OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE -eq 1 ]] && OPP_VER_OVERWRITE=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE
 
 OPP_PR_TITLE="$OPP_OPERATORS_DIR"
@@ -481,6 +518,7 @@ echo "opp_ci_yaml_changed=${OPP_CI_YAML_CHANGED}"
 echo "opp_op_delete=$OPP_OP_DELETE"
 echo "opp_ver_overwrite=$OPP_VER_OVERWRITE"
 echo "opp_recreate=${OPP_RECREATE}"
+echo "opp_installation_skipped=$OPP_INSTALLATION_SKIP_FOUND"
 echo "opp_set_label_operator_version_overwrite=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"
 echo "opp_set_label_operator_recreate=$OPP_SET_LABEL_OPERATOR_RECREATE"
 echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE"
@@ -506,6 +544,8 @@ echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
 echo "::set-output name=opp_op_delete::${OPP_OP_DELETE}"
 echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
 echo "::set-output name=opp_recreate::${OPP_RECREATE}"
+echo "::set-output name=opp_installation_skipped::${OPP_INSTALLATION_SKIP_FOUND}"
+
 echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
 
 echo "::set-output name=opp_set_label_operator_version_overwrite::$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"

@@ -81,6 +81,7 @@ OPP_MIRROR_LATEST_TAG=${OPP_MIRROR_LATEST_TAG-""}
 OPP_MIRROR_INDEX_ENABLED=${OPP_MIRROR_INDEX_ENABLED-0}
 
 OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=${OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL-0}
+OPP_INSTALLATION_SKIP=${OPP_INSTALLATION_SKIP-0}
 
 OPP_VER_OVERWRITE=${OPP_VER_OVERWRITE-0}
 OPP_RECREATE=${OPP_RECREATE-0}
@@ -364,7 +365,8 @@ function ExecParameters() {
     [[ $2 == *db* ]] || OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL="${OPP_MIRROR_INDEX_MULTIARCH_POSTFIX_FINAL}f" 
 
     [[ $1 == kiwi* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_version=$OPP_VERSION --tags pure_test -e operator_channel_force=optest"
-    [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
+    [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_INSTALLATION_SKIP -eq 0 ]] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
+    [[ $1 == kiwi* ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
     [[ $1 == kiwi* ]] && [[ $OPP_DEPLOY_LONGER -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pod_start_retries=$OPP_POD_START_RETRIES_LONG_DEPLOYMENT_WAIT_RETRIES"
     [[ $1 == kiwi* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e enable_bundle_validate_community=true"
     [[ $1 == lemon* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
