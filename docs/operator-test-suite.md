@@ -4,13 +4,12 @@
 Run tests by entering 'community-operators' project directory and run following command using options bellow. Specify `OPP_PRODUCTION_TYPE=ocp` for Openshift operators and `k8s` for Kubernetes operators. '<git repo>' and '<git branch>' options are optional.
 ```
 cd <community-operators>
-OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1 OPP_PRODUCTION_TYPE=<k8s/ocp> \
+OPP_PRODUCTION_TYPE=<k8s/ocp> OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1 \
 bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
 <test-type1,test-type2,...,test-typeN> \
 <operator-version-dir-relative-to-community-operators-project> \
 [<git repo>] [<git branch>]
 ```
-
 ### Test type
 
 List of tests are shown in following table :
@@ -21,6 +20,18 @@ List of tests are shown in following table :
 | lemon | Full test of operator to be deployed from scratch |
 | orange | Full test of operator to be deployed with existing bundles in quay registry |
 | all | kiwi,lemon,orange |
+
+!!! note
+    With variable `OPP_PRODUCTION_TYPE=ocp` Openshift test will be run and `v4.9-db` will be as default version. This can be controled by variable `OPP_OCP_PRODUCTION_VERSION_DEFAULT=v4.9-db` or adding it to test name `orange_v4.9-db`. More info about versions are bellow
+### Index versions
+
+| Index | Description |
+| :-------- |:---------- |
+| v4.9 | v4.9 in FBC(File Based Catalog) format |
+| v4.9-db | v4.9 in old sql format |
+
+
+### Test type with specific ocp version
 
 ### Logs
 Logs can be found in `/tmp/op-test/log.out`
@@ -72,9 +83,6 @@ release/v0.5.0
 |OP_TEST_DEBUG|Debug level (0-3)|0|
 |OP_TEST_CONTAINER_TOOL|Container tool used on host|docker|
 |OP_TEST_DRY_RUN|Will print commands to be executed|0|
-
-
-
 
 # Testing operators by Ansible
 
