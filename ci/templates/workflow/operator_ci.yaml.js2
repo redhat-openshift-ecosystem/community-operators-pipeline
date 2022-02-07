@@ -111,16 +111,6 @@ jobs:
         run: |
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
-      # - name: "Comment operator test error code [10]"
-      #   if: steps.op-traffic-light.outputs.opp_error_code == '10'
-      #   uses: mshick/add-pr-comment@v1
-      #   with:
-      #     message: |
-      #       If you want to accelerate publishing your changes, consider adding yourself and others you trust to the reviewers list see how that works [here](https://operator-framework.github.io/community-operators/operator-ci-yaml).
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-      #     allow-repeats: false
-
       - name: "Remove installation-validated"
         uses: actions/github-script@v4
         if: (github.event.action != 'unlabeled')
@@ -269,8 +259,6 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
-
-
 
       - name: Update title
         uses: actions/github-script@v3
@@ -454,11 +442,6 @@ jobs:
       #     repo-token: ${{ secrets.GITHUB_TOKEN }}
       #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
       #     allow-repeats: true
-
-
-      # opp_installation_skipped: "${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
-
-
 
       - name: Info
         run: |
