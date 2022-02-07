@@ -446,8 +446,8 @@ if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
   CI_CONF_REMOTE="https://raw.githubusercontent.com/$OPP_CURRENT_PROJECT_REPO/$OPP_CURRENT_PROJECT_BRANCH/ci/pipeline-config-$OPP_PRODUCTION_TYPE.yaml"
   CI_CONF_REMOTE_LOCAL="/tmp/pipeline-config.yaml"
   echo "Downloading '$CI_CONF_REMOTE' to $CI_CONF_REMOTE_LOCAL ... "
-  # rm -f $CI_CONF_REMOTE_LOCAL || true
-  # curl -s -f -o $CI_CONF_REMOTE_LOCAL $CI_CONF_REMOTE || true
+  rm -f $CI_CONF_REMOTE_LOCAL || true
+  curl -s -f -o $CI_CONF_REMOTE_LOCAL $CI_CONF_REMOTE || true
 
   if [ -f $CI_CONF_REMOTE_LOCAL ];then
     echo "Searching 'production.test.installation_skip' in '$CI_CONF_REMOTE_LOCAL' ..."
