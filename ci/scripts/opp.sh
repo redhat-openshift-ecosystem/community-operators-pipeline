@@ -18,6 +18,9 @@ OPP_BASE_DEP="ansible curl openssl git"
 KIND_KUBE_VERSION=${KIND_KUBE_VERSION-"v1.19.11"}
 # OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"k8s"}
+OPP_K8S_PRODUCTION_VERSION_DEFAULT=${OPP_K8S_PRODUCTION_VERSION_DEFAULT-"latest"}
+OPP_OCP_PRODUCTION_VERSION_DEFAULT=${OPP_OCP_PRODUCTION_VERSION_DEFAULT-"v4.9-db"}
+
 OPP_CLUSTER_TYPE="k8s"
 OPP_OPERATORS_DIR=${OPP_OPERATORS_DIR-"operators"}
 
@@ -624,6 +627,11 @@ echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
 OPP_SKIP=0
 IIB_INSTALLED=0
 for t in $TESTS;do
+    
+    [[ $t == lemon ]] && [[ $OPP_PRODUCTION_TYPE == k8s ]] && t=lemon_$OPP_K8S_PRODUCTION_VERSION_DEFAULT
+    [[ $t == orange ]] && [[ $OPP_PRODUCTION_TYPE == k8s ]] && t=orange_$OPP_K8S_PRODUCTION_VERSION_DEFAULT
+    [[ $t == lemon ]] && [[ $OPP_PRODUCTION_TYPE == ocp ]] && t=lemon_$OPP_OCP_PRODUCTION_VERSION_DEFAULT
+    [[ $t == orange ]] && [[ $OPP_PRODUCTION_TYPE == ocp ]] && t=orange_$OPP_OCP_PRODUCTION_VERSION_DEFAULT
     
     t1=$(echo $t | cut -d '-' -f 1)
     t2=$(echo $t | cut -d '-' -f 2)
