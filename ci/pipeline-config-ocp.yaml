@@ -33,6 +33,9 @@ production:
     username:
       in: mavala
       out: mavala
+  test:
+    installation_skip:
+      - act-*
 
 pipeline:
   base: https://github.com
