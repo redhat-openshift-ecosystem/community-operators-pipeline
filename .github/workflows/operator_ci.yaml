@@ -7,7 +7,7 @@ on:
 
 env:
   AUTOMERGE_ENABLED: "1"
-  OPP_PRODUCTION_TYPE: "k8s"
+  OPP_PRODUCTION_TYPE: "ocp"
   OPP_SCRIPT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp.sh"
   OPP_SCRIPT_ENV_OPRT_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-oprt.sh"
   OPP_SCRIPT_ENV_URL: "https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/dev/ci/scripts/opp-env.sh"
@@ -453,6 +453,12 @@ jobs:
       #     repo-token: ${{ secrets.GITHUB_TOKEN }}
       #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
       #     allow-repeats: true
+
+
+      # opp_installation_skipped: "${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
+
+
+
       - name: Info
         run: |
           echo "steps.op-traffic-light.outputs.opp_test_ready: ${{ steps.op-traffic-light.outputs.opp_test_ready }}"
@@ -461,6 +467,7 @@ jobs:
           echo "steps.op-traffic-light.outputs.opp_name: ${{ steps.op-traffic-light.outputs.opp_name }}"
           echo "steps.op-traffic-light.outputs.opp_version: ${{ steps.op-traffic-light.outputs.opp_version }}"
           echo "steps.op-traffic-light.outputs.opp_ci_yaml_only: ${{ steps.op-traffic-light.outputs.opp_ci_yaml_only }}"
+          echo "steps.op-traffic-light.outputs.opp_installation_skipped: ${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
     outputs:
       opp_test_ready: "${{ steps.op-traffic-light.outputs.opp_test_ready }}"
       opp_release_ready: "${{ steps.op-traffic-light.outputs.opp_release_ready }}"
@@ -468,6 +475,7 @@ jobs:
       opp_name: "${{ steps.op-traffic-light.outputs.opp_name }}"
       opp_version: "${{ steps.op-traffic-light.outputs.opp_version }}"
       opp_ci_yaml_only: "${{ steps.op-traffic-light.outputs.opp_ci_yaml_only }}"
+      opp_installation_skipped: "${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
 
   operator-ci-ok-to-test:
     needs: operator-ci
@@ -491,10 +499,11 @@ jobs:
         run: |
           echo "needs.operator-ci.outputs.opp_production_type: ${{ needs.operator-ci.outputs.opp_production_type }}"
           echo "needs.operator-ci.outputs.opp_ci_yaml_only: ${{ needs.operator-ci.outputs.opp_ci_yaml_only }}"
+          echo "needs.operator-ci.outputs.opp_installation_skipped: ${{ needs.operator-ci.outputs.opp_installation_skipped }}"
 
       - name: "Setting ok-to-test label"
         uses: actions/github-script@v3
-        if: needs.operator-ci.outputs.opp_production_type != 'k8s' && needs.operator-ci.outputs.opp_ci_yaml_only != '1' && (!contains(github.event.pull_request.labels.*.name, 'allow/ci-changes'))
+        if: needs.operator-ci.outputs.opp_production_type != 'k8s' && needs.operator-ci.outputs.opp_ci_yaml_only != '1' && (!contains(github.event.pull_request.labels.*.name, 'allow/ci-changes')) && needs.operator-ci.outputs.opp_installation_skipped == '0'
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
