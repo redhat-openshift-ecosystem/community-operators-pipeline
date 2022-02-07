@@ -527,6 +527,21 @@ jobs:
               repo: context.repo.repo,
               labels: [ 'installation-validated' ]
             })
+
+      - name: "Setting installation-validated label (when installation_skipped)"
+        uses: actions/github-script@v3
+        if: needs.operator-ci.outputs.opp_installation_skipped == '1'
+        continue-on-error: true
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: [ 'installation-validated', 'installation-skipped' ]
+            })
+
       - name: Try to automerge
         uses: actions/github-script@v3
         if: needs.operator-ci.outputs.opp_production_type != 'k8s' && needs.operator-ci.outputs.opp_ci_yaml_only == '1'
