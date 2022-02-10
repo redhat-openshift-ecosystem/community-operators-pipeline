@@ -30,9 +30,9 @@ if [ -n "$1" ];then
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
 
-# [ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
-# mkdir -p $OPP_TMP_DIR
-# git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
+[ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
+mkdir -p $OPP_TMP_DIR
+git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
 
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
 -e pipeline_config_name="pipeline-config${CLUSTER_TYPE}.yaml" \
