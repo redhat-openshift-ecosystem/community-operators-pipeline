@@ -30,9 +30,9 @@ if [ -n "$1" ];then
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
 
-[ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
-mkdir -p $OPP_TMP_DIR
-git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
+# [ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
+# mkdir -p $OPP_TMP_DIR
+# git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
 
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
 -e pipeline_config_name="pipeline-config${CLUSTER_TYPE}.yaml" \
@@ -56,8 +56,8 @@ yq --version
 MY_ANSIBLE_PULL_REPO=$(yq '.pipeline.playbooks.repo' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r )
 MY_ANSIBLE_PULL_BRANCH=$(yq '.pipeline.playbooks.branch' $PWD/ci/pipeline-config${CLUSTER_TYPE}.yaml -r)
 
-MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\\/}
-MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\\/}
+MY_ANSIBLE_PULL_REPO=${MY_ANSIBLE_PULL_REPO//\//\\\/}
+MY_ANSIBLE_PULL_BRANCH=${MY_ANSIBLE_PULL_BRANCH//\//\\\/}
 
 echo "MY_ANSIBLE_PULL_REPO=$MY_ANSIBLE_PULL_REPO"
 echo "MY_ANSIBLE_PULL_BRANCH=$MY_ANSIBLE_PULL_BRANCH"
@@ -65,10 +65,10 @@ echo "MY_ANSIBLE_PULL_BRANCH=$MY_ANSIBLE_PULL_BRANCH"
 for f in $OPP_FILES_TO_COPY_CI_SCRIPTS;do
     echo "Doing 'cp $OPP_TMP_DIR/opp-input/$OPP_CI_SCRIPTS_DIR/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
     cp $OPP_TMP_DIR/opp-input/$f $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
-    echo "1"
-    sed -i 's/^PLAYBOOK_REPO=.*/PLAYBOOK_REPO='"$MY_ANSIBLE_PULL_REPO"'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
-    echo "2"
-    sed -i 's/^PLAYBOOK_REPO_BRANCH=.*/PLAYBOOK_REPO_BRANCH='"$MY_ANSIBLE_PULL_BRANCH"'/g' $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    echo "Substituting 'PLAYBOOK_REPO' in '$PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
+    sed -i s/^PLAYBOOK_REPO=.*/PLAYBOOK_REPO=$MY_ANSIBLE_PULL_REPO/g $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
+    echo "Substituting 'PLAYBOOK_REPO_BRANCH' in '$PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)'"
+    sed -i s/^PLAYBOOK_REPO_BRANCH=.*/PLAYBOOK_REPO_BRANCH=$MY_ANSIBLE_PULL_BRANCH/g $PWD/$OPP_CI_SCRIPTS_DIR/$(basename $f)
 done
 
 rm -rf $PWD/scripts
