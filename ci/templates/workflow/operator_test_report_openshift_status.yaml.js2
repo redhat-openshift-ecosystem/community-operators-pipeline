@@ -77,7 +77,7 @@ jobs:
 {%- set versions_validated = [] -%}
 {% for v in tags  -%}
 {% if not 'rc' in v %} 
-{{- versions_failed.append("(!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-"+ v +"')) v) |default("", True) -}}
+{{- versions_failed.append("(!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-"+ v +"'))") |default("", True) -}}
 {{- versions_validated.append("'(contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-"+ v +"'))") |default("", True) -}}
 {% endif %}
 {%- endfor %}
