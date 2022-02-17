@@ -72,16 +72,18 @@ jobs:
       - name: Add installation final label
         uses: actions/github-script@v4
         if: |
-          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.6')) &&
-          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.7')) &&
-          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.8')) &&
-          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.9')) &&
-          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.10')) &&
-          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-4.6')) &&
-          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-4.7')) &&
-          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-4.8')) &&
-          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-4.9')) &&
-          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-4.10'))
+{% endraw %}
+{%- set versions_failed = [] -%}
+{%- set versions_validated = [] -%}
+{% for v in default_config.production.index.tags -%}
+{% if not 'rc' in v %} 
+{{- versions_failed.append("\n          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-"+ v[1:] | regex_replace('-db$','') +"'))") |default("", True) -}}
+{{- versions_validated.append("\n          (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-"+ v[1:] | regex_replace('-db$','') +"'))") |default("", True) -}}
+{% endif %}
+{%- endfor %}
+{{- versions_failed|join(' && ') }} &&
+{{ versions_validated|join(' && ') }}
+{% raw %}
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
