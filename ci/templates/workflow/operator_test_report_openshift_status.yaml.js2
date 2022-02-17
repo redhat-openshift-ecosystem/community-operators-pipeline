@@ -78,7 +78,7 @@ jobs:
 {% for v in default_config.production.index.tags -%}
 {% if not 'rc' in v %} 
 {{- versions_failed.append("                           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-"+ v[1:] | regex_replace('-db$','') +"'))") |default("", True) -}}
-{{- versions_validated.append("'(contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-"+ v +"'))") |default("", True) -}}
+{{- versions_validated.append("'(contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated-"+ v[1:] | regex_replace('-db$','') +"'))") |default("", True) -}}
 {% endif %}
 {%- endfor %}
 {{- versions_failed|join(' && ') }} &&
