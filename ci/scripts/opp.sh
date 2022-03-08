@@ -428,7 +428,7 @@ function ExecParameters() {
         [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e supported_cluster_versions=$OPP_PRODUCTION_INDEX_IMAGE_TAG -e bundle_index_image_version=$OPP_PRODUCTION_INDEX_IMAGE_TAG"
     fi
 
-    [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_bundle_for_upgrade=$OPP_VERSION"
+    [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_bundle_version_for_upgrade=$OPP_VERSION"
 
     if [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $1 == orange_* ]] && [[ $OPP_PROD -eq 0 ]];then
         if [[ $OPP_MIRROR_INDEX_ENABLED -eq 1 ]];then
