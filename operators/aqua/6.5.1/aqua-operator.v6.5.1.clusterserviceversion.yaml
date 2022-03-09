@@ -1,20 +1,15 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: aqua-operator.v5.3.0
+  name: aqua-operator.v6.5.1
   namespace: placeholder
   annotations:
-    # Setting operatorhub.io/ui-metadata-max-k8s-version annotation automatically
-    # The following is an informative annotation to let its users know that this distribution
-    # uses removed APIs in 1.22 and will not work on K8S clusters 1.22+.
-    # Following the findings for this distribution:
-    # this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the API(s) for CRD: (["aquacsps.operator.aquasec.com" "aquadatabases.operator.aquasec.com" "aquaenforcers.operator.aquasec.com" "aquagateways.operator.aquasec.com" "aquakubeenforcers.operator.aquasec.com" "aquascanners.operator.aquasec.com" "aquaservers.operator.aquasec.com"])
-    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
-    capabilities: Basic Install
+    capabilities: Seamless Upgrades
     categories: Security
-    description: The Aqua Security Operator runs within a Openshift cluster and provides a means to deploy and manage Aqua Security cluster and components.
+    olm.skipRange: ">=1.0.2 <6.5.0"
+    description: The Aqua Security Operator runs within a Openshift cluster and provides a means to deploy and manage Aqua Security cluster and components .
     certified: "false"
-    containerImage: aquasec/aqua-operator:5.3.0
+    containerImage: aquasec/aqua-operator:6.5.0
     createdAt: 2020-03-25T08:00:00Z
     support: Aqua Security, Inc.
     repository: https://github.com/aquasecurity/aqua-operator
@@ -31,7 +26,7 @@ metadata:
             "infra": {
               "serviceAccount": "aqua-sa",
               "namespace": "aqua",
-              "version": "5.3",
+              "version": "6.5",
               "requirements": true
             },
             "common": {
@@ -67,12 +62,13 @@ metadata:
               "service": "LoadBalancer",
               "image": {
                 "registry": "registry.aquasec.com",
-                "repository": "server",
+                "repository": "console",
                 "tag": "<<IMAGE TAG>>",
                 "pullPolicy": "Always"
               }
             },
-            "route": true
+            "route": true,
+            "runAsNonRoot": false
           }
         },
         {
@@ -85,7 +81,7 @@ metadata:
           "spec": {
             "infra": {
               "serviceAccount": "aqua-sa",
-              "version": "5.3"
+              "version": "6.5"
             },
             "common": {
               "imagePullSecret": "aqua-registry",
@@ -100,7 +96,8 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
-            "diskSize": 10
+            "diskSize": 10,
+            "runAsNonRoot": false
           }
         },
         {
@@ -112,7 +109,7 @@ metadata:
           "spec": {
             "infra": {
               "serviceAccount": "aqua-sa",
-              "version": "5.3"
+              "version": "6.5"
             },
             "common": {
               "imagePullSecret": "aqua-registry"
@@ -125,6 +122,7 @@ metadata:
                 "pullPolicy": "IfNotPresent"
               }
             },
+            "runAsNonRoot": false,
             "gateway": {
               "host": "aqua-gateway",
               "port": 8443
@@ -139,16 +137,23 @@ metadata:
             "name": "aqua"
           },
           "spec": {
+            "infra": {
+              "version": "6.5",
+              "serviceAccount": "aqua-kube-enforcer-sa"
+            },
             "config": {
               "gateway_address": "aqua-gateway:8443",
               "cluster_name": "aqua-secure",
               "imagePullSecret": "aqua-registry"
             },
-            "image": {
-              "registry": "registry.aquasec.com",
-              "tag": "<<KUBE_ENFORCER_TAG>>",
-              "repository": "kube-enforcer",
-              "pullPolicy": "Always"
+            "deploy": {
+              "service": "ClusterIP",
+              "image": {
+                "registry": "registry.aquasec.com",
+                "tag": "<<KUBE_ENFORCER_TAG>>",
+                "repository": "kube-enforcer",
+                "pullPolicy": "Always"
+              }
             },
             "token": "<<KUBE_ENFORCER_GROUP_TOKEN>>"
           }
@@ -163,7 +168,7 @@ metadata:
           "spec": {
             "infra": {
               "serviceAccount": "aqua-sa",
-              "version": "5.3"
+              "version": "6.5"
             },
             "common": {
               "databaseSecret": {
@@ -187,7 +192,8 @@ metadata:
                 "repository": "gateway",
                 "tag": "<<IMAGE TAG>>"
               }
-            }
+            },
+            "runAsNonRoot": false
           }
         },
         {
@@ -200,7 +206,7 @@ metadata:
           "spec": {
             "infra": {
               "serviceAccount": "aqua-sa",
-              "version": "5.3"
+              "version": "6.5"
             },
             "common": {
               "imagePullSecret": "aqua-registry"
@@ -213,6 +219,7 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
+            "runAsNonRoot": false,
             "login": {
               "username": "<<YOUR AQUA USER NAME>>",
               "password": "<<YOUR AQUA USER PASSWORD>>",
@@ -230,7 +237,7 @@ metadata:
           "spec": {
             "infra": {
               "serviceAccount": "aqua-sa",
-              "version": "5.3"
+              "version": "6.5"
             },
             "common": {
               "databaseSecret": {
@@ -251,18 +258,19 @@ metadata:
               "service": "LoadBalancer",
               "image": {
                 "registry": "registry.aquasec.com",
-                "repository": "server",
+                "repository": "console",
                 "tag": "<<IMAGE TAG>>",
                 "pullPolicy": "Always"
               }
-            }
+            },
+            "runAsNonRoot": false
           }
         }
       ]
 spec:
   displayName: Aqua Security Operator
-  version: 5.3.0
-  replaces: aqua-operator.v1.0.1
+  version: 6.5.1
+  replaces: aqua-operator.v6.5.0
   description: |-
     The Aqua Security Operator runs within an OpenShift cluster and provides a means to deploy and manage the Aqua Security cluster and components :
     * Server (aka “console”)
@@ -277,7 +285,6 @@ spec:
     * Deploy Aqua Security components on OpenShift
     * Scale up Aqua Security components with extra replicas
     * Assign metadata tags to Aqua Security components
-    * Automatically scale the number of Aqua scanners based on the number of images in the scan queue
 
     ## Before You Begin Using the Operator CRDs
 
@@ -287,7 +294,7 @@ spec:
     ## Instructions and exmaples
 
     Follow instructions and exmaples
-    [here](https://github.com/aquasecurity/aqua-operator/blob/5.3.0/docs/DeployOpenShiftOperator.md)
+    [here](https://github.com/aquasecurity/aqua-operator/blob/6.5.0/docs/DeployOpenShiftOperator.md)
 
   keywords: ['aqua-security', 'scanning', 'security', 'runtime-security']
   maintainers:
@@ -307,7 +314,7 @@ spec:
     - name: Aqua Operator Github
       url: https://github.com/aquasecurity/aqua-operator
   icon:
-    - base64data: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIzLjAuMiwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMDAgMTAwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6I0YwREUzNDt9Cgkuc3Qxe2ZpbGw6I0Y5QUU0MTt9Cgkuc3Qye2ZpbGw6Izk5RDVFQjt9Cgkuc3Qze2ZpbGw6IzAyQjBENDt9Cgkuc3Q0e2ZpbGw6I0Y1OTMyMDt9Cgkuc3Q1e2ZpbGw6IzA5ODA5QTt9Cjwvc3R5bGU+CjxnPgoJPHBvbHlnb24gY2xhc3M9InN0MCIgcG9pbnRzPSI1MCwyLjEgMjUuNSwyNi4xIDc0LjUsMjYuMSA3NC41LDIuMSAJIi8+Cgk8cG9seWdvbiBjbGFzcz0ic3QxIiBwb2ludHM9Ijc0LjUsNzMuOSA5OSw1MCA5OSwyNi4xIDc0LjUsMjYuMSAJIi8+Cgk8cG9seWdvbiBjbGFzcz0ic3QyIiBwb2ludHM9IjI1LjUsNzMuOSAyNS41LDk3LjkgNTAsOTcuOSA3NC41LDczLjkgCSIvPgoJPHBvbHlnb24gY2xhc3M9InN0MyIgcG9pbnRzPSIxLDUwIDEsNzMuOSAyNS41LDczLjkgMjUuNSwyNi4xIAkiLz4KCTxyZWN0IHg9Ijc0LjUiIHk9IjIuMSIgY2xhc3M9InN0NCIgd2lkdGg9IjI0LjUiIGhlaWdodD0iMjMuOSIvPgoJPHJlY3QgeD0iMSIgeT0iNzMuOSIgY2xhc3M9InN0NSIgd2lkdGg9IjI0LjUiIGhlaWdodD0iMjMuOSIvPgo8L2c+Cjwvc3ZnPgo=
+    - base64data: PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiPgo8cGF0aCBkPSJNMTE2LjQ1OCAwLjcwMDkyOEg2NC4xNzA2QzYxLjkyMyAwLjcwMDkyOCA1OS43Njg4IDEuNTg1NzggNTguMTc5MSAzLjE2MzI2TDM2LjAxMjkgMjUuMTU4NUMzNS4xNTc5IDI2LjAwNjkgMzQuMjk5NiAyNi44NTg2IDM0LjI5OTYgMjguODk2OEMzNC4yOTk2IDI4Ljg5NjggMzQuMjk5NiAzMy45OTM3IDM5LjA5MjIgMzMuOTkzN0gxMTYuNDU4VjAuNzAwOTI4WiIgZmlsbD0iI0ZGQzkwMCIvPgo8cGF0aCBvcGFjaXR5PSIwLjg5IiBkPSJNODIuOTM3IDMzLjk5MzdIMTE2LjQ1OFYwLjcwMDkyOEw4Mi45MzcgMzMuOTkzN1oiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcikiLz4KPHBhdGggZD0iTTExNi40NTggMC43MDA5MjhMODIuOTM3IDMzLjk5MzdIMTE2LjQ1OFYwLjcwMDkyOFoiIGZpbGw9InVybCgjcGFpbnQxX2xpbmVhcikiLz4KPHBhdGggZD0iTTE0OS4xNTIgMy40OTc5N0MxNDguMiAxLjg3NDA5IDE0Ni4xNDYgMC42Njc3ODMgMTQ0LjE0MiAwLjcwMDkyM0gxMTYuNDU4QzExNi40NTggMC43MDA5MjMgMTE2LjQ1OCA4OC4yMDE1IDExNi40NTggMTEwLjc2M0MxMTYuNDU4IDExNS41MTkgMTIxLjM0MSAxMTUuNTE5IDEyMS41OTggMTE1LjUxOUMxMjMuNjUyIDExNS41MTkgMTI0LjUxMSAxMTQuNjcxIDEyNS4zNjYgMTEzLjgxOUwxNDcuNTMyIDkxLjgyMzdDMTQ5LjEyMiA5MC4yNDYyIDE0OS45OTcgODguMTA4NyAxNDkuOTk3IDg1Ljg3ODNWNi4xMTkzOEMxNTAgNS4yMjQ1OSAxNDkuNjYzIDQuMzMzMTEgMTQ5LjE1MiAzLjQ5Nzk3WiIgZmlsbD0iI0ZGNDQ1RiIvPgo8cGF0aCBkPSJNMzMuNjEzNCAxMTYuMzY3VjM5LjQwODlDMzMuNjEzNCAzNC42NCAyOC40NjM0IDM0LjY0IDI4LjQ2MzQgMzQuNjRDMjYuNDAyNyAzNC42NCAyNS41NDc4IDM1LjQ5MTcgMjQuNjg5NCAzNi4zNDM0TDIuNDY2NDcgNTguMzk1QzAuODczMzk0IDU5Ljk3MjUgMC4wMDE3MDg5OCA2Mi4xMTY2IDAuMDAxNzA4OTggNjQuMzUzNlYxMTYuMzY3SDMzLjYxMzRaIiBmaWxsPSIjMDhCMUQ1Ii8+CjxwYXRoIG9wYWNpdHk9IjAuODIiIGQ9Ik0wIDExNi4zNjdMMzMuNjExNiA4My4wMTgyVjExNi4zNjdIMFoiIGZpbGw9InVybCgjcGFpbnQyX2xpbmVhcikiLz4KPHBhdGggZD0iTTAgMTE2LjM2N0wzMy42MTE2IDgzLjAxODJWMTE2LjM2N0gwWiIgZmlsbD0idXJsKCNwYWludDNfbGluZWFyKSIvPgo8cGF0aCBkPSJNMi44NDU1NSAxNDguNTRDMS4yMDIzNyAxNDcuNTk2IC0wLjAzMDAwODIgMTQ1LjU1MSA0Ljk5MTYzZS0wNSAxNDMuNTYyVjExNi4zNjdDNC45OTE2M2UtMDUgMTE2LjM2NyA4OC41NjEzIDExNi4zNjcgMTExLjE3MiAxMTYuMzY3QzExNS45NzggMTE2LjM2NyAxMTUuOTgxIDEyMC43NjUgMTE1Ljk4MSAxMjEuMDI0QzExNS45ODQgMTIzLjA2OCAxMTUuMTI2IDEyMy45MiAxMTQuMjY4IDEyNC43NzJMOTIuMDQ4IDE0Ni44MkM5MC40NTQ5IDE0OC40MDQgODguMzIwOCAxNDkuMzAyIDg2LjA2OTggMTQ5LjMwMkg1LjQ5NEM0LjU5MjI2IDE0OS4yOTkgMy42ODcxOCAxNDkuMDQ3IDIuODQ1NTUgMTQ4LjU0WiIgZmlsbD0iIzE5MDREQSIvPgo8L2c+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSI5My4wMTU3IiB5MT0iNDAuNjExIiB4Mj0iMTI0Ljk0NCIgeTI9IjguNDM0MzYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGNDQ1RiIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGNDQ1RiIgc3RvcC1vcGFjaXR5PSIwLjMiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyIiB4MT0iMTE2LjQ1OCIgeTE9IjE3LjM0OTQiIHgyPSI4Mi45MzU1IiB5Mj0iMTcuMzQ5NCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRkY0NDVGIiBzdG9wLW9wYWNpdHk9IjAuNCIvPgo8c3RvcCBvZmZzZXQ9IjAuMDA3NjE2ODIiIHN0b3AtY29sb3I9IiNGRjQ0NUYiIHN0b3Atb3BhY2l0eT0iMC4zODczIi8+CjxzdG9wIG9mZnNldD0iMC4yNDA2IiBzdG9wLWNvbG9yPSIjRkY0NDVGIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyIiB4MT0iNi42MzY0NiIgeTE9IjEyNi4zMzciIHgyPSI0MC43ODE4IiB5Mj0iOTIuMDg0NiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMTkwNERBIiBzdG9wLW9wYWNpdHk9IjAuMiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxOTA0REEiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXIiIHgxPSIxNi44MDYiIHkxPSIxMTYuMzY2IiB4Mj0iMTYuODA2IiB5Mj0iODMuMDE5NiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMTkwNERBIiBzdG9wLW9wYWNpdHk9IjAuMyIvPgo8c3RvcCBvZmZzZXQ9IjAuMDA3NjE2ODIiIHN0b3AtY29sb3I9IiMxOTA0REEiIHN0b3Atb3BhY2l0eT0iMC4yOTA1Ii8+CjxzdG9wIG9mZnNldD0iMC4yNDA2IiBzdG9wLWNvbG9yPSIjMTkwNERBIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMCI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTQ4LjU5OCIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMC43MDA5MjgpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==
       mediatype: image/svg+xml
   miniKubeVersion: 1.11.0
   installModes:
@@ -332,6 +339,19 @@ spec:
               verbs:
                 - use
               resourceNames:
+                - aqua-scc
+                - privileged
+                - hostaccess
+        - serviceAccountName: aqua-kube-enforcer-sa
+          rules:
+            - apiGroups:
+                - "security.openshift.io"
+              resources:
+                - securitycontextconstraints
+              verbs:
+                - use
+              resourceNames:
+                - aqua-scc
                 - privileged
                 - hostaccess
         - serviceAccountName: aqua-operator
@@ -433,7 +453,7 @@ spec:
                 serviceAccountName: aqua-operator
                 containers:
                   - name: aqua-operator
-                    image: aquasec/aqua-operator:5.3.0
+                    image: aquasec/aqua-operator:6.5.0
                     imagePullPolicy: Always
                     command:
                       - aqua-operator
