@@ -4,4 +4,3 @@ updateGraph: replaces-mode
 reviewers:
   - guyyakir
   - yossig-aquasec
-packagemanifestClusterVersionLabel: auto
