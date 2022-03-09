@@ -4,7 +4,6 @@ metadata:
   name: aqua-operator.v5.3.0
   namespace: placeholder
   annotations:
-    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
     # Setting olm.maxOpenShiftVersion automatically
     # This property was added via an automatic process since it was possible to identify that this distribution uses API(s),
     # which will be removed in the k8s version 1.22 and OpenShift version OCP 4.9. Then, it will prevent OCP users to
@@ -265,7 +264,7 @@ metadata:
 spec:
   displayName: Aqua Security Operator
   version: 5.3.0
-  replaces: aqua-operator.v1.0.2
+  replaces: aqua-operator.v1.0.1
   description: |-
     The Aqua Security Operator runs within an OpenShift cluster and provides a means to deploy and manage the Aqua Security cluster and components :
     * Server (aka “console”)
