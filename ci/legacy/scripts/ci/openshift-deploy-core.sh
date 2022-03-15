@@ -255,7 +255,7 @@ echo "Config ..."
 export ANSIBLE_CONFIG=/tmp/playbooks2/operator-test-playbooks/upstream/ansible.cfg
 set +e
 echo "Op_info started"
-ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, upstream/local.yml -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false --tags reset_tools,operator_info -e operator_dir=$TARGET_PATH/$OP_NAME -e cluster_type=ocp -e strict_cluster_version_labels=true -e strict_k8s_bundles=true -e production_registry_namespace="" -e automatic_cluster_version_label=false -e stream_kind=openshift_upstream
+ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, local.yml -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false --tags reset_tools,operator_info -e operator_dir=$TARGET_PATH/$OP_NAME -e cluster_type=ocp -e strict_cluster_version_labels=true -e strict_k8s_bundles=true -e production_registry_namespace="" -e automatic_cluster_version_label=false -e stream_kind=openshift_upstream
 ANSIBLE_STATUS=$?
 echo "Ansible initiated"
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, deploy-olm-operator-openshift-upstream.yml -e ansible_connection=local -e package_name=$OP_NAME -e operator_dir=$TARGET_PATH/$OP_NAME -e op_version=$OP_VER -e oc_bin_path="/tmp/oc-$OC_DIR_CORE/bin/oc" -e commit_tag=$QUAY_HASH -e dir_suffix_part=$OC_DIR_CORE -e current_openshift_run=$CURRENT_OPENSHIFT_RUN $SUBDIR_ARG $EXTRA_ARGS -vv
