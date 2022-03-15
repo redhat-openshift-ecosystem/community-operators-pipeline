@@ -254,7 +254,7 @@ cd upstream
 echo "Config ..."
 export ANSIBLE_CONFIG=/tmp/playbooks2/operator-test-playbooks/upstream/ansible.cfg
 set +e
-echo "Op_info started"
+echo "Op_info started: operator_dir=$TARGET_PATH/$OP_NAME"
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, local.yml -e ansible_connection=local -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false --tags operator_info -e operator_dir=$TARGET_PATH/$OP_NAME -e cluster_type=ocp -e strict_cluster_version_labels=true -e strict_k8s_bundles=true -e production_registry_namespace="" -e automatic_cluster_version_label=false -e stream_kind=openshift_upstream
 ANSIBLE_STATUS=$?
 echo "Ansible initiated"
