@@ -2,7 +2,28 @@
 #./openshift-deploy.sh test-only https://github.com/J0zi/community-operators-pipeline.git do-not-delete-rehearsals https://github.com/redhat-openshift-ecosystem/operator-test-playbooks.git upstream-community 77 rehearsal
 
 set -e #fail in case of non zero return
-declare -A OCP2K8S=( [4.6]=v1.19 [4.7]=v1.20 [4.8]=v1.21 [4.9]=v1.22 )
+
+case $PIPELINE_BRAND in
+
+  ocp)
+    EXTERNAL_PROD_REG_NAMESPACE="quay.io/openshift-community-operators"
+    ;;
+
+  okd)
+    EXTERNAL_PROD_REG_NAMESPACE="quay.io/okd-operators"
+    ;;
+
+  pipeline)
+    EXTERNAL_PROD_REG_NAMESPACE="quay.io/community-operators-pipeline"
+    ;;
+
+  *)
+    EXTERNAL_PROD_REG_NAMESPACE="Please_define_in_openshift-deploy-core.sh"
+    ;;
+esac
+
+
+declare -A OCP2K8S=( [4.6]=v1.19 [4.7]=v1.20 [4.8]=v1.21 [4.9]=v1.22 [4.10]=v1.23 [4.11]=v1.24 [4.12]=v1.25 )
 PLAYBOOK_REPO='https://github.com/redhat-openshift-ecosystem/operator-test-playbooks.git'
 PLAYBOOK_REPO_BRANCH='upstream-community'
 echo "OCP_CLUSTER_VERSION_SUFFIX=$OCP_CLUSTER_VERSION_SUFFIX"
@@ -260,7 +281,7 @@ ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, local.yml -e ansible
 ANSIBLE_STATUS=$?
 echo "Ansible initiated"
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, deploy-olm-operator-openshift-upstream.yml -e ansible_connection=local -e package_name=$OP_NAME -e operator_dir=$TARGET_PATH/$OP_NAME -e op_version=$OP_VER -e oc_bin_path="/tmp/oc-$OC_DIR_CORE/bin/oc" -e commit_tag=$QUAY_HASH -e dir_suffix_part=$OC_DIR_CORE -e current_openshift_run=$CURRENT_OPENSHIFT_RUN $SUBDIR_ARG $EXTRA_ARGS\
- -e fast_op_info=true -e skip_operator_info_consistency=true -e operator_bundle_version_for_upgrade=$OP_VER -vv
+ -e fast_op_info=true -e skip_operator_info_consistency=true -e operator_bundle_version_for_upgrade=$OP_VER -e test_registry_namespace=quay.io/operator_testing -e external_production_registry_namespace=$EXTERNAL_PROD_REG_NAMESPACE -vv
 ANSIBLE_STATUS=$(($ANSIBLE_STATUS+$?))
 echo "Reporting ..."
 [[ $TEST_MODE -ne 1 ]] && if [ $ANSIBLE_STATUS -eq 0 ]; then
