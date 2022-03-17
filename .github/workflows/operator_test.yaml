@@ -88,13 +88,13 @@ jobs:
 
       - name: Operator info (result)
         id: op-info-result
-        if: always()
+        if: always() && steps.op-traffic-light.outputs.opp_op_delete == '0'
         run: |
           echo "::set-output name=opp_check_err_cluster_version_autolabel::0"
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1" || true
       - name: Operator info (comment)
         id: op-info-comment
-        if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1'
+        if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && steps.op-traffic-light.outputs.opp_op_delete == '0'
         uses: mshick/add-pr-comment@v1
         with:
           message: |
@@ -114,15 +114,18 @@ jobs:
 
       - name: Upload operator_info
         uses: actions/upload-artifact@v2
+        if: steps.op-traffic-light.outputs.opp_op_delete == '0'
         with:
           name: operator_info
           path: "/tmp/operator-test/op_info.yaml"
       - name: Upload converted operators
+        if: steps.op-traffic-light.outputs.opp_op_delete == '0'
         uses: actions/upload-artifact@v2
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
       - shell: bash
+        if: steps.op-traffic-light.outputs.opp_op_delete == '0'
         run: |
           ls /tmp/operator-test/
           cat /tmp/operator-test/op_info.yaml
