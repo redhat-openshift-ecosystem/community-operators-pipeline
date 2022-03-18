@@ -18,7 +18,8 @@ case $PIPELINE_BRAND in
     ;;
 
   *)
-    EXTERNAL_PROD_REG_NAMESPACE="Please_define_in_openshift-deploy-core.sh"
+    # EXTERNAL_PROD_REG_NAMESPACE="Please_define_in_openshift-deploy-core.sh"
+    EXTERNAL_PROD_REG_NAMESPACE="quay.io/community-operators-pipeline"
     ;;
 esac
 
