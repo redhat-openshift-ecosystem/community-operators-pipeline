@@ -273,10 +273,12 @@ cd operator-test-playbooks
 [[ $TEST_MODE -eq 1 ]] && git checkout $TEST_PB_BRANCH
 [[ $TEST_MODE -ne 1 ]] && git checkout $PLAYBOOK_REPO_BRANCH
 cd upstream
-echo "Config ..."
+echo "Config"
 export ANSIBLE_CONFIG=/tmp/playbooks2/operator-test-playbooks/upstream/ansible.cfg
+echo "Installing ansible plugins"
+ansible-galaxy collection install ansible.utils
 set +e
-echo "Op_info started:"
+echo "Op_info started"
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-playbook -i localhost, local.yml -e ansible_connection=local -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false --tags operator_info -e operator_dir=$TARGET_PATH/$OP_NAME -e cluster_type=ocp -e strict_cluster_version_labels=true -e strict_k8s_bundles=true -e production_registry_namespace=""\
  -e stream_kind=openshift_upstream -e operator_bundle_src_dir=/tmp/operators_bundle_dir -e operator_info_output_file=/tmp/op_info.yaml -e oi_failed_labels_output_file=/tmp/op_failed_labels.yaml -e oi_auto_labels_output_file=/tmp/op_auto_labels.yaml -e automatic_cluster_version_label=true
 ANSIBLE_STATUS=$?
