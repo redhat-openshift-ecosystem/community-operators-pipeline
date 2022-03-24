@@ -711,8 +711,10 @@ jobs:
           OPERATOR_INDEX="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG}"
           echo $OPERATOR_INDEX_RESOLVED
           echo $OPERATOR_INDEX
+          echo $OPERATOR_INDEX_DIGEST
           echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
           echo "::set-output name=operator_index::${OPERATOR_INDEX}"
+          echo "::set-output name=operator_index_digest::${OPERATOR_INDEX_DIGEST}"
       - name: Initialize sign process
         uses: operator-framework/community-operators@webhook
         continue-on-error: true
@@ -721,7 +723,8 @@ jobs:
           webhook_type: 'json-extended'
           webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
           webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
-          data: "{\"index_image\": \"${{ steps.openshift-vars.outputs.operator_index }}\", \"index_image_resolved\": \"${{ steps.openshift-vars.outputs.operator_index_resolved }}\"}"
+          data: "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
+          webhook_auth: "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
 {% endraw %}
 {% endif %}
 
