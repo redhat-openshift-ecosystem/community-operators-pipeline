@@ -336,7 +336,7 @@ jobs:
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
 
-      - name:Sign index
+      - name: Sign index
         id: openshift-vars
         env:
           OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
