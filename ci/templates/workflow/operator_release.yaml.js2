@@ -714,7 +714,7 @@ jobs:
           OPERATOR_INDEX="${INDEX_PATH_TO_SIGN}:${OPERATOR_INDEX_TAG}"
           SIGNATURE_PAYLOAD="{\"manifest_digest\": \"${OPERATOR_INDEX_DIGEST}\", \"reference\": \"${OPERATOR_INDEX}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
           echo $SIGNATURE_PAYLOAD
-          curl ${SIGNATURE_ENDPOINT} -d "$SIGNATURE_PAYLOAD" -u "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
+          curl ${SIGNATURE_ENDPOINT} -d "${SIGNATURE_PAYLOAD}" -u "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
           # echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
           # echo "::set-output name=operator_index::${OPERATOR_INDEX}"
       # - name: Initialize sign process
