@@ -15,7 +15,10 @@ production:
       - v4.10-rcdb
       - v4.11-rc
     latest: ""
-    signature: 1
+    signature:
+      enabled: 1
+      index_path_to_sign: registry.redhat.io/redhat/community-operator-index
+      signature_endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
     enabled: 1
     multiarch: 
