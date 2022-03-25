@@ -93,6 +93,15 @@ jobs:
           echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
           echo "::set-output name=operator_index::${OPERATOR_INDEX}"
           echo "::set-output name=operator_index_digest::${OPERATOR_INDEX_DIGEST}"
+      
+      
+      - name: Check payload
+        run: |
+          echo "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
+
+      
+      
+      
       - name: Initialize sign process
         uses: operator-framework/community-operators@webhook
         continue-on-error: true
