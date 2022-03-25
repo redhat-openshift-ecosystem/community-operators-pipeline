@@ -344,6 +344,7 @@ jobs:
           INDEX_PATH_TO_SIGN: "{{ default_config.production.index.signature.index_path_to_sign }}"
           SIGNATURE_ENDPOINT: "{{ default_config.production.index.signature.signature_endpoint }}"
         run: |
+          echo ${INDEX_PATH_TO_SIGN}
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
           OPERATOR_INDEX_TAG=$(echo ${OPERATOR_INDEX_TAG_RAW} |cut -d'-' -f1)
           skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} > /dev/null # error out if needed
@@ -352,8 +353,8 @@ jobs:
           # OPERATOR_INDEX="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG}"
           OPERATOR_INDEX="${INDEX_PATH_TO_SIGN}:${OPERATOR_INDEX_TAG}"
           SIGNATURE_PAYLOAD="{\"manifest_digest\": \"${OPERATOR_INDEX_DIGEST}\", \"reference\": \"${OPERATOR_INDEX}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
-          echo $SIGNATURE_PAYLOAD
-          curl ${SIGNATURE_ENDPOINT} -d "$SIGNATURE_PAYLOAD" -u "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
+          echo ${SIGNATURE_PAYLOAD}
+          curl ${SIGNATURE_ENDPOINT} -d "${SIGNATURE_PAYLOAD}" -u "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
           # echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
           # echo "::set-output name=operator_index::${OPERATOR_INDEX}"
       # - name: Initialize sign process
