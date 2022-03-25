@@ -98,19 +98,19 @@ jobs:
       - name: Check payload
         run: |
           echo "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
-
+          curl https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com -d "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}" -u "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
       
       
       
-      - name: Initialize sign process
-        uses: operator-framework/community-operators@webhook
-        continue-on-error: true
-        env:
-          INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
-          webhook_type: 'json-extended'
-          webhook_url: 'https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com'
-          webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
-          data: "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
-          webhook_auth: "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
+      # - name: Initialize sign process
+      #   uses: operator-framework/community-operators@webhook
+      #   continue-on-error: true
+      #   env:
+      #     INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
+      #     webhook_type: 'json-extended'
+      #     webhook_url: 'https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com'
+      #     webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
+      #     data: "{\"manifest_digest\": \"${{ steps.openshift-vars.outputs.operator_index_digest }}\", \"reference\": \"${{ steps.openshift-vars.outputs.operator_index }}\",\"requester\": \"${{ secrets.SIGNATURE_WEBHOOK_REQUESTER_EMAIL }}\"}"
+      #     webhook_auth: "community-op-cert:${{ secrets.SIGNATURE_WEBHOOK_PASSWD }}"
 
   
