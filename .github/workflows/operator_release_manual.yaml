@@ -84,7 +84,8 @@ jobs:
       - name: Prepare variables for the sign process
         id: openshift-vars
         env:
-          OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
+          #OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
+          OPERATOR_INDEX_TAG_RAW: "v4.7-db"
           #OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
         run: |
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
