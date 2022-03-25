@@ -697,7 +697,7 @@ jobs:
 {% endraw %}
 {% if default_config.production.index.signature.enabled == 1 %}
 {% raw %}
-      - name:Sign index
+      - name: Sign index
         id: openshift-vars
         env:
           OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
