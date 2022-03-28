@@ -17,8 +17,8 @@ production:
     latest: ""
     signature:
       enabled: 1
-      index_path_to_sign: registry.redhat.io/redhat/community-operator-index
-      signature_endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
+      alias: registry.redhat.io/redhat/community-operator-index
+      endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
     enabled: 1
     multiarch: 
