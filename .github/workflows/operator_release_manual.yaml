@@ -344,8 +344,6 @@ jobs:
           OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
         run: |
-          echo ${INDEX_PATH_TO_SIGN}
-          echo ${SIGNATURE_ENDPOINT}
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
           OPERATOR_INDEX_TAG=$(echo ${OPERATOR_INDEX_TAG_RAW} |cut -d'-' -f1)
           skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} > /dev/null # error out if needed
