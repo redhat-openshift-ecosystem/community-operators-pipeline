@@ -47,6 +47,8 @@ env:
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
   OPP_THIS_BRANCH: "main"
+  INDEX_PATH_TO_SIGN: "registry.redhat.io/redhat/community-operator-index"
+  SIGNATURE_ENDPOINT: "https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com"
   OPP_REVIEWERS_ENABLED: 0
 
 
@@ -316,10 +318,7 @@ jobs:
         env:
           OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
-          INDEX_PATH_TO_SIGN: "{{ default_config.production.index.signature.index_path_to_sign }}"
-          SIGNATURE_ENDPOINT: "{{ default_config.production.index.signature.signature_endpoint }}"
         run: |
-          echo ${INDEX_PATH_TO_SIGN}
           docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
           OPERATOR_INDEX_TAG=$(echo ${OPERATOR_INDEX_TAG_RAW} |cut -d'-' -f1)
           skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} > /dev/null # error out if needed
