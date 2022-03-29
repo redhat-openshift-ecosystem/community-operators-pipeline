@@ -17,7 +17,7 @@ production:
     latest: ""
     signature:
       enabled: 1
-      alias: registry.redhat.io/redhat/community-operator-index
+      alias: quay.io/community-operators-pipeline/catalog
       endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
     enabled: 1
