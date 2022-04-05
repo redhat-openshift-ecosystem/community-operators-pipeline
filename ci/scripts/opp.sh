@@ -524,6 +524,9 @@ function ExecParameters() {
     [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_mode=true"
     [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e strict_k8s_bundles=true"
 
+    # General non prod setup
+    [[ $OPP_PROD -ne 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pull_existing_ignore_list=false"
+
     # FOR debuging only
     [ -n "$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e remove_base_dir=/tmp/community-operators-for-catalog/operators -e remove_operator_dirs=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"
     [ -n "$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH" ] && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e remove_base_dir=/tmp/community-operators-for-catalog/operators -e remove_operator_dirs=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"
