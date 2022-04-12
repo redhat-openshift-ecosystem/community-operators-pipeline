@@ -1,7 +1,7 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: aqua-operator.v6.2.0
+  name: aqua-operator.v6.2.2
   namespace: placeholder
   annotations:
     # Setting olm.maxOpenShiftVersion automatically
@@ -75,7 +75,8 @@ metadata:
                 "pullPolicy": "Always"
               }
             },
-            "route": true
+            "route": true,
+            "runAsNonRoot": false
           }
         },
         {
@@ -103,7 +104,8 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
-            "diskSize": 10
+            "diskSize": 10,
+            "runAsNonRoot": false
           }
         },
         {
@@ -128,6 +130,7 @@ metadata:
                 "pullPolicy": "IfNotPresent"
               }
             },
+            "runAsNonRoot": false,
             "gateway": {
               "host": "aqua-gateway",
               "port": 8443
@@ -147,7 +150,7 @@ metadata:
               "serviceAccount": "aqua-kube-enforcer-sa"
             },
             "config": {
-              "gateway_address": "aqua-gateway.aqua:8443",
+              "gateway_address": "aqua-gateway:8443",
               "cluster_name": "aqua-secure",
               "imagePullSecret": "aqua-registry"
             },
@@ -197,7 +200,8 @@ metadata:
                 "repository": "gateway",
                 "tag": "<<IMAGE TAG>>"
               }
-            }
+            },
+            "runAsNonRoot": false
           }
         },
         {
@@ -223,6 +227,7 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
+            "runAsNonRoot": false,
             "login": {
               "username": "<<YOUR AQUA USER NAME>>",
               "password": "<<YOUR AQUA USER PASSWORD>>",
@@ -265,13 +270,15 @@ metadata:
                 "tag": "<<IMAGE TAG>>",
                 "pullPolicy": "Always"
               }
-            }
+            },
+            "runAsNonRoot": false
           }
         }
       ]
 spec:
   displayName: Aqua Security Operator
-  version: 6.2.0
+  version: 6.2.2
+  replaces: aqua-operator.v6.2.1
   description: |-
     The Aqua Security Operator runs within an OpenShift cluster and provides a means to deploy and manage the Aqua Security cluster and components :
     * Server (aka “console”)
@@ -286,7 +293,6 @@ spec:
     * Deploy Aqua Security components on OpenShift
     * Scale up Aqua Security components with extra replicas
     * Assign metadata tags to Aqua Security components
-    * Automatically scale the number of Aqua scanners based on the number of images in the scan queue
 
     ## Before You Begin Using the Operator CRDs
 
@@ -341,6 +347,7 @@ spec:
               verbs:
                 - use
               resourceNames:
+                - aqua-scc
                 - privileged
                 - hostaccess
         - serviceAccountName: aqua-kube-enforcer-sa
@@ -352,6 +359,7 @@ spec:
               verbs:
                 - use
               resourceNames:
+                - aqua-scc
                 - privileged
                 - hostaccess
         - serviceAccountName: aqua-operator
