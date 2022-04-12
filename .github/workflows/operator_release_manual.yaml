@@ -64,7 +64,7 @@ env:
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
   OPP_THIS_BRANCH: "main"
-  INDEX_PATH_TO_SIGN: "registry.redhat.io/redhat/community-operator-index"
+  INDEX_PATH_TO_SIGN: "quay.io/community-operators-pipeline/catalog"
   SIGNATURE_ENDPOINT: "https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com"
   OPP_REVIEWERS_ENABLED: 0
 
