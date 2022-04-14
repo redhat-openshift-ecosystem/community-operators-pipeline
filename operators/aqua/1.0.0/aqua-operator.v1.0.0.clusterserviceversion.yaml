@@ -4,15 +4,17 @@ metadata:
   name: aqua-operator.v1.0.0
   namespace: placeholder
   annotations:
-    # Setting operatorhub.io/ui-metadata-max-k8s-version annotation automatically
-    # The following is an informative annotation to let its users know that this distribution
-    # uses removed APIs in 1.22 and will not work on K8S clusters 1.22+.
-    # Following the findings for this distribution:
-    # this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the API(s) for CRD: (["aquacsps.operator.aquasec.com" "aquadatabases.operator.aquasec.com" "aquaenforcers.operator.aquasec.com" "aquagateways.operator.aquasec.com" "aquascanners.operator.aquasec.com" "aquaservers.operator.aquasec.com"])
-    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
+    # Setting olm.maxOpenShiftVersion automatically
+    # This property was added via an automatic process since it was possible to identify that this distribution uses API(s),
+    # which will be removed in the k8s version 1.22 and OpenShift version OCP 4.9. Then, it will prevent OCP users to
+    # upgrade their cluster to 4.9 before they have installed in their current clusters a version of your operator that
+    # is compatible with it. Please, ensure that your project is no longer using these API(s) and that you start to
+    # distribute solutions which is compatible with Openshift 4.9.
+    # For further information, check the README of this repository.
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
     capabilities: Basic Install
     categories: Security
-    description: The Aqua Security Operator runs within Kubernetes cluster and provides a means to deploy and manage Aqua Security cluster and components.
+    description: The Aqua Security Operator runs within a Openshift cluster and provides a means to deploy and manage Aqua Security cluster and components.
     certified: "false"
     containerImage: aquasec/aqua-operator:1.0.0
     createdAt: 2019-12-30T08:00:00Z
@@ -175,26 +177,28 @@ spec:
   version: 1.0.0
   replaces: aqua-operator.v0.0.2
   description: |-
-    The Aqua Security Operator runs within a Kubernetes cluster, and provides a means to deploy and manage the Aqua Security cluster and components
+    The Aqua Security Operator runs within an OpenShift cluster, and provides a means to deploy and manage the Aqua Security cluster and components
     * Server (sometimes called “console”)
     * Database (not recommended for production environments)
     * Gateway
     * Enforcer (sometimes called “agent”)
     * Scanner
     * CSP (package containing the Server, Database, and Gateway - not supported, and not for production environments)
-    Use the aqua-operator to - 
-    * Deploy Aqua Security components on Kubernetes
+    Use the aqua-operator to 
+    * Deploy Aqua Security components on OpenShift
     * Scale up Aqua Security components with extra replicas
     * Assign metadata tags to Aqua Security components
     * Automatically scale the number of Aqua scanners according to the number of images in the scan queue
     ## Before You Begin Using the Operator CRDs
-    Obtain access to the Aqua registry https://www.aquasec.com/about-us/contact-us/
-    ### Kubernetes 1.11, 1.12, 1.13 or 1.14
-    The operator in Kubernetes needs to be able to create the all the requirements by passing the parameter **requirements** as `true`.
-    You can also create the requirements
-    * Service account with pull permissions from the Aqua Docker registry
-    * Secret for the Docker registry 
-    * Secret for the database
+    Obtain access to the Aqua registry - https://www.aquasec.com/about-us/contact-us/
+    You need to create
+    * A secret for the Docker registry
+    * A secret for the database
+    ```bash
+    oc create secret docker-registry aqua-registry --docker-server=registry.aquasec.com --docker-username=<AQUA_USERNAME> --docker-password=<AQUA_PASSWORD> --docker-email=<user email> -n aqua
+    oc create secret generic aqua-database-password --from-literal=db-password=<password> -n aqua
+    oc secrets add aqua-sa aqua-registry --for=pull -n aqua
+    ```
     ## After the Installation
     Once the operator is installed in the cluster, you now can use the CRDs to install the Aqua cluster and components.
   keywords: ['aqua-security', 'scanning', 'security', 'runtime-security']
@@ -231,6 +235,17 @@ spec:
     strategy: deployment
     spec:
       clusterPermissions:
+      - serviceAccountName: aqua-sa
+        rules:
+        - apiGroups:
+          - "security.openshift.io"
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
+          resourceNames:
+          - privileged
+          - hostaccess
       - serviceAccountName: aqua-operator
         rules:
         - apiGroups:

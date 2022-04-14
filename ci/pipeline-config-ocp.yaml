@@ -15,7 +15,10 @@ production:
       - v4.10-rcdb
       - v4.11-rc
     latest: ""
-    signature: 1
+    signature:
+      enabled: 1
+      alias: quay.io/community-operators-pipeline/catalog
+      endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
     enabled: 1
     multiarch: 
@@ -34,6 +37,7 @@ production:
       in: mavala
       out: mavala
   test:
+    force_deploy_openshift_version: "4.8"
     installation_skip:
       - ack-
 
