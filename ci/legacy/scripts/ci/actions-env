@@ -300,7 +300,7 @@ echo "Versions Count: CHANGED[$OP_TEST_OPERATOR_VERSIONS] REMOVED[$OP_TEST_OPERA
 
 [[ $OP_TEST_VER_OVERWRITE -eq 1 ]] && [[ $OP_TEST_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..."; echo "::set-output name=op_test_error_code::1"; exit 1; }
 
-# [[ $OPRT -eq 1 ]] && [[ $OP_TEST_CI_YAML_MODIFIED -eq 1 ]] && [[ $OP_TEST_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : https://operator-framework.github.io/community-operators/operator-ci-yaml/."; echo "::set-output name=op_test_error_code::7"; exit 1; }
+# [[ $OPRT -eq 1 ]] && [[ $OP_TEST_CI_YAML_MODIFIED -eq 1 ]] && [[ $OP_TEST_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : https://redhat-openshift-ecosystem.github.io/community-operators-prod/operator-ci-yaml/."; echo "::set-output name=op_test_error_code::7"; exit 1; }
 
 echo "::set-output name=op_test_stream::${OP_TEST_STREAM_NAME}"
 echo "::set-output name=op_test_name::${OP_TEST_OPERATOR_NAME}"
@@ -335,13 +335,13 @@ fi
 if [[ $OP_TEST_READY -eq 1 ]];then
   if [ -f $OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml ];then 
     TEST_REVIEWERS=$(cat $OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml | yq '.reviewers')
-    # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : https://operator-framework.github.io/community-operators/operator-ci-yaml/ !!!"; echo "::set-output name=op_test_error_code::4"; exit 1; }
+    # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : https://redhat-openshift-ecosystem.github.io/community-operators-prod/operator-ci-yaml/ !!!"; echo "::set-output name=op_test_error_code::4"; exit 1; }
     
     if [ "$TEST_REVIEWERS" != "null" ];then
       TEST_REVIEWERS=$(cat $OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml | yq '.reviewers | length' || echo 0)
-      [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : https://operator-framework.github.io/community-operators/operator-ci-yaml/ !!!"; echo "::set-output name=op_test_error_code::4"; exit 1; }
+      [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : https://redhat-openshift-ecosystem.github.io/community-operators-prod/operator-ci-yaml/ !!!"; echo "::set-output name=op_test_error_code::4"; exit 1; }
     else
-      echo "File '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' doesn't contain 'reviewers' array field !!! If one wants to add reviewers (truested-authors) More info : https://operator-framework.github.io/community-operators/operator-ci-yaml/. !!!"
+      echo "File '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' doesn't contain 'reviewers' array field !!! If one wants to add reviewers (truested-authors) More info : https://redhat-openshift-ecosystem.github.io/community-operators-prod/operator-ci-yaml/. !!!"
       OP_TEST_ERROR_CODE=10
     fi
     TEST_UPDATE_GRAPH=$(cat $OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml | yq '.updateGraph')
@@ -349,7 +349,7 @@ if [[ $OP_TEST_READY -eq 1 ]];then
     echo "OP_TEST_UPDATEGRAPH=$OP_TEST_UPDATEGRAPH"
 
   else
-    echo "File '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' is present !!! If one wants to add reviewers (truested-authors) More info : https://operator-framework.github.io/community-operators/operator-ci-yaml/. !!!"
+    echo "File '$OP_TEST_STREAM_NAME/$OP_TEST_OPERATOR_NAME/ci.yaml' is present !!! If one wants to add reviewers (truested-authors) More info : https://redhat-openshift-ecosystem.github.io/community-operators-prod/operator-ci-yaml/. !!!"
     OP_TEST_ERROR_CODE=10
   fi
 fi

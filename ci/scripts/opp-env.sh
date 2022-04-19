@@ -15,7 +15,7 @@ OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pi
 OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
 
 
-OPP_CURRENT_PROJECT_DOC=${OPP_CURRENT_PROJECT_DOC-"https://operator-framework.github.io/community-operators"}
+OPP_CURRENT_PROJECT_DOC=${OPP_CURRENT_PROJECT_DOC-"https://redhat-openshift-ecosystem.github.io/community-operators-prod"}
 
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
 OPP_OPERATORS_DIR=${OPP_OPERATORS_DIR-"operators"}
