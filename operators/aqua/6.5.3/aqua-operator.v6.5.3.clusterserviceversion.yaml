@@ -11,7 +11,7 @@ metadata:
     # is compatible with it. Please, ensure that your project is no longer using these API(s) and that you start to
     # distribute solutions which is compatible with Openshift 4.9.
     # For further information, check the README of this repository.
-    # olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.9"}]'
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.9"}]'
     capabilities: Seamless Upgrades
     categories: Security
     olm.skipRange: ">=1.0.2 <6.5.0"
@@ -333,12 +333,12 @@ spec:
     Follow instructions and exmaples
     [here](https://github.com/aquasecurity/aqua-operator/blob/6.5.0/docs/DeployOpenShiftOperator.md)
 
-  keywords: ['aqua-security', 'scanning', 'security', 'runtime-security']
+  # keywords: ['aqua-security', 'scanning', 'security', 'runtime-security']
   maintainers:
     - email: support@aquasec.com
       name: Aqua Support, Aqua Security
-  provider:
-    name: Aqua Security, Inc.
+  # provider:
+  #   name: Aqua Security, Inc.
   maturity: alpha
   labels:
     name: aqua-operator
