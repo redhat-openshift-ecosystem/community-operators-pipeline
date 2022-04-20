@@ -809,15 +809,15 @@ spec:
           - '*'
         serviceAccountName: default
     strategy: deployment
-  installModes:
-  - supported: true
-    type: OwnNamespace
-  - supported: true
-    type: SingleNamespace
-  - supported: false
-    type: MultiNamespace
-  - supported: true
-    type: AllNamespaces
+  # installModes:
+  # - supported: true
+  #   type: OwnNamespace
+  # - supported: true
+  #   type: SingleNamespace
+  # - supported: false
+  #   type: MultiNamespace
+  # - supported: true
+  #   type: AllNamespaces
   keywords:
   - cockroach
   - cockroachdb
