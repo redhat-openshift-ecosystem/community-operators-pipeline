@@ -193,8 +193,6 @@ echo "OP_VER=$OP_VER"
 #COMMIT=1234
 #echo "Forced specific operator - $OP_NAME $OP_VER $COMMIT"
 
-# Deprecated API validation
-if [ ! -d "operators/$OP_NAME/$OP_VER/manifests" ]; then
   curl --connect-timeout 20 \
       --retry 10 \
       --retry-delay 15 \
@@ -209,6 +207,8 @@ if [ ! -d "operators/$OP_NAME/$OP_VER/manifests" ]; then
       -L -o $SDK_BIN_PATH -s  https://github.com/operator-framework/operator-sdk/releases/download/$OPERATOR_SDK_VERSION/operator-sdk_linux_amd64
   chmod +x $SDK_BIN_PATH
 
+# Deprecated API validation
+if [ ! -d "operators/$OP_NAME/$OP_VER/manifests" ]; then
   K8S_VERSION=${OCP2K8S[${OCP_CLUSTER_VERSION}]}
   echo "OCP_CLUSTER_VERSION=$OCP_CLUSTER_VERSION"
   echo "K8S_VERSION=$K8S_VERSION"
