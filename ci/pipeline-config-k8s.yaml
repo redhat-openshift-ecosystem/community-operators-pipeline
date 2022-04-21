@@ -10,7 +10,10 @@ production:
     tags:
       - latest-db
     latest: ""
-    signature: 0
+    signature:
+      enabled: 1
+      alias: quay.io/community-operators-pipeline/catalog
+      endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
     enabled: 1
     multiarch:
