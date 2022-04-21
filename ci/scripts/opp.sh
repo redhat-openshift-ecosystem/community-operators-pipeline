@@ -389,7 +389,7 @@ function ExecParameters() {
     [[ $1 == orange* ]] && OPP_EXEC_USER_INDEX_CHECK="-e run_prepare_catalog_repo_upstream=true -e bundle_index_image=$OPP_PRODUCTION_INDEX_IMAGE:$OPP_PRODUCTION_INDEX_IMAGE_TAG -e operator_base_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR"
     [[ $1 == orange* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER_INDEX_CHECK="$OPP_EXEC_USER_INDEX_CHECK -e stream_kind=openshift_upstream"
     
-    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=$OPP_RELEASE_BUNDLE_REGISTRY -e bundle_image_namespace=$OPP_RELEASE_BUNDLE_ORGANIZATION -e bundle_index_image_namespace=$OPP_RELEASE_INDEX_ORGANIZATION -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME"
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_registry=$OPP_RELEASE_BUNDLE_REGISTRY -e bundle_image_namespace=$OPP_RELEASE_BUNDLE_ORGANIZATION -e bundle_index_image_namespace=$OPP_RELEASE_INDEX_ORGANIZATION -e bundle_index_image_name=$OPP_RELEASE_INDEX_NAME -e operator_upgrade_testing_disabled=true"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
     
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
