@@ -382,7 +382,6 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [ "$OPP_VERSION" != "sync" ] && [[ $OPP_PROD -lt 2 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_registry_namespace=$OPP_PRODUCTION_REGISTRY_NAMESPACE"
 
     [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
-    [[ $1 == lemon_* ]] && [[ $OPP_PROD -ne 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
 
     # Handle index_check
     OPP_PRODUCTION_INDEX_IMAGE_TAG="latest"
