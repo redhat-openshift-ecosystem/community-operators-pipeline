@@ -15,7 +15,8 @@ OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pi
 OPP_THIS_BRANCH=${OPP_THIS_BRANCH-"main"}
 
 OPP_BASE_DEP="ansible curl openssl git"
-KIND_KUBE_VERSION=${KIND_KUBE_VERSION-"v1.19.11"}
+KIND_VERSION=${KIND_VERSION-"v0.12.0"}
+KIND_KUBE_VERSION=${KIND_KUBE_VERSION-"v1.21.1"}
 # OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"ocp"}
 OPP_PRODUCTION_TYPE=${OPP_PRODUCTION_TYPE-"k8s"}
 OPP_K8S_PRODUCTION_VERSION_DEFAULT=${OPP_K8S_PRODUCTION_VERSION_DEFAULT-"latest"}
@@ -621,7 +622,7 @@ for t in $TESTS;do
     echo -e "Test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..."
     if [[ $OPP_RESET -eq 1 ]];then
         echo -e "[$t1] Reseting kind cluster ..."
-        run $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false -e kind_kube_version=$KIND_KUBE_VERSION --tags reset
+        run $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false -e kind_version=$KIND_VERSION -e kind_kube_version=$KIND_KUBE_VERSION --tags reset
     fi
     if [ -n "$OPP_PRETEST_CUSTOM_SCRIPT" ];then
         echo "Running custom script '$OPP_PRETEST_CUSTOM_SCRIPT' ..."
