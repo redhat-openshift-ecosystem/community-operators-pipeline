@@ -32,6 +32,7 @@ env:
   IIB_INPUT_REGISTRY_USER: "{{ default_config.production.mirror.username.in }}"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
+  KIND_VERSION: "{{ default_config.tools.kind_version }}"
   KIND_KUBE_VERSION: "{{ default_config.tools.kind_kube_version }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
   OPP_REVIEWERS_ENABLED: {{ default_config.pipeline.reviewers.enabled }}
