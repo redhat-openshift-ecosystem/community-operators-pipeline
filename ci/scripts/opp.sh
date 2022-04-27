@@ -395,6 +395,7 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
     
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
 
 
     [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=$IIB_INPUT_REGISTRY_USER -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
