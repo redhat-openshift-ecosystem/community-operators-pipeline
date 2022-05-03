@@ -185,9 +185,12 @@ jobs:
         run: |
           echo "::set-output name=opp_check_err_bundle_validate::"
           OPP_BUNDLE_VALIDATE_FILE=/tmp/operator-test/operator-files/operator_sdk_bundle_validate_warnings_and_errors.txt
+          ls -al /tmp/operator-test/operator-files/
+          cat $OPP_BUNDLE_VALIDATE_FILE
           if [ -f $OPP_BUNDLE_VALIDATE_FILE ] ;then
             # TODO
             ERR_LINES=$(cat $OPP_BUNDLE_VALIDATE_FILE)
+            echo "$ERR_LINES"
             echo "opp_check_err_bundle_validate=$ERR_LINES"
             echo "::set-output name=opp_check_err_bundle_validate::$ERR_LINES"
           fi
