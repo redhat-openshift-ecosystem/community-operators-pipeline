@@ -182,6 +182,7 @@ jobs:
           echo $RC
           if [[ $RC -gt 0 ]];then
             OPP_BUNDLE_VALIDATE_FILE=/tmp/operator-test/operator-files/operator_sdk_bundle_validate_warnings_and_errors.txt
+            cat $OPP_BUNDLE_VALIDATE_FILE
             if [ -f $OPP_BUNDLE_VALIDATE_FILE ];then
               # TODO
               ERR_LINES=$(cat $OPP_BUNDLE_VALIDATE_FILE)
