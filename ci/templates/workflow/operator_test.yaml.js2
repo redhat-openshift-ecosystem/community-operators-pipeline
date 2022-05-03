@@ -215,10 +215,11 @@ jobs:
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
         run: |
           echo "kiwi operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}" || { RC=$?; true; }
-          if [ $RC -gt 0 ];then
+          bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}" || { RC=$?; echo $RC; true; }
+          echo $RC
+          if [[ $RC -gt 0 ]];then
             OPP_BUNDLE_VALIDATE_FILE=/tmp/operator-test/operator-files/operator_sdk_bundle_validate_warnings_and_errors.txt
-            if [ -f $OPP_BUNDLE_VALIDATE_FILE ] ;then
+            if [ -f $OPP_BUNDLE_VALIDATE_FILE ];then
               # TODO
               ERR_LINES=$(cat $OPP_BUNDLE_VALIDATE_FILE)
               echo "$ERR_LINES"
