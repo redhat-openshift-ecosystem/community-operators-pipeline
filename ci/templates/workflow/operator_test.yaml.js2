@@ -240,7 +240,7 @@ jobs:
           fi
 
       - name: "Comment operator_sdk_bundle_validate_warnings_and_errors if exists"
-        if: always() && steps.operator-test.outputs.opp_check_err_bundle_validate != ''
+        if: always() && steps.op-kiwi-test-err-bundle-validate.outputs.opp_check_err_bundle_validate != ''
         uses: mshick/add-pr-comment@v1
         with:
           message: |
