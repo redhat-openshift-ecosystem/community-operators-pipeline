@@ -230,11 +230,9 @@ jobs:
         run: |
           echo "::set-output name=opp_check_err_bundle_validate::"
           OPP_BUNDLE_VALIDATE_FILE=/tmp/operator_sdk_bundle_validate_warnings_and_errors.txt
-          cat $OPP_BUNDLE_VALIDATE_FILE
           if [ -f $OPP_BUNDLE_VALIDATE_FILE ] ;then
             # TODO
             OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
-            echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT"
             echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT"
             echo "::set-output name=opp_check_err_bundle_validate::$OPP_BUNDLE_VALIDATE_FILE_OUTPUT"
           fi
