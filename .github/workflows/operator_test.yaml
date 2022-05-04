@@ -194,8 +194,13 @@ jobs:
           echo "::set-output name=opp_check_err_bundle_validate::"
           OPP_BUNDLE_VALIDATE_FILE=/tmp/operator_sdk_bundle_validate_warnings_and_errors.txt
           if [ -f $OPP_BUNDLE_VALIDATE_FILE ] ;then
-            cat $OPP_BUNDLE_VALIDATE_FILE
-            echo "::set-output name=opp_check_err_bundle_validate::$(cat $OPP_BUNDLE_VALIDATE_FILE)"
+            OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
+            echo $OPP_BUNDLE_VALIDATE_FILE_OUTPUT
+
+            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
+            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
+            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
+            echo "::set-output name=opp_check_err_bundle_validate::$OPP_BUNDLE_VALIDATE_FILE_OUTPUT"
           fi
 
       - name: "Comment operator_sdk_bundle_validate_warnings_and_errors if exists"
