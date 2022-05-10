@@ -120,6 +120,7 @@ jobs:
             More info in 'Kubernetes max version in CSV' section [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#kubernetes-max-version-in-csv).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
 {% endraw %}
 {% else %}
 {% raw %}
@@ -148,6 +149,7 @@ jobs:
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
 {% endraw %}
 {% endif %}
 {% raw %}
