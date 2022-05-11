@@ -744,22 +744,22 @@ jobs:
  {% endraw %}
 {% endif %}
 
-  push-to-quay-{{ default_config.production.type }}:
-    name: "Push to quay / {{ default_config.production.type }}"
-{% raw %}
-    needs: pr-check
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
-    runs-on: ubuntu-latest
-    env:
-      DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
-      OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
-    steps:
-      - name: Push to quay
-        run: |
-          echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH || true
+#   push-to-quay-{{ default_config.production.type }}:
+#     name: "Push to quay / {{ default_config.production.type }}"
+# {% raw %}
+#     needs: pr-check
+#     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
+#     runs-on: ubuntu-latest
+#     env:
+#       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
+#       OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
+#     steps:
+#       - name: Push to quay
+#         run: |
+#           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
+#           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH || true
 
-{% endraw %}
+# {% endraw %}
 #   release-sha-{{ default_config.production.type }}:
 #     name: "Index production / {{ default_config.production.type }}"
 #     needs: [ pr-check, release-{{ default_config.production.type }} ]
@@ -920,9 +920,9 @@ jobs:
 
 {% else %}
 {% if default_config.operatorhubio.enabled == 1 %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, push-to-quay-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
 {% else %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, push-to-quay-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }} ]
 {% endif %}
 {% endif %}
 {% raw %}
