@@ -1,5 +1,5 @@
-FROM fedora:34
-RUN dnf install python3-pip git python3-root -y
+FROM fedora:36
+RUN dnf install python3-pip git python3-root python3-devel -y
 RUN pip install --no-cache-dir mkdocs-material mkpdfs-mkdocs mkdocs-mermaid2-plugin mkdocs-macros-plugin
 COPY ci/operator-flow/* /app/
 WORKDIR /app
