@@ -31,19 +31,22 @@ After this process, your operator will be published.
 
 For Openshift: 
 
-`registry.redhat.io/redhat/community-operator-index:v4.6`
-`registry.redhat.io/redhat/community-operator-index:v4.7`
-`registry.redhat.io/redhat/community-operator-index:latest` - this is a clone of `v4.6` from historical reasons as it always was a clone of `v4.6`. Will be deprecated in the future.
+{% for v in openshift.versions %}
+- `registry.redhat.io/redhat/community-operator-index:{{ v }}`
+{% endfor %}
+
+!!! note
+    `registry.redhat.io/redhat/community-operator-index:latest` - this is a clone of `v4.6` from historical reasons as it always was a clone of `v4.6`. Will be deprecated in the future.
 
 For Kubernetes:
 
-`quay.io/operatorhubio/catalog:latest`
+- `quay.io/operatorhubio/catalog:latest`
 
 ### Bundle images location
 For Openshift:
 
-`quay.io/openshift-community-operators/`
+[`quay.io/openshift-community-operators/`](https://quay.io/organization/openshift-community-operators)
 
 For Kubernetes:
 
-`quay.io/operatorhubio/`
+[`quay.io/operatorhubio/`](https://quay.io/organization/operatorhubio)

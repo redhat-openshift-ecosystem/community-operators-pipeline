@@ -41,6 +41,16 @@ hide:
 extra_css:
   - stylesheets/extra.css
 
+extra:
+    version: 0.1
+    openshift:
+      versions:
+        - v4.6
+        - v4.7
+        - v4.8
+        - v4.9
+        - v4.10
+
 plugins:
   - search
   - mermaid2
