@@ -223,6 +223,11 @@ jobs:
             OPP_BUNDLE_VALIDATE_FILE_IN_CONTAINER=/tmp/operator-test/operator-files/operator_sdk_bundle_validate_warnings_and_errors.txt
             OPP_BUNDLE_VALIDATE_FILE=/tmp/operator_sdk_bundle_validate_warnings_and_errors.txt
             docker cp op-test:$OPP_BUNDLE_VALIDATE_FILE_IN_CONTAINER $OPP_BUNDLE_VALIDATE_FILE || true
+
+            OPP_BUNDLE_VALIDATE_FILE_IN_CONTAINER=/tmp/operator-test/operator-files/operator_sdk_bundle_validate_info.txt
+            OPP_BUNDLE_VALIDATE_FILE=/tmp/operator_sdk_bundle_validate_info.txt
+            docker cp op-test:$OPP_BUNDLE_VALIDATE_FILE_IN_CONTAINER $OPP_BUNDLE_VALIDATE_FILE || true
+
             exit $RC
           fi
 
