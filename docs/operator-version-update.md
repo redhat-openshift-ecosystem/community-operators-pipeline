@@ -32,15 +32,9 @@ There are some case when only some minor changes to the existing operator are ne
 
 ## Operator versioning strategy 
 
-!!! warning
-    Updating existing `ci.yaml` is `only` possible via an extra PR with single file modification. Otherwise tests will fail
-
 Sometimes it is needed to change how operator versions are built in to the index. This can be controlled by `ci.yaml` file. [More info](./operator-ci-yaml.md#reviewers)
 
 ## Reviewers update
-
-!!! warning
-    Updating existing `ci.yaml` is `only` possible via an extra PR with single file modification. Otherwise tests will fail
 
 While operator is involving over a time, some time it is needed to change reviewers. This can be controlled by `ci.yaml` file. [More info](./operator-ci-yaml.md#operator-versioning)
 
