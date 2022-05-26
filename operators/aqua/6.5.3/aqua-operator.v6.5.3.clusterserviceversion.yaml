@@ -305,7 +305,7 @@ metadata:
       ]
     operators.operatorframework.io/internal-objects: '["aquastarboards.aquasecurity.github.io","configauditreports.aquasecurity.github.io", "clusterconfigauditreports.aquasecurity.github.io"]'
 spec:
-  displayName: Aqua Security Operator
+  # displayName: Aqua Security Operator
   version: 6.5.3
   replaces: aqua-operator.v6.5.2
   description: |-
