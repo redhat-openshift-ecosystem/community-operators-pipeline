@@ -403,7 +403,10 @@ function ExecParameters() {
     [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_password=\"$IIB_INPUT_REGISTRY_TOKEN\""
 
     [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
-    [ "$OPP_CLUSTER_TYPE" = "k8s" ] && [[ $OPP_MIRROR_INDEX_ENABLED -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e force_skip_mirror=true"
+    
+    [ "$OPP_CLUSTER_TYPE" = "k8s" ] && [[ $OPP_MIRROR_INDEX_ENABLED -eq 0 ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e force_skip_mirror=true"
+
+
     if [[ $1 == orange_* || $1 == lemon_* ]];then
         [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e supported_cluster_versions=$OPP_PRODUCTION_INDEX_IMAGE_TAG -e bundle_index_image_version=$OPP_PRODUCTION_INDEX_IMAGE_TAG"
     fi
