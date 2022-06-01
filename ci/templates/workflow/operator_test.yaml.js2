@@ -65,7 +65,7 @@ jobs:
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
-          echo "::set-output name=kind_kube_version::v1.22.0"
+          echo "::set-output name=kind_kube_version::1.22.0"
 
       - name: Operator info
         id: op-info
