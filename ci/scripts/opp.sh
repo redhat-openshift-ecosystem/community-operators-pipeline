@@ -184,17 +184,20 @@ function run() {
                 echo "#${v#*--}"
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         elif [[ $OPP_DEBUG -ge 1 ]] ; then
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         else
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out >/dev/null 2>&1
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         fi
 }
