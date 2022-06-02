@@ -178,6 +178,19 @@ function iib_install() {
     set +o pipefail
 }
 
+function detect_k8s_max() {
+#yq r apicurito.clusterserviceversion.yaml "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"
+#OPP_OPERATOR_VERSIONS_ALL_LATEST
+#v
+#$LATEST
+# find . -name $OPP_OPERATOR_VERSIONS_ALL_LATEST -type d
+echo "Detecting if k8s max version is defined..."
+pwd
+OPERATOR_VERSION_PATH_LATEST=`echo $LATEST| cut -f 2- -d'/'`
+OPERATOR_VERSION_PATH_LATEST_CSV_PATH=`find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*"`
+export KIND_KUBE_VERSION_DETECTED=`yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"`
+}
+
 function run() {
         if [[ $OPP_DEBUG -ge 4 ]] ; then
                 v=$(exec 2>&1 && set -x && set -- "$@")
@@ -575,6 +588,7 @@ fi
 
 echo -e "\nOne can do 'tail -f $OPP_LOG_DIR/log.out' from second console to see full logs\n"
 
+detect_k8s_max
 
 # Check if kind is installed
 echo -e "Checking for kind binary ..."
