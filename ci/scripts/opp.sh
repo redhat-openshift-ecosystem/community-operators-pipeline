@@ -179,20 +179,14 @@ function iib_install() {
 }
 
 function detect_k8s_max() {
-#yq r apicurito.clusterserviceversion.yaml "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"
-#OPP_OPERATOR_VERSIONS_ALL_LATEST
-#v
-#$LATEST
-# find . -name $OPP_OPERATOR_VERSIONS_ALL_LATEST -type d
-echo "Detecting if k8s max version is defined..."
-pwd
-OPERATOR_VERSION_PATH_LATEST=`echo $LATEST| cut -f 2- -d'/'`
-OPERATOR_VERSION_PATH_LATEST_CSV_PATH=`find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*"`
-KIND_KUBE_VERSION_DETECTED_RAW=`yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"`
-KIND_KUBE_VERSION_DETECTED_CORE=`echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.'`
-export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
-echo "KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED"
-
+    echo "Detecting if k8s max version is defined..."
+    pwd
+    OPERATOR_VERSION_PATH_LATEST=`echo $LATEST| cut -f 2- -d'/'`
+    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=`find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*"`
+    KIND_KUBE_VERSION_DETECTED_RAW=`yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"`
+    KIND_KUBE_VERSION_DETECTED_CORE=`echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.'`
+    export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
+    echo "KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED"
 }
 
 function run() {
