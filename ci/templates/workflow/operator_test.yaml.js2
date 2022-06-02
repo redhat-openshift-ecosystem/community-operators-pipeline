@@ -65,7 +65,7 @@ jobs:
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
-          if [ "$KIND_KUBE_VERSION_DETECTED" != "null" ]; then
+          if [ "$KIND_KUBE_VERSION_DETECTED" != "null.0" ]; then
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
           else
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
