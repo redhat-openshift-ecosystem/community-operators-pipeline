@@ -185,7 +185,12 @@ function detect_k8s_max() {
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=`find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*"`
     KIND_KUBE_VERSION_DETECTED_RAW=`yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"`
     KIND_KUBE_VERSION_DETECTED_CORE=`echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.'`
-    export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
+    
+    if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
+            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
+          else
+            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
+          fi
     echo "KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED"
 }
 
