@@ -490,11 +490,17 @@ OPP_PR_TITLE="$OPP_PR_TITLE $OPP_OPERATOR_NAME"
 function detect_k8s_max() {
     echo "Detecting if k8s max version is defined..."
     pwd
-    OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/')
+    OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/'); echo "OPERATOR_VERSION_PATH_LATEST=$OPERATOR_VERSION_PATH_LATEST"
+    ls
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*")
     KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
     
+    echo "OPERATOR_VERSION_PATH_LATEST=$OPERATOR_VERSION_PATH_LATEST"
+    echo "OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$OPERATOR_VERSION_PATH_LATEST_CSV_PATH"
+    echo "KIND_KUBE_VERSION_DETECTED_RAW=$KIND_KUBE_VERSION_DETECTED_RAW"
+    echo "KIND_KUBE_VERSION_DETECTED_CORE=$KIND_KUBE_VERSION_DETECTED_CORE"
+
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
             export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
           else
@@ -503,7 +509,7 @@ function detect_k8s_max() {
     echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
 }
 
-echo "Going to run detection..." && detect_k8s_max
+echo "Going to run a detection..." && detect_k8s_max
 
 echo "Latest : $LATEST"
 echo "OPP_OPERATOR_VERSION: $OPP_OPERATOR_VERSION"
