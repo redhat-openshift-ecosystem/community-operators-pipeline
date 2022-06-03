@@ -181,17 +181,17 @@ function iib_install() {
 function detect_k8s_max() {
     echo "Detecting if k8s max version is defined..."
     pwd
-    OPERATOR_VERSION_PATH_LATEST=`echo $LATEST| cut -f 2- -d'/'`
-    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=`find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*"`
-    KIND_KUBE_VERSION_DETECTED_RAW=`yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]"`
-    KIND_KUBE_VERSION_DETECTED_CORE=`echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.'`
+    OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/')
+    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*")
+    KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
+    KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
     
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
             export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
           else
             export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
           fi
-    echo "KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED"
+    echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
 }
 
 function run() {
@@ -233,7 +233,9 @@ function handleMultiarchTag() {
         fi
         echo "OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
     fi
-    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
+    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS"; exit 1; }
+    # [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
+
 }
 
 if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then
