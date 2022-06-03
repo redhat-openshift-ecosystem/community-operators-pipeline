@@ -499,18 +499,13 @@ function detect_k8s_max() {
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
 
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
+            KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.0"
+            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
     else
-            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
+            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
+            KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_LATEST"
     fi
-    echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
-    if [ "$KIND_KUBE_VERSION_DETECTED" != "null" ]; then
-      echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
-      echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step"
-    else
-      echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
-      echo "Kind kube version $KIND_KUBE_VERSION_LATEST will be installed in an appropriate step"
-    fi
+    echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step."
 }
 
 detect_k8s_max
