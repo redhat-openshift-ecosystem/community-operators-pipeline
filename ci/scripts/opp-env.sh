@@ -504,6 +504,11 @@ function detect_k8s_max() {
             export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
           fi
     echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
+    if [ "$KIND_KUBE_VERSION_DETECTED" != "null" ]; then
+      echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
+    else
+      echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
+    fi
 }
 
 detect_k8s_max

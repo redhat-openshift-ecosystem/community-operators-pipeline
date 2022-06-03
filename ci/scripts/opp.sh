@@ -576,8 +576,6 @@ fi
 
 echo -e "\nOne can do 'tail -f $OPP_LOG_DIR/log.out' from second console to see full logs\n"
 
-echo "Going to run detection..." && detect_k8s_max
-
 # Check if kind is installed
 echo -e "Checking for kind binary ..."
 if ! $DRY_RUN_CMD command -v kind > /dev/null 2>&1; then
