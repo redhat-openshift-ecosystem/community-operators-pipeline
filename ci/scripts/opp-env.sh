@@ -495,6 +495,7 @@ function detect_k8s_max() {
     ls operators/apicurito
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $LATEST -name "*clusterserviceversion*")
     echo "OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$OPERATOR_VERSION_PATH_LATEST_CSV_PATH"
+    grep ui-metadata $OPERATOR_VERSION_PATH_LATEST_CSV_PATH
     KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
     
