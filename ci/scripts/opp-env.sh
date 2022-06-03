@@ -497,6 +497,8 @@ function detect_k8s_max() {
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $LATEST -name "*clusterserviceversion*")
     echo "OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$OPERATOR_VERSION_PATH_LATEST_CSV_PATH"
     ls $OPERATOR_VERSION_PATH_LATEST_CSV_PATH
+    curl -L https://github.com/mikefarah/yq/releases/download/2.2.1/yq_linux_amd64 -o /tmp/yq
+    cmod +x /tmp/yq
     yq --version
     KIND_KUBE_VERSION_DETECTED_RAW=$(yq r "$OPERATOR_VERSION_PATH_LATEST_CSV_PATH" "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
