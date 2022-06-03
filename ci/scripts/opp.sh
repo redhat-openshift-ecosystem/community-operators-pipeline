@@ -178,22 +178,6 @@ function iib_install() {
     set +o pipefail
 }
 
-function detect_k8s_max() {
-    echo "Detecting if k8s max version is defined..."
-    pwd
-    OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/')
-    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*")
-    KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
-    KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
-    
-    if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
-          else
-            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
-          fi
-    echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
-}
-
 function run() {
         if [[ $OPP_DEBUG -ge 4 ]] ; then
                 v=$(exec 2>&1 && set -x && set -- "$@")
@@ -592,8 +576,7 @@ fi
 
 echo -e "\nOne can do 'tail -f $OPP_LOG_DIR/log.out' from second console to see full logs\n"
 
-echo "Going to run detection..."
-detect_k8s_max
+echo "Going to run detection..." && detect_k8s_max
 
 # Check if kind is installed
 echo -e "Checking for kind binary ..."

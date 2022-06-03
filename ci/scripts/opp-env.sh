@@ -487,6 +487,23 @@ OPP_PR_TITLE="$OPP_OPERATORS_DIR"
 OPP_PR_TITLE="$OPP_PR_TITLE $OPP_OPERATOR_NAME"
 [[ $OPP_CI_YAML_ONLY -eq 0 ]] && OPP_PR_TITLE="$OPP_PR_TITLE ($OPP_OPERATOR_VERSIONS)"
 
+function detect_k8s_max() {
+    echo "Detecting if k8s max version is defined..."
+    pwd
+    OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/')
+    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*")
+    KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
+    KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
+    
+    if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
+            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE.0"
+          else
+            export KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_DETECTED_CORE"
+          fi
+    echo "KIND_KUBE_VERSION_DETECTED=$KIND_KUBE_VERSION_DETECTED"
+}
+
+echo "Going to run detection..." && detect_k8s_max
 
 echo "Latest : $LATEST"
 echo "OPP_OPERATOR_VERSION: $OPP_OPERATOR_VERSION"
