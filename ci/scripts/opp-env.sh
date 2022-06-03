@@ -491,7 +491,7 @@ function detect_k8s_max() {
     echo "Detecting if k8s max version is defined..."
     pwd
     OPERATOR_VERSION_PATH_LATEST=$(echo $LATEST| cut -f 2- -d'/'); echo "OPERATOR_VERSION_PATH_LATEST=$OPERATOR_VERSION_PATH_LATEST"
-    ls
+    ls operators|grep api
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $OPERATOR_VERSION_PATH_LATEST -name "*clusterserviceversion*")
     KIND_KUBE_VERSION_DETECTED_RAW=$(yq r $OPERATOR_VERSION_PATH_LATEST_CSV_PATH "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
