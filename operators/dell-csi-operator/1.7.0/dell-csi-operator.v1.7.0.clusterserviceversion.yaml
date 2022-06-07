@@ -60,11 +60,11 @@ metadata:
                   },
                   {
                     "name": "X_CSI_ISI_ACCESS_ZONE",
-                    "value": "XXX System"
+                    "value": "XXX Syste  dsfs  dsfgsdf m"
                   },
                   {
                     "name": "X_CSI_ISI_VOLUME_PATH_PERMISSIONS",
-                    "value": "0777"
+                    "value": "0777a"
                   }
                 ],
                 "nodeSelector": null,
