@@ -60,7 +60,7 @@ metadata:
                   },
                   {
                     "name": "X_CSI_ISI_ACCESS_ZONE",
-                    "value": "System"
+                    "value": "System "
                   },
                   {
                     "name": "X_CSI_ISI_VOLUME_PATH_PERMISSIONS",
