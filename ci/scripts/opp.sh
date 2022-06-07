@@ -628,7 +628,7 @@ for t in $TESTS;do
     echo -e "Test '$t1' for '$OPP_OPERATORS_DIR $OPP_OPERATOR $OPP_VERSION' ..."
     if [[ $OPP_RESET -eq 1 ]];then
         echo -e "[$t1] Reseting kind cluster ..."
-        run $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false -e kind_version=$KIND_VERSION -e kind_kube_version=$KIND_KUBE_VERSION -e kubectl_version=$KIND_KUBE_VERSION --tags reset
+        run $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false -e kind_version=$KIND_VERSION -e kind_kube_version=$KIND_KUBE_VERSION --tags reset
     fi
     if [ -n "$OPP_PRETEST_CUSTOM_SCRIPT" ];then
         echo "Running custom script '$OPP_PRETEST_CUSTOM_SCRIPT' ..."
