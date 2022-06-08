@@ -2,6 +2,7 @@
 # OPerator Pipeline (OPP) env script (opp-env.sh)
 
 set -e
+declare -A KIND_SUPPORT_TABLE=(["1.24"]="0" ["1.23"]="6" ["1.22"]="9" ["1.21"]="12" ["1.20"]="15" ["1.19"]="16" ["1.18"]="20")
 export INPUT_ENV_SCRIPT="/tmp/opp-env-vars"
 OPP_ALLOW_CI_CHANGES=${OPP_ALLOW_CI_CHANGES-0}
 OPP_ALLOW_FORCE_RELEASE=${OPP_ALLOW_FORCE_RELEASE-0}
@@ -499,7 +500,7 @@ function detect_k8s_max() {
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
 
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.0"
+            KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
     else
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
