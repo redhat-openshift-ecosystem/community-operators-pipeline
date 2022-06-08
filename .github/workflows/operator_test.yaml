@@ -64,6 +64,30 @@ jobs:
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
+      - name: Operator info (result)
+        id: op-traffic-light-result
+        if: always() && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' )
+        run: |
+          echo "::set-output name=git_rebase_conflict::0"
+          echo "::set-output name=git_rebase_conflict_comment::"
+          [ -f /tmp/pr_rebase.txt ] && echo "::set-output name=git_rebase_conflict::1" || true
+          [ -f /tmp/pr_rebase.txt ] && echo "::set-output name=git_rebase_conflict_comment::$(cat /tmp/pr_rebase.txt)" || true
+      - name: Operator info (comment)
+        id: op-traffic-light-comment
+        if: always() && steps.op-traffic-light-result.outputs.git_rebase_conflict == '1'
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Dear @${{ github.event.pull_request.user.login }},
+            There is problem to rebase 
+            
+            Please try to do: 
+            ```
+            ${{ steps.op-traffic-light-result.outputs.git_rebase_conflict_comment }}
+            ```
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
 
       - name: Operator info
         id: op-info
