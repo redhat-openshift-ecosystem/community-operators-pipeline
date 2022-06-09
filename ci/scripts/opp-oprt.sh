@@ -14,7 +14,7 @@ function handleError() {
   OPERATORS_REPO_DIR=/tmp/operators-repo
   OUTFILE=/tmp/pr_rebase.txt
   echo "Problem with rebasing from 'repo=https://github.com/$OPP_OPRT_REPO branch=$BRANCH_NAME' to 'repo=https://github.com/$OPP_OPRT_SRC_REPO branch=$OPP_OPRT_SRC_BRANCH' !!!"
-  echo "Generating error file '$OUTFILE' !!!"
+  echo "Generating file '$OUTFILE' !!!"
   echo "git clone https://github.com/$OPP_OPRT_REPO $OPERATORS_REPO_DIR"> $OUTFILE
   echo "cd $OPERATORS_REPO_DIR">> $OUTFILE
   echo "git checkout $BRANCH_NAME" >> $OUTFILE
