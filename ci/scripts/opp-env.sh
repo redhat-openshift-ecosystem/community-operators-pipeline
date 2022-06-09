@@ -498,16 +498,52 @@ function detect_k8s_max() {
     yq --version
     KIND_KUBE_VERSION_DETECTED_RAW=$(/tmp/yq r "$OPERATOR_VERSION_PATH_LATEST_CSV_PATH" "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
-
+    
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
+            KIND_NOT_SUPPOTED=0
+            SEMVER_BIGGER_OUT_OF_RANGE=0
+            SEMVER_SMALLER_OUT_OF_RANGE=0
+
+            function semver_compare() {
+              local IFS=.
+              local i ver1=($1) ver2=($2)
+              for ((i=0; i<${#ver1[@]}; i++))
+                  do
+                      if ((10#${ver1[i]} > 10#${ver2[i]}))
+                      then
+                          SEMVER_BIGGER_OUT_OF_RANGE=1
+                      fi
+                      if ((10#${ver1[i]} < 10#${ver2[i]}))
+                      then
+                          SEMVER_SMALLER_OUT_OF_RANGE=1
+                      fi
+                  done
+            }
+
+            semver_compare $KIND_KUBE_VERSION_DETECTED_CORE ${KIND_SUPPORT_TABLE[0]}
+            semver_compare $KIND_KUBE_VERSION_DETECTED_CORE ${KIND_SUPPORT_TABLE[-1]}
+
+            if [ $SEMVER_BIGGER_OUT_OF_RANGE -eq 1 ]; then
+              KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[0]}"
+            elif [ $SEMVER_SMALLER_OUT_OF_RANGE -ne 1 ]; then
+              KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
+            else 
+              KIND_NOT_SUPPOTED=1
+              KIND_KUBE_VERSION_NOT_SUPPORTED=$KIND_KUBE_VERSION_DETECTED_CORE
+              KIND_KUBE_VERSION_DETECTED=0.0.0
+            fi
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
     else
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST"
             KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_LATEST"
     fi
-    echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step."
+    if [ $KIND_NOT_SUPPOTED -ne 1 ]; then 
+      echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step."
+    else
+      echo "Value from 'ui-metadata-max-k8s-version' is $KIND_KUBE_VERSION_NOT_SUPPORTED which is not supported. Should be higher than ${KIND_SUPPORT_TABLE[-1]}"
+    fi
 }
+#FIX ${KIND_SUPPORT_TABLE[-1]} does not exist, only ${KIND_SUPPORT_TABLE[1.19]}
 
 detect_k8s_max
 
