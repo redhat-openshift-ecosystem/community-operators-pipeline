@@ -85,9 +85,9 @@ jobs:
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
-            There is problem to rebase 
+            Your forked procject is not rebased
             
-            Please try to do: 
+            To fix this issue please rebase or execute following commands: 
             ```
             ${{ steps.op-traffic-light-result.outputs.git_rebase_conflict_comment }}
             ```
