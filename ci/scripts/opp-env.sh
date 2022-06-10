@@ -506,12 +506,12 @@ function detect_k8s_max() {
 
 
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            KIND_NOT_SUPPOTED=0
-            SEMVER_BIGGER_OUT_OF_RANGE=0
-            SEMVER_SMALLER_OUT_OF_RANGE=0
+
             echo "Detected UI k8s version is not null"
 
             function semver_compare() {
+            SEMVER_BIGGER_OUT_OF_RANGE=0
+            SEMVER_SMALLER_OUT_OF_RANGE=0
               local IFS=.
               local i ver1=($1) ver2=($2)
               for ((i=0; i<${#ver1[@]}; i++))

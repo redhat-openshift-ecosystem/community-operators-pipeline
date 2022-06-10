@@ -21,31 +21,58 @@ function detect_k8s_max() {
     # KIND_KUBE_VERSION_DETECTED_RAW=$(/tmp/yq r "$OPERATOR_VERSION_PATH_LATEST_CSV_PATH" "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     
     
-    KIND_KUBE_VERSION_DETECTED_RAW=1.99
+    KIND_KUBE_VERSION_DETECTED_RAW=1.19
 
 
 
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
+    echo "KIND_KUBE_VERSION_DETECTED_CORE=$KIND_KUBE_VERSION_DETECTED_CORE"
     
     if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
-            KIND_NOT_SUPPOTED=0
-            SEMVER_BIGGER_OUT_OF_RANGE=0
-            SEMVER_SMALLER_OUT_OF_RANGE=0
+
+
 
             function semver_compare() {
-              local IFS=.
-              local i ver1=($1) ver2=($2)
-              for ((i=0; i<${#ver1[@]}; i++))
-                  do
-                      if ((10#${ver1[i]} > 10#${ver2[i]}))
-                      then
-                          SEMVER_BIGGER_OUT_OF_RANGE=1
-                      fi
-                      if ((10#${ver1[i]} < 10#${ver2[i]}))
-                      then
-                          SEMVER_SMALLER_OUT_OF_RANGE=1
-                      fi
-                  done
+            SEMVER_BIGGER_OUT_OF_RANGE=0
+            SEMVER_SMALLER_OUT_OF_RANGE=0
+              VER1_A=$(echo $1|cut -f 1 -d'.')
+              echo "VER1_A=$VER1_A"
+              VER1_B=$(echo $1|cut -f 2 -d'.')
+              echo "VER1_B=$VER1_B"
+              VER2_A=$(echo $2|cut -f 1 -d'.')
+              echo "VER2_A=$VER2_A"
+              VER2_B=$(echo $2|cut -f 2 -d'.')
+              echo "VER2_B=$VER2_B"
+              
+
+              if (($VER1_A > $VER2_A))
+              then
+                  SEMVER_BIGGER_OUT_OF_RANGE=1
+                  echo "$VER1_A is bigger than $VER2_A"
+              elif (($VER1_A == $VER2_A))
+              then
+                  if (($VER1_B > $VER2_B))
+                  then
+                    SEMVER_BIGGER_OUT_OF_RANGE=1
+                    echo "$VER1_B is bigger than $VER2_B"
+                  fi
+              
+              fi
+
+              if (($VER1_A < $VER2_A))
+              then
+                  SEMVER_SMALLER_OUT_OF_RANGE=1
+                  echo "$VER1_A is smaller than $VER2_A"
+              elif (($VER1_A == $VER2_A))
+              then
+                  if (($VER1_B < $VER2_B))
+                  then
+                    SEMVER_SMALLER_OUT_OF_RANGE=1
+                    echo "$VER1_B is smaller than $VER2_B"
+                  fi
+              
+              fi
+
             }
 
             semver_compare $KIND_KUBE_VERSION_DETECTED_CORE $KIND_MIN_SUPPORTED
@@ -58,18 +85,20 @@ function detect_k8s_max() {
               semver_compare $KIND_KUBE_VERSION_DETECTED_CORE $KIND_MAX_SUPPORTED
 
               if [ $SEMVER_BIGGER_OUT_OF_RANGE -eq 1 ]; then
-                echo "bigger detected"
                 KIND_KUBE_VERSION_DETECTED="v$KIND_MAX_SUPPORTED.${KIND_SUPPORT_TABLE[$KIND_MAX_SUPPORTED]}"
-                # KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[${!KIND_MAX_SUPPORTED}]}"
+                echo "Bigger, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
               else 
                 KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
+                echo "In range, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
               fi
             fi
 
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
+            echo "Exported $KIND_KUBE_VERSION_DETECTED"
     else
             echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST" # consider KIND_MAX_SUPPORTED instead of latest
             KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_LATEST"
+            echo "K8S UI version not defined, using from config $KIND_KUBE_VERSION_DETECTED"
     fi
 
     echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step."
