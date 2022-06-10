@@ -513,18 +513,16 @@ function detect_k8s_max() {
             SEMVER_BIGGER_OUT_OF_RANGE=0
             SEMVER_SMALLER_OUT_OF_RANGE=0
               local IFS=.
-              local i ver1=($1) ver2=($2)
-              for ((i=0; i<${#ver1[@]}; i++))
+              local i VER1=($1) VER2=($2)
+              for ((i=0; i<${#VER1[@]}; i++))
                   do
-                      if ((10#${ver1[i]} > 10#${ver2[i]}))
+                      if ((10#${VER1[i]} > 10#${VER2[i]}))
                       then
                           SEMVER_BIGGER_OUT_OF_RANGE=1
-                          echo "$ver1 is bigger than $ver2"
                       fi
-                      if ((10#${ver1[i]} < 10#${ver2[i]}))
+                      if ((10#${VER1[i]} < 10#${VER2[i]}))
                       then
                           SEMVER_SMALLER_OUT_OF_RANGE=1
-                          echo "$ver1 is smaller than $ver2"
                       fi
                   done
             }
