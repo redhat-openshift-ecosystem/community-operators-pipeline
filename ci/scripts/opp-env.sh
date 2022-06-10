@@ -558,7 +558,7 @@ function detect_k8s_max() {
 }
 
 
-detect_k8s_max
+[[ $OPP_PRODUCTION_TYPE == k8s ]] && detect_k8s_max
 
 echo "Latest : $LATEST"
 echo "OPP_OPERATOR_VERSION: $OPP_OPERATOR_VERSION"
