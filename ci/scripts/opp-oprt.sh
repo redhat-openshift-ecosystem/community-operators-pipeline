@@ -1,14 +1,28 @@
 #!/bin/bash
 # Operator Pipeline (OPP) env script (opp-env.sh)
-
+set -e
 set +o pipefail
 OPP_OPRT_REPO=${OPP_OPRT_REPO-""}
 OPP_OPRT_SHA=${OPP_OPRT_SHA-""}
 OPP_OPRT_SRC_REPO=${OPP_OPRT_SRC_REPO-"operator-framework/community-operators"}
-OPP_OPRT_SRC_BRANCH=${OPP_OPRT_SRC_BRANCH-"master"}
+OPP_OPRT_SRC_BRANCH=${OPP_OPRT_SRC_BRANCH-"main"}
 #OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/master/scripts/ci/actions-env"}
 OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"}
 export OPRT=1
+
+function handleError() {
+  OPERATORS_REPO_DIR=/tmp/operators-repo
+  OUTFILE=/tmp/pr_rebase.txt
+  echo "Problem with rebasing from 'repo=https://github.com/$OPP_OPRT_REPO branch=$BRANCH_NAME' to 'repo=https://github.com/$OPP_OPRT_SRC_REPO branch=$OPP_OPRT_SRC_BRANCH' !!!"
+  echo "Generating file '$OUTFILE' !!!"
+  echo "git clone https://github.com/$OPP_OPRT_REPO $OPERATORS_REPO_DIR"> $OUTFILE
+  echo "cd $OPERATORS_REPO_DIR">> $OUTFILE
+  echo "git checkout $BRANCH_NAME" >> $OUTFILE
+  echo "git remote add upstream https://github.com/$OPP_OPRT_SRC_REPO -f" >> $OUTFILE
+  echo "git pull --rebase upstream $OPP_OPRT_SRC_BRANCH" >> $OUTFILE
+  exit 1
+}
+
 echo "OPP_SCRIPT_ENV_URL=$OPP_SCRIPT_ENV_URL"
 
 [ -n "$OPP_OPRT_REPO" ] || { echo "Error: '\$OPP_OPRT_REPO' is empty !!!"; exit 1; }
@@ -17,7 +31,7 @@ echo "OPP_SCRIPT_ENV_URL=$OPP_SCRIPT_ENV_URL"
 git clone https://github.com/$OPP_OPRT_REPO operators #> /dev/null 2>&1
 echo "cloned https://github.com/$OPP_OPRT_REPO"
 cd operators
-BRANCH_NAME=$(git branch -a --contains $OPP_OPRT_SHA | grep remotes/ | grep -v HEAD | cut -d '/' -f 2- | head -n 1)
+BRANCH_NAME=$(git branch -a --contains $OPP_OPRT_SHA | grep remotes/origin | grep -v HEAD | cut -d '/' -f 2- | head -n 1)
 echo "BRANCH_NAME=$BRANCH_NAME"
 git checkout $BRANCH_NAME #> /dev/null 2>&1
 git log --oneline | head
@@ -28,7 +42,8 @@ git config --global user.name "Test User"
 git remote add upstream https://github.com/$OPP_OPRT_SRC_REPO -f #> /dev/null 2>&1
 echo "added remote https://github.com/$OPP_OPRT_SRC_REPO"
 git rev-parse HEAD
-git pull --rebase -Xours upstream $OPP_OPRT_SRC_BRANCH 
+echo "git pull --rebase upstream $OPP_OPRT_SRC_BRANCH"
+git pull --rebase upstream $OPP_OPRT_SRC_BRANCH || handleError
 echo "Repo rebased over branch OPP_OPRT_SRC_BRANCH - $OPP_OPRT_SRC_BRANCH"
 
 export OPP_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')

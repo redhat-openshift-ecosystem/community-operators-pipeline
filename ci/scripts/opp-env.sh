@@ -2,6 +2,9 @@
 # OPerator Pipeline (OPP) env script (opp-env.sh)
 
 set -e
+declare -A KIND_SUPPORT_TABLE=(["1.24"]="0" ["1.23"]="6" ["1.22"]="9" ["1.21"]="12" ["1.20"]="15" ["1.19"]="16" ["1.18"]="20")
+KIND_MIN_SUPPORTED=1.18
+KIND_MAX_SUPPORTED=1.24 # DO NOT FORGET TO CHANGE WHEN CHANGING ^
 export INPUT_ENV_SCRIPT="/tmp/opp-env-vars"
 OPP_ALLOW_CI_CHANGES=${OPP_ALLOW_CI_CHANGES-0}
 OPP_ALLOW_FORCE_RELEASE=${OPP_ALLOW_FORCE_RELEASE-0}
@@ -487,6 +490,75 @@ OPP_PR_TITLE="$OPP_OPERATORS_DIR"
 OPP_PR_TITLE="$OPP_PR_TITLE $OPP_OPERATOR_NAME"
 [[ $OPP_CI_YAML_ONLY -eq 0 ]] && OPP_PR_TITLE="$OPP_PR_TITLE ($OPP_OPERATOR_VERSIONS)"
 
+function detect_k8s_max() {
+    echo "Detecting if k8s max version is defined..."
+    OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $LATEST -name "*clusterserviceversion*")
+    echo "OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$OPERATOR_VERSION_PATH_LATEST_CSV_PATH"
+    ls $OPERATOR_VERSION_PATH_LATEST_CSV_PATH
+    curl -L https://github.com/mikefarah/yq/releases/download/2.2.1/yq_linux_amd64 -o /tmp/yq
+    chmod +x /tmp/yq
+    yq --version
+    KIND_KUBE_VERSION_DETECTED_RAW=$(/tmp/yq r "$OPERATOR_VERSION_PATH_LATEST_CSV_PATH" "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
+    KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
+    
+    echo "KIND_KUBE_VERSION_DETECTED_RAW=$KIND_KUBE_VERSION_DETECTED_RAW"
+    echo "KIND_KUBE_VERSION_DETECTED_CORE=$KIND_KUBE_VERSION_DETECTED_CORE"
+
+
+    if [ "$KIND_KUBE_VERSION_DETECTED_CORE" != "null" ]; then
+
+            echo "Detected UI k8s version is not null"
+
+            function semver_compare() {
+            SEMVER_BIGGER_OUT_OF_RANGE=0
+            SEMVER_SMALLER_OUT_OF_RANGE=0
+              local IFS=.
+              local i VER1=($1) VER2=($2)
+              for ((i=0; i<${#VER1[@]}; i++))
+                  do
+                      if ((10#${VER1[i]} > 10#${VER2[i]}))
+                      then
+                          SEMVER_BIGGER_OUT_OF_RANGE=1
+                      fi
+                      if ((10#${VER1[i]} < 10#${VER2[i]}))
+                      then
+                          SEMVER_SMALLER_OUT_OF_RANGE=1
+                      fi
+                  done
+            }
+
+            semver_compare $KIND_KUBE_VERSION_DETECTED_CORE $KIND_MIN_SUPPORTED
+
+            if [ $SEMVER_SMALLER_OUT_OF_RANGE -eq 1 ]; then
+              echo "Kubernetes $KIND_KUBE_VERSION_DETECTED_CORE defined in 'operatorhub.io/ui-metadata-max-k8s-version' is not supported.       [FAIL]"
+              exit 1
+            else
+
+              semver_compare $KIND_KUBE_VERSION_DETECTED_CORE $KIND_MAX_SUPPORTED
+
+              if [ $SEMVER_BIGGER_OUT_OF_RANGE -eq 1 ]; then
+                KIND_KUBE_VERSION_DETECTED="v$KIND_MAX_SUPPORTED.${KIND_SUPPORT_TABLE[$KIND_MAX_SUPPORTED]}"
+                echo "Bigger, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
+              else 
+                KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
+                echo "In range, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
+              fi
+            fi
+
+            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
+            echo "Exported $KIND_KUBE_VERSION_DETECTED"
+    else
+            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST" # consider KIND_MAX_SUPPORTED instead of latest
+            KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_LATEST"
+            echo "K8S UI version not defined, using from config $KIND_KUBE_VERSION_DETECTED"
+    fi
+
+    echo "Kind kube version $KIND_KUBE_VERSION_DETECTED will be installed in an appropriate step."
+
+}
+
+
+[[ $OPP_PRODUCTION_TYPE == k8s ]] && detect_k8s_max
 
 echo "Latest : $LATEST"
 echo "OPP_OPERATOR_VERSION: $OPP_OPERATOR_VERSION"
