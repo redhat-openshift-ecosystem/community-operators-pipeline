@@ -184,17 +184,20 @@ function run() {
                 echo "#${v#*--}"
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         elif [[ $OPP_DEBUG -ge 1 ]] ; then
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         else
                 set -o pipefail
                 "$@" | tee -a $OPP_LOG_DIR/log.out >/dev/null 2>&1
-                [[ $? -eq 0 ]] || { echo -e "\nFailed with rc=$? !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $?; }
+                RC=$?
+                [[ $RC -eq 0 ]] || { echo -e "\nFailed with rc=$RC !!!\nLogs are in '$OPP_LOG_DIR/log.out'."; exit $RC; }
                 set +o pipefail
         fi
 }
@@ -214,7 +217,8 @@ function handleMultiarchTag() {
         fi
         echo "OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG=$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG"
     fi
-    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ('$OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG' OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
+    [ -z "$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG" ] && { echo "Multiarch image tag cound not be detected !!! ($OPP_MIRROR_INDEX_MULTIARCH_BASE:$OPP_MIRROR_INDEX_MULTIARCH_BASE_TAG OPP_MULTIARCH_SUPPORTED_VERSIONS=$OPP_MULTIARCH_SUPPORTED_VERSIONS)"; exit 1; }
+
 }
 
 if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then
@@ -397,7 +401,7 @@ function ExecParameters() {
     
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
-
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_index=$OPP_PRODUCTION_REGISTRY_NAMESPACE/$OPP_RELEASE_INDEX_NAME"
 
     [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=$IIB_INPUT_REGISTRY_USER -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
     [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_password=\"$IIB_INPUT_REGISTRY_TOKEN\""
@@ -571,7 +575,6 @@ if [[ $OPP_DEBUG -ge 2 ]];then
 fi
 
 echo -e "\nOne can do 'tail -f $OPP_LOG_DIR/log.out' from second console to see full logs\n"
-
 
 # Check if kind is installed
 echo -e "Checking for kind binary ..."
