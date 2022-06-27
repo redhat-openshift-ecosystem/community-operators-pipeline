@@ -11,7 +11,7 @@ metadata:
     # is compatible with it. Please, ensure that your project is no longer using these API(s) and that you start to
     # distribute solutions which is compatible with Openshift 4.9.
     # For further information, check the README of this repository.
-    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.9"}]'
     capabilities: Seamless Upgrades
     categories: Security
     olm.skipRange: ">=1.0.2 <6.2.0"
@@ -75,8 +75,7 @@ metadata:
                 "pullPolicy": "Always"
               }
             },
-            "route": true,
-            "runAsNonRoot": false
+            "route": true
           }
         },
         {
@@ -104,8 +103,7 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
-            "diskSize": 10,
-            "runAsNonRoot": false
+            "diskSize": 10
           }
         },
         {
@@ -130,7 +128,6 @@ metadata:
                 "pullPolicy": "IfNotPresent"
               }
             },
-            "runAsNonRoot": false,
             "gateway": {
               "host": "aqua-gateway",
               "port": 8443
@@ -200,8 +197,7 @@ metadata:
                 "repository": "gateway",
                 "tag": "<<IMAGE TAG>>"
               }
-            },
-            "runAsNonRoot": false
+            }
           }
         },
         {
@@ -227,7 +223,6 @@ metadata:
                 "tag": "<<IMAGE TAG>>"
               }
             },
-            "runAsNonRoot": false,
             "login": {
               "username": "<<YOUR AQUA USER NAME>>",
               "password": "<<YOUR AQUA USER PASSWORD>>",
@@ -270,8 +265,7 @@ metadata:
                 "tag": "<<IMAGE TAG>>",
                 "pullPolicy": "Always"
               }
-            },
-            "runAsNonRoot": false
+            }
           }
         }
       ]
@@ -347,7 +341,6 @@ spec:
               verbs:
                 - use
               resourceNames:
-                - aqua-scc
                 - privileged
                 - hostaccess
         - serviceAccountName: aqua-kube-enforcer-sa
@@ -359,7 +352,6 @@ spec:
               verbs:
                 - use
               resourceNames:
-                - aqua-scc
                 - privileged
                 - hostaccess
         - serviceAccountName: aqua-operator
