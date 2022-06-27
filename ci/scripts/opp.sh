@@ -373,7 +373,7 @@ function ExecParameters() {
     [[ $1 == kiwi* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_version=$OPP_VERSION --tags pure_test -e operator_channel_force=optest"
     [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_INSTALLATION_SKIP -eq 0 ]] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
     [[ $1 == kiwi* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && [[ $OPP_FORCE_DEPLOY_ON_K8S -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundle_index_image_version=$OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION"
-    [[ $1 == kiwi* ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true"
+    [[ $1 == kiwi* ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e test_skip_deploy=true -e check_image_availability_force=true"
     [[ $1 == kiwi* ]] && [[ $OPP_DEPLOY_LONGER -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pod_start_retries=$OPP_POD_START_RETRIES_LONG_DEPLOYMENT_WAIT_RETRIES"
     [[ $1 == kiwi* ]] && [[ $OPP_PROD -eq 0 ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e enable_bundle_validate_community=true"
     [[ $1 == lemon* ]] && OPP_EXEC_USER="-e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR --tags deploy_bundles"
