@@ -167,7 +167,7 @@ function iib_install() {
 
     cat /etc/hosts
 
-    sudo sh -c "$DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false --tags iib"
+    sudo sh -c "$DRY_RUN_CMD /opt/pipx_bin/ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false --tags iib"
     # -e iib_push_image="$IIB_PUSH_IMAGE" -e iib_push_registry="$(echo $IIB_PUSH_IMAGE | cut -d '/' -f 1)"
     if [[ $? -eq 0 ]];then
         echo "Loging to registry.redhat.io ..."
