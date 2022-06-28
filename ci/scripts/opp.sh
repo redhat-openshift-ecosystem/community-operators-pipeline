@@ -181,6 +181,9 @@ function iib_install() {
           $OPP_CONTAINER_TOOL ps -a
           echo $OPP_CONTAINER_TOOL logs iib_iib-worker_1
           $OPP_CONTAINER_TOOL logs iib_iib-worker_1
+          echo $OPP_CONTAINER_TOOL logs iib_minica_1
+          $OPP_CONTAINER_TOOL logs iib_minica_1
+
         #   $OPP_CONTAINER_TOOL exec iib_iib-worker_1 mkdir -p /root/.docker/
           $OPP_CONTAINER_TOOL cp $HOME/.docker/config.json iib_iib-worker_1:/root/.docker/config.json.template || exit 1
         else
