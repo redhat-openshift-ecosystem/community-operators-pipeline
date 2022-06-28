@@ -154,10 +154,13 @@ function clean() {
 function iib_install() {
     echo "Installing iib ..."
     set -o pipefail
+    whoami
+
     MY_IP=$(hostname -I | cut -d ' ' -f 1)
-    echo $MY_IP registry >> /etc/hosts
-    echo $MY_IP rabbitmq >> /etc/hosts
-    echo $MY_IP db >> /etc/hosts
+    echo $MY_IP
+    sudo echo $MY_IP registry >> /etc/hosts
+    sudo echo $MY_IP rabbitmq >> /etc/hosts
+    sudo echo $MY_IP db >> /etc/hosts
 
     cat /etc/hosts
 
