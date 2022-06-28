@@ -175,7 +175,11 @@ function iib_install() {
           if [ -n "$IIB_OUTPUT_REGISTRY_TOKEN" ];then
             echo "$IIB_OUTPUT_REGISTRY_TOKEN" | $OPP_CONTAINER_TOOL login quay.io -u $IIB_OUTPUT_REGISTRY_USER --password-stdin || { echo "Problem to login to 'quay.io' !!!"; exit 1; }
           fi
+          ls -al /etc/ssl/certs/ca-certificates.crt
+          ls -al /tmp/iib
           $OPP_CONTAINER_TOOL ps -a
+          echo $OPP_CONTAINER_TOOL logs iib_iib-worker_1
+          $OPP_CONTAINER_TOOL logs iib_iib-worker_1
         #   $OPP_CONTAINER_TOOL exec iib_iib-worker_1 mkdir -p /root/.docker/
           $OPP_CONTAINER_TOOL cp $HOME/.docker/config.json iib_iib-worker_1:/root/.docker/config.json.template || exit 1
         else
