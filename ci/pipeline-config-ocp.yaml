@@ -40,6 +40,7 @@ production:
     force_deploy_openshift_version: "4.8"
     installation_skip:
       - ack-
+      - apicurito
 
 pipeline:
   base: https://github.com
