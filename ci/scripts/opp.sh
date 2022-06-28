@@ -155,6 +155,7 @@ function iib_install() {
     echo "Installing iib ..."
     set -o pipefail
     whoami
+    hostname -I
 
     MY_IP=$(hostname -I | cut -d ' ' -f 1)
     echo $MY_IP
