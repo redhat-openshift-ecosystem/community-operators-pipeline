@@ -158,9 +158,11 @@ function iib_install() {
 
     MY_IP=$(hostname -I | cut -d ' ' -f 1)
     echo $MY_IP
-    sudo echo $MY_IP registry >> /etc/hosts
-    sudo echo $MY_IP rabbitmq >> /etc/hosts
-    sudo echo $MY_IP db >> /etc/hosts
+
+    sudo sh -c "echo $MY_IP registry >> /etc/hosts"
+    sudo sh -c "echo $MY_IP rabbitmq >> /etc/hosts"
+    sudo sh -c "echo $MY_IP db >> /etc/hosts"
+
 
     cat /etc/hosts
 
