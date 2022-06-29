@@ -154,20 +154,15 @@ function clean() {
 function iib_install() {
     echo "Installing iib ..."
     set -o pipefail
-    whoami
-    hostname -I
 
     MY_IP=$(hostname -I | cut -d ' ' -f 1)
     echo $MY_IP
-
     sudo sh -c "echo $MY_IP registry >> /etc/hosts"
     sudo sh -c "echo $MY_IP rabbitmq >> /etc/hosts"
     sudo sh -c "echo $MY_IP db >> /etc/hosts"
 
 
-    $OPP_CONTAINER_TOOL volume ls
     $DRY_RUN_CMD /opt/pipx_bin/ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false --tags iib
-    $OPP_CONTAINER_TOOL volume ls
     # -e iib_push_image="$IIB_PUSH_IMAGE" -e iib_push_registry="$(echo $IIB_PUSH_IMAGE | cut -d '/' -f 1)"
     if [[ $? -eq 0 ]];then
         echo "Loging to registry.redhat.io ..."
@@ -177,11 +172,6 @@ function iib_install() {
             echo "$IIB_OUTPUT_REGISTRY_TOKEN" | $OPP_CONTAINER_TOOL login quay.io -u $IIB_OUTPUT_REGISTRY_USER --password-stdin || { echo "Problem to login to 'quay.io' !!!"; exit 1; }
           fi
           $OPP_CONTAINER_TOOL ps -a
-          echo $OPP_CONTAINER_TOOL logs iib_minica_1
-          $OPP_CONTAINER_TOOL logs iib_minica_1
-          echo $OPP_CONTAINER_TOOL logs iib_iib-worker_1
-          $OPP_CONTAINER_TOOL logs iib_iib-worker_1
-
         #   $OPP_CONTAINER_TOOL exec iib_iib-worker_1 mkdir -p /root/.docker/
           $OPP_CONTAINER_TOOL cp $HOME/.docker/config.json iib_iib-worker_1:/root/.docker/config.json.template || exit 1
         else
