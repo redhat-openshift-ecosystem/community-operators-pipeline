@@ -154,6 +154,14 @@ function clean() {
 function iib_install() {
     echo "Installing iib ..."
     set -o pipefail
+
+    MY_IP=$(hostname -I | cut -d ' ' -f 1)
+    echo $MY_IP
+    sudo sh -c "echo $MY_IP registry >> /etc/hosts"
+    sudo sh -c "echo $MY_IP rabbitmq >> /etc/hosts"
+    sudo sh -c "echo $MY_IP db >> /etc/hosts"
+
+
     $DRY_RUN_CMD ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_DEFAULT_ARGS -e run_prepare_catalog_repo_upstream=false --tags iib
     # -e iib_push_image="$IIB_PUSH_IMAGE" -e iib_push_registry="$(echo $IIB_PUSH_IMAGE | cut -d '/' -f 1)"
     if [[ $? -eq 0 ]];then
