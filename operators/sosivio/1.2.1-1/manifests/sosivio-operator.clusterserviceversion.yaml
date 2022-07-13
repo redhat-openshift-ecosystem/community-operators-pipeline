@@ -265,4 +265,4 @@ spec:
       name: draingo
     - image: release.sosiv.io/discovery-engine@sha256:dd0ffc5e9df3852f56559ea256b1d89bc584817d59447a46aaa9a16937a8cb84
       name: discovery-engine
-  version: 1.2.1
+  version: 1.2.1-1

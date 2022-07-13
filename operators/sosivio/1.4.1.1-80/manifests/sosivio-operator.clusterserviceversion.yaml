@@ -260,4 +260,4 @@ spec:
     - image: quay.io/sosivio/discovery-engine@sha256:8fc3a90640b8852bae736dd7a915e74d983e178f0c16c4205331617686f1d89e
       name: discovery-engine
     - image: quay.io/sosivio/notifier@sha256:162e74e31a69a4112b992bfd555223c6dedd9d81bb46fcdebffd4ed206659ac6
-  version: "1.4.1-1"
+  version: "1.4.1.1-80"
