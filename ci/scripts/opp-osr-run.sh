@@ -3,7 +3,6 @@
 #BRANCH=${2-""}
 OP_DEBUG=${OP_DEBUG-0}
 OP_TOKEN=${OP_TOKEN-""}
-echo $OP_TOKEN|base64
 CONTAINER_TOOL=${CONTAINER_TOOL-"docker"}
 OPP_IMAGE=${OPP_IMAGE-"quay.io/operator_testing/operator-test-playbooks:latest"}
 
