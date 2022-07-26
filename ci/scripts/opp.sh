@@ -398,6 +398,8 @@ function ExecParameters() {
 
     [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
 
+    [[ $1 == orange* ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=$IIB_INPUT_REGISTRY_USER -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
+
     # Handle index_check
     OPP_PRODUCTION_INDEX_IMAGE_TAG="latest"
     [[ $1 == orange_* ]] && OPP_PRODUCTION_INDEX_IMAGE_TAG="${1/orange_/}"
