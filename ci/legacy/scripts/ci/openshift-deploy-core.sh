@@ -236,7 +236,6 @@ if [ ! -d "operators/$OP_NAME/$OP_VER/manifests" ]; then
 fi
 #Prepare temp index
 echo "Preparing temp index ..."
-
 [[ $TEST_MODE -ne 1 ]] && OP_TOKEN=$(cat /var/run/cred/op_token_quay_test)
 echo
 [[ $TEST_MODE -ne 1 ]] && curl -f -u framework-automation:$(cat /var/run/cred/framautom) \
