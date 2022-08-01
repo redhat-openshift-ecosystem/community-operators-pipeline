@@ -237,7 +237,7 @@ spec:
         version: v1alpha1
   description: |
     This operator helps set up Vault Configurations. The main intent is to do so such that subsequently pods can consume the secrets made available.
-    There are two main principles through all of the capabilities of this operator:
+    There are two main principles through all of the capabilities of this operator:::
 
     1. high-fidelity API. The CRD exposed by this operator reflect field by field the Vault APIs. This is because we don't want to make any assumption on the kinds of configuration workflow that user will set up. That being said the Vault API is very extensive and we are starting with enough API coverage to support, we think, some simple and very common configuration workflows.
     2. attention to security (after all we are integrating with a security tool). To prevent credential leaks we give no permissions to the operator itself against Vault. All APIs exposed by this operator contains enough information to authenticate to Vault using a local service account (local to the namespace where the API exist). In other word for a namespace user to be abel to successfully configure Vault, a service account in that namespace must have been previously given the needed Vault permissions.
