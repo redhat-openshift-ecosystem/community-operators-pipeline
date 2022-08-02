@@ -1,0 +1,72 @@
+{% raw %}
+on: issue_comment
+name: [retest] Issue Comments
+env:
+{% endraw %}
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
+{% raw %}
+jobs:
+  handle_comments:
+    name: Check comments for /retest
+    if: |
+      startsWith(github.event.comment.body, '/retest')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restest command handler
+        id: command
+        uses: xt0rted/slash-command-action@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          command: retest
+          reaction: "true"
+          reaction-type: "eyes"
+          allow-edits: "true"
+          permission-level: read
+
+      - name: Doing hold
+        uses: actions/github-script@v3
+        if: |
+          steps.command.outputs.command-name == 'retest'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '/hold'
+            })
+
+      - name: Doing hold cancel
+        uses: actions/github-script@v3
+        if: |
+          steps.command.outputs.command-name == 'retest'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '/hold cancel'
+            })
+{% endraw %}
+{% if default_config.production.type == 'k8s' %}
+{% else %}
+{% raw %}    
+      - name: Doing test all (ocp)
+        uses: actions/github-script@v3
+        if: |
+          steps.command.outputs.command-name == 'retest' &&
+          steps.command.outputs.command-arguments == 'all'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '/test all'
+            })
+{% endraw -%}
+{% endif %}
