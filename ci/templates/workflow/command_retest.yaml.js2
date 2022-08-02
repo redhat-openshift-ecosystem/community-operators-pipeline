@@ -51,22 +51,3 @@ jobs:
               body: '/hold cancel'
             })
 {% endraw %}
-{% if default_config.production.type == 'k8s' %}
-{% else %}
-{% raw %}    
-      - name: Doing test all (ocp)
-        uses: actions/github-script@v3
-        if: |
-          steps.command.outputs.command-name == 'retest' &&
-          steps.command.outputs.command-arguments == 'all'
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '/test all'
-            })
-{% endraw -%}
-{% endif %}
