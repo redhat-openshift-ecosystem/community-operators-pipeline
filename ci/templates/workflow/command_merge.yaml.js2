@@ -1,6 +1,6 @@
 {% raw %}
 on: issue_comment
-name: [merge] Issue Comments
+name: Issue Comments - merge
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"

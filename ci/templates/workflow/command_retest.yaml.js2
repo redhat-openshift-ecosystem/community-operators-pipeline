@@ -1,6 +1,6 @@
 {% raw %}
 on: issue_comment
-name: [retest] Issue Comments
+name: Issue Comments - retest
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
