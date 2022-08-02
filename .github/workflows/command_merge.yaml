@@ -1,6 +1,6 @@
 
 on: issue_comment
-name: [merge] Issue Comments
+name: Issue Comments - merge
 env:
   OPP_PRODUCTION_TYPE: "ocp"
 

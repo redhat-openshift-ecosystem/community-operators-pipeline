@@ -1,6 +1,6 @@
 
 on: issue_comment
-name: [retest] Issue Comments
+name: Issue Comments - retest
 env:
   OPP_PRODUCTION_TYPE: "ocp"
 
