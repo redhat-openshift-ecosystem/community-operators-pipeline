@@ -39,6 +39,7 @@ env:
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: {{ default_config.test.force_deploy_openshift_version | default('4.8') }}
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 {% raw %}
+  IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 
 jobs:
   pr-check:
