@@ -216,7 +216,8 @@ spec:
   description: |
     CockroachDB is a scalable, survivable, strongly-consistent SQL database.
     ## About this Operator
-    This Operator is based on a Helm chart for CockroachDB. It supports the same parameters like the official [CockroachDB Helm Chart](https://github.com/cockroachdb/helm-charts/tree/master/cockroachdb).
+    This Operator is
+     based on a Helm chart for CockroachDB. It supports the same parameters like the official [CockroachDB Helm Chart](https://github.com/cockroachdb/helm-charts/tree/master/cockroachdb).
 
 
     ## Core capabilities
