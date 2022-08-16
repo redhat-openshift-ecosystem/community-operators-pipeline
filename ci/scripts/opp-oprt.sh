@@ -66,11 +66,17 @@ export OPP_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPP_OPRT_SRC_BRANC
 export OPP_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OPP_ADDED_MODIFIED_FILES=$(git diff --diff-filter=AM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 export OPP_ADDED_MODIFIED_RENAMED_FILES=$(git diff --diff-filter=RAM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+
 export OPP_CURRENT_PROJECT_REPO="$OPP_OPRT_SRC_REPO"
 export OPP_CURRENT_PROJECT_BRANCH="$OPP_OPRT_SRC_BRANCH"
 echo "OPP_ADDED_MODIFIED_RENAMED_FILES=$OPP_ADDED_MODIFIED_RENAMED_FILES"
+echo "OPP_REMOVED_FILES=$OPP_REMOVED_FILES"
 
 OPP_ALL_FILES=$(git diff --diff-filter=DRAM upstream/$OPP_OPRT_SRC_BRANCH --name-only | grep -v -E "package.yaml|ci.yaml" | cut -d '/' -f 3 | uniq)
+OPP_ALL_SRC_FILES=$(git diff --diff-filter=m upstream/$OPP_OPRT_SRC_BRANCH | grep "rename from" | cut -d ' ' -f3 | grep -v -E "package.yaml|ci.yaml" | cut -d '/' -f 3 | uniq)
+
+OPP_ALL_FILES="$OPP_ALL_FILES $OPP_ALL_SRC_FILES"
+
 echo "OPP_OPRT_SRC_VERSIONS=$(echo $OPP_OPRT_SRC_VERSIONS | tr '\r\n' ' ')"
 echo "OPP_OPRT_TARGET_VERSIONS=$(echo $OPP_OPRT_TARGET_VERSIONS | tr '\r\n' ' ')"
 echo "OPP_ALL_FILES=$(echo $OPP_ALL_FILES | tr '\r\n' ' ')"
