@@ -81,7 +81,10 @@ echo "OPP_OPRT_SRC_VERSIONS=$(echo $OPP_OPRT_SRC_VERSIONS | tr '\r\n' ' ')"
 echo "OPP_OPRT_TARGET_VERSIONS=$(echo $OPP_OPRT_TARGET_VERSIONS | tr '\r\n' ' ')"
 echo "OPP_ALL_FILES=$(echo $OPP_ALL_FILES | tr '\r\n' ' ')"
 OPP_ALL_FILES="${OPP_ALL_FILES// /|}"
+OPP_ALL_FILES=${OPP_ALL_FILES%|}
 echo "$OPP_ALL_FILES"
+
+diff <(echo "$OPP_OPRT_SRC_VERSIONS") <(echo "$OPP_OPRT_TARGET_VERSIONS") | grep -E "<|>" | cut -d ' ' -f 2
 
 [ -n "$OPP_ALL_FILES" ] && MY_VERS=$(diff <(echo "$OPP_OPRT_SRC_VERSIONS") <(echo "$OPP_OPRT_TARGET_VERSIONS") | grep -E "<|>" | cut -d ' ' -f 2 | grep -v -E "$OPP_ALL_FILES" || true)
 echo "MY_VERS=$MY_VERS"
