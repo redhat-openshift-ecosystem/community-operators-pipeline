@@ -29,6 +29,8 @@ production:
         - v4.7
         - v4.8
         - v4.9
+        - v4.10
+        - v4.11
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
