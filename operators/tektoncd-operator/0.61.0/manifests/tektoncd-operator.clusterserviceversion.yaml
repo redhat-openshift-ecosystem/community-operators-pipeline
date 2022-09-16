@@ -34,7 +34,7 @@ metadata:
     categories: Developer Tools, Integration & Delivery
     certified: 'false'
     description: The quickest and easiest way to install, upgrade and manage TektonCD
-      projects on any Kubernetes Cluster.
+      projects on any Kubernetes Cluster .
     operators.operatorframework.io/builder: operator-sdk-v1.23.0
     operators.operatorframework.io/project_layout: unknown
     repository: https://github.com/tektoncd/operator
