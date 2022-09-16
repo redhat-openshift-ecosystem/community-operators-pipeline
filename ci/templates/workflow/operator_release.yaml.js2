@@ -391,6 +391,11 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
+      - name: Print space info (before)
+        run: |
+          df -h
+          docker images
+
       - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
@@ -426,6 +431,11 @@ jobs:
 {% raw %}
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
+      - name: Print space info (after)
+        run: |
+          df -h
+          docker images
+
 {% endraw %}
 {% else %}
   remove-{{ default_config.production.type }}:
@@ -657,6 +667,11 @@ jobs:
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
+      - name: Print space info (before)
+        run: |
+          df -h
+          docker images
+
       - name: Index sync
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
@@ -699,6 +714,10 @@ jobs:
 {% raw %}
           echo "orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH || $FAKE_RC
+      - name: Print space info (after)
+        run: |
+          df -h
+          docker images
 {% endraw %}
 {% if default_config.production.index.signature.enabled == 1 %}
 {% raw %}
