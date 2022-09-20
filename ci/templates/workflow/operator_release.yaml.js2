@@ -435,9 +435,11 @@ jobs:
       - name: Print space info (after)
         if: always()
         run: |
-          du -h -d 3 /tmp | sort  -h -r
+          docker exec -t op-test /bin/bash -c "du -h -d 3 /tmp | sort  -h -r"
+          docker exec -t op-test /bin/bash -c "podman images ; df -h"
+          echo "local df:"
           df -h
-          docker images
+          
 
 {% endraw %}
 {% else %}
@@ -721,9 +723,10 @@ jobs:
       - name: Print space info (after)
         if: always()
         run: |
-          du -h -d 3 /tmp | sort  -h -r
+          docker exec -t op-test /bin/bash -c "du -h -d 3 /tmp | sort  -h -r"
+          docker exec -t op-test /bin/bash -c "podman images ; df -h"
+          echo "local df:"
           df -h
-          docker images
 {% endraw %}
 {% if default_config.production.index.signature.enabled == 1 %}
 {% raw %}
