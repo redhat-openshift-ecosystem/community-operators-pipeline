@@ -393,6 +393,7 @@ jobs:
           path: /tmp/operator-test/operators
       - name: Print space info (before)
         run: |
+          du -h -d 3 /tmp | sort  -h -r
           df -h
           docker images
 
@@ -434,6 +435,7 @@ jobs:
       - name: Print space info (after)
         if: always()
         run: |
+          du -h -d 3 /tmp | sort  -h -r
           df -h
           docker images
 
@@ -670,6 +672,7 @@ jobs:
           path: /tmp/operator-test/operators
       - name: Print space info (before)
         run: |
+          du -h -d 3 /tmp | sort  -h -r
           df -h
           docker images
 
@@ -718,6 +721,7 @@ jobs:
       - name: Print space info (after)
         if: always()
         run: |
+          du -h -d 3 /tmp | sort  -h -r
           df -h
           docker images
 {% endraw %}
