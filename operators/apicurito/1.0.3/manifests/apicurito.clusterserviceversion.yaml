@@ -71,6 +71,7 @@ spec:
     The API Designer is a small/minimal version of Apicurio, a standalone API design studio that can be used to create new or edit existing API designs (using the OpenAPI specification).
 
 
+
     This operator supports the installation and upgrade of apicurito. Apicurito components are:
        - apicurito-ui (Apicurito API designer application)
        - apicurito-generator (Apicurito fuse project generator)
