@@ -14,7 +14,7 @@ production:
       - v4.9-db
       - v4.10-db
       - v4.11
-      - v4.12
+      - v4.12-rc
     latest: ""
     signature:
       enabled: 1
