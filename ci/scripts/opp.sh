@@ -626,6 +626,7 @@ for t in $TESTS;do
     echo "t1=$t1 t2=$t2"
 
     [[ $t1 == $t2 ]] && IIB_INSTALLED=1
+    [ "$t2" = "rc" ] && IIB_INSTALLED=1
 
     OPP_FORCE_OPERATORS_TMP=OPP_FORCE_OPERATORS_${t1/orange_/}
     OPP_FORCE_OPERATORS_TMP=${OPP_FORCE_OPERATORS_TMP//./_}
