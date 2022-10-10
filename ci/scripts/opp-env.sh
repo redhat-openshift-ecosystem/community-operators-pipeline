@@ -403,8 +403,6 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
           echo "checking if reviewer '$row' is approver '$approver' ..."
           if [ "${approver,,}" == "${row,,}" ];then
             echo "[AUTHORIZED_CHANGES=1] : Approver '${approver,,}' is in reviewer list" && OPP_AUTHORIZED_CHANGES=1
-          else
-            OPP_REVIEVERS="@$row,$OPP_REVIEVERS"
           fi
         done
       done
