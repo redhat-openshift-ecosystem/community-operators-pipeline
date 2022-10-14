@@ -36,6 +36,7 @@ git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
 
 ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
 -e pipeline_config_name="pipeline-config${CLUSTER_TYPE}.yaml" \
+-e output_project_directory="$PWD" \
 -e workflow_config_path="$PWD/ci" \
 -e workflow_templates_path="$OPP_TMP_DIR/opp-input/ci/templates/workflow" \
 -e workflow_output_path="$PWD/.github/workflows" \
