@@ -147,8 +147,10 @@ jobs:
                   echo "Processing $operator_to_loop"
                   if [ OPP_MODIFIED_FILES=="" ]
                   then 
+                    echo "...inicializing OPP_MODIFIED_FILES"
                     OPP_MODIFIED_FILES="$(find operators/$operator_to_loop/ -type f -name "*.clusterserviceversion.yaml" | tail -n 1)"
                   else
+                    echo "...extending OPP_MODIFIED_FILES"
                     OPP_MODIFIED_FILES="$OPP_MODIFIED_FILES $(find operators/$operator_to_loop/ -type f -name "*.clusterserviceversion.yaml" | tail -n 1)"
                   fi
                 done
