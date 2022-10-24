@@ -95,7 +95,7 @@ jobs:
         run: |
           if [ -z "${{ github.event.inputs.list_of_operators }}" ]
           then
-                echo "Found empty input - list_of_operators     [OK]"
+                echo "Found an empty input - list_of_operators     [OK]"
           else
                 OPP_MODIFIED_FILES=""
                 for operator_to_loop in ${{ github.event.inputs.list_of_operators }}; do
@@ -104,7 +104,7 @@ jobs:
                   then 
                     OPP_MODIFIED_FILES="$(find operators/$operator_to_loop/ -type f -name "*.clusterserviceversion.yaml" | tail -n 1)"
                   else
-                  OPP_MODIFIED_FILES="$OPP_MODIFIED_FILES \n $(find operators/$operator_to_loop/ -type f -name "*.clusterserviceversion.yaml" | tail -n 1)"
+                    OPP_MODIFIED_FILES="$OPP_MODIFIED_FILES $(find operators/$operator_to_loop/ -type f -name "*.clusterserviceversion.yaml" | tail -n 1)"
                   fi
                 done
           fi
