@@ -21,7 +21,7 @@ on:
       image_prod_base:
         description: 'Base production image'
         required: false
-        default: 'quay.io/community-operators-pipeline/catalog_tmp'   
+        default: 'quay.io/community-operators-pipeline/catalog'   
 
       tags_prod:
         required: false
@@ -58,9 +58,8 @@ jobs:
       - name: Index verify
         id: op-traffic-light
         run: |
-          OPP_ANSIBLE_PULL_REPO="${OPP_ANSIBLE_PULL_REPO-${{ github.event.inputs.repo }}}"
-          OPP_ANSIBLE_PULL_BRANCH="${OPP_ANSIBLE_PULL_BRANCH-${{ github.event.inputs.branch }}}"  
-
+          [ -n "${{ github.event.inputs.repo }}" ] && OPP_ANSIBLE_PULL_REPO="${{ github.event.inputs.repo }}" || true
+          [ -n "${{ github.event.inputs.branch }}" ] && OPP_ANSIBLE_PULL_BRANCH="${{ github.event.inputs.branch }}" || true
           MY_INDEXES=
           for t in ${{ github.event.inputs.tags }}; do
             MY_INDEXES="$MY_INDEXES,${{ github.event.inputs.image_base }}:$t"
