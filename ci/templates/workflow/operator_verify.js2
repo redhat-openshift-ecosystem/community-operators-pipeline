@@ -39,6 +39,14 @@ on:
 {% else %}
         description: 'List of prod tags (eg. v4.11)'
 {% endif 
+      repo:
+        description: 'Source repsitory'     
+        required: true
+        default: 'https://github.com/redhat-openshift-ecosystem/operator-test-playbooks'
+      branch:
+        description: 'Source branch'     
+        required: true
+        default: 'upstream-community'
 {% endraw %}
 env:
   OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
@@ -62,6 +70,9 @@ jobs:
       - name: Index verify
         id: op-traffic-light
         run: |
+          OPP_ANSIBLE_PULL_REPO="${OPP_ANSIBLE_PULL_REPO-${{ github.event.inputs.repo }}}"
+          OPP_ANSIBLE_PULL_BRANCH="${OPP_ANSIBLE_PULL_BRANCH-${{ github.event.inputs.branch }}}"  
+
           MY_INDEXES=
           for t in ${{ github.event.inputs.tags }}; do
             MY_INDEXES="$MY_INDEXES,${{ github.event.inputs.image_base }}:$t"
