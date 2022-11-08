@@ -39,6 +39,7 @@ on:
 {% else %}
         description: 'List of prod tags (eg. v4.11)'
 {% endif %}
+{% raw %}
       repo:
         description: 'Source repsitory'     
         required: true
