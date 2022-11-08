@@ -1,0 +1,75 @@
+{% raw %}
+name: Operator Verify
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      image_base:
+        description: 'Base image'
+        required: true
+{% endraw %}
+        default: '{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}'   
+{% raw %}
+      tags:
+        description: 'List of tags'
+        required: true
+{% endraw %}
+{% if default_config.production.type == 'k8s' %}
+        default: 'latest latests'
+{% else %}
+        default: 'v4.11 v4.11s'
+{% endif %}
+{% raw %}
+      image_prod_base:
+        description: 'Base production image'
+        required: false
+{% endraw %}
+        default: '{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}'   
+{% raw %}
+      tags_prod:
+        required: false
+        default: ''
+{% endraw %}
+{% if default_config.production.type == 'k8s' %}
+        description: 'List of prod tags (eg. latest)'
+{% else %}
+        description: 'List of prod tags (eg. v4.11)'
+{% endif 
+{% endraw %}
+env:
+  OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
+  OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
+{% raw %}
+  ANSIBLE_FORCE_COLOR: 1
+  ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
+  ANSIBLE_STDOUT_CALLBACK: "yaml"
+
+jobs:
+  index-verify:
+    name: "Index Verify"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip yq
+      - name: Index verify
+        id: op-traffic-light
+        run: |
+          MY_INDEXES=
+          for t in ${{ github.event.inputs.tags }}; do
+            MY_INDEXES="$MY_INDEXES,${{ github.event.inputs.image_base }}:$t"
+          done
+          for t in ${{ github.event.inputs.tags_prod }}; do
+            MY_INDEXES="$MY_INDEXES,${{ github.event.inputs.image_prod_base }}:$t"
+          done
+          echo "MY_INDEXES=$MY_INDEXES"
+          #MY_INDEXES="quay.io/openshift-community-operators/catalog_tmp:v4.11,quay.io/openshift-community-operators/catalog_tmp:v4.11s,quay.io/redhat/redhat----community-operator-index:v4.11"
+          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e container_tool=podman upstream/local.yml --tags reset_tools,index_verify  -e iv_indexes=$MY_INDEXES
+{% endraw %}
