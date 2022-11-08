@@ -28,7 +28,7 @@ on:
         description: 'Base production image'
         required: false
 {% endraw %}
-        default: '{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}'   
+        default: '{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}'   
 {% raw %}
       tags_prod:
         required: false
