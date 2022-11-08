@@ -1,5 +1,5 @@
 {% raw %}
-name: Operator Verify
+name: Operator Index Verify
 
 on:
   push:
