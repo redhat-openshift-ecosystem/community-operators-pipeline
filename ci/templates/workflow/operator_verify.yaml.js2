@@ -80,6 +80,7 @@ jobs:
           for t in ${{ github.event.inputs.tags_prod }}; do
             MY_INDEXES="$MY_INDEXES,${{ github.event.inputs.image_prod_base }}:$t"
           done
+          MY_INDEXES=${MY_INDEXES=:1}
           echo "MY_INDEXES=$MY_INDEXES"
           #MY_INDEXES="quay.io/openshift-community-operators/catalog_tmp:v4.11,quay.io/openshift-community-operators/catalog_tmp:v4.11s,quay.io/redhat/redhat----community-operator-index:v4.11"
           ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e container_tool=podman upstream/local.yml --tags reset_tools,index_verify  -e iv_indexes=$MY_INDEXES
