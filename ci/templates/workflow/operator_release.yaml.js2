@@ -458,7 +458,7 @@ jobs:
           docker exec -t op-test /bin/bash -c "podman images ; df -h" || true
           echo "local df:"
           df -h
-
+{% endraw %}
 
 
 
@@ -834,7 +834,7 @@ jobs:
           # skopeo inspect docker://$MANIFEST_LIST > /dev/null # error out if needed
           # OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://$MANIFEST_LIST | jq -r ".Digest")
           #OPERATOR_INDEX_RESOLVED="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}@${OPERATOR_INDEX_DIGEST}"
-
+{% endraw %}
 
 
 
