@@ -458,7 +458,62 @@ jobs:
           docker exec -t op-test /bin/bash -c "podman images ; df -h" || true
           echo "local df:"
           df -h
-          
+
+
+
+
+
+
+
+  index-verify-{{ default_config.production.type }}:
+    name: "Index Verify / {{ default_config.production.type }}"
+    needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
+{% raw %}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+        index-tag: {{ default_config.production.index.tags }}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+        index-tag: ['${{ github.event.inputs.index }}']
+{% endraw %}
+{% endif %}
+{% raw %}
+      fail-fast: false
+    steps:
+  - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip yq
+      - name: Index verify
+        id: index-verify
+        run: |
+          MY_INDEXES="{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${{ matrix.index-tag }}"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${{ matrix.index-tag }}s,"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${{ matrix.index-tag }}'"
+          echo "MY_INDEXES=$MY_INDEXES"
+          echo "$REGISTRY_MIRROR_PW" | $OPP_CONTAINER_TOOL login $OPP_MIRROR_INDEX_REGISTRY -u $OPP_REGISTRY_MIRROR_USER --password-stdin || { echo "Problem to login to '$OPP_MIRROR_INDEX_REGISTRY' !!!"; exit 1; }
+          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e container_tool=$OPP_CONTAINER_TOOL upstream/local.yml --tags reset_tools,index_verify  -e iv_indexes="$MY_INDEXES"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% endraw %}
 {% else %}
@@ -779,97 +834,67 @@ jobs:
           # skopeo inspect docker://$MANIFEST_LIST > /dev/null # error out if needed
           # OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://$MANIFEST_LIST | jq -r ".Digest")
           #OPERATOR_INDEX_RESOLVED="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}@${OPERATOR_INDEX_DIGEST}"
-          
-          
-      # - name: Prepare variables for the sign process
-      #   id: openshift-vars
-      #   env:
-      #     OPERATOR_INDEX_TAG_RAW: ${{ matrix.index-tag }}
-      #     OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
-      #   run: |
-      #     docker login ${OPP_MIRROR_INDEX_REGISTRY} -u $OPP_REGISTRY_MIRROR_USER -p $REGISTRY_MIRROR_PW
-      #     OPERATOR_INDEX_TAG=$(echo ${OPERATOR_INDEX_TAG_RAW} |cut -d'-' -f1)
-      #     skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} > /dev/null # error out if needed
-      #     OPERATOR_INDEX_DIGEST=$(skopeo inspect docker://${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG} | jq -r ".Digest")
-      #     OPERATOR_INDEX_RESOLVED="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}@${OPERATOR_INDEX_DIGEST}"
-      #     OPERATOR_INDEX="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG}"
-      #     echo $OPERATOR_INDEX_RESOLVED
-      #     echo $OPERATOR_INDEX
-      #     echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
-      #     echo "::set-output name=operator_index::${OPERATOR_INDEX}"
-      # - name: Initialize sign process
-      #   uses: operator-framework/community-operators@webhook
-      #   continue-on-error: true
-      #   env:
-      #     INDEX_SHA: "${{ steps.openshift-vars.outputs.index_sha }}"
-      #     webhook_type: 'json-extended'
-      #     webhook_url: 'https://api.enterprise.redhat.com/hydra/umb-bridge/v1/publish'
-      #     webhook_secret: ${{ secrets.SIGNATURE_WEBHOOK_SECRET }}
-      #     data: "{\"index_image\": \"${{ steps.openshift-vars.outputs.operator_index }}\", \"index_image_resolved\": \"${{ steps.openshift-vars.outputs.operator_index_resolved }}\"}"
- {% endraw %}
+
+
+
+
+
+
+
+
+
+  index-verify-{{ default_config.production.type }}:
+    name: "Index Verify / {{ default_config.production.type }}"
+    needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
+{% raw %}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+        index-tag: {{ default_config.production.index.tags }}
 {% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
+        index-tag: ['${{ github.event.inputs.index }}']
+{% endraw %}
+{% endif %}
+{% raw %}
+      fail-fast: false
+    steps:
+  - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip yq
+      - name: Index verify
+        id: index-verify
+        run: |
+          MY_INDEXES="{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${{ matrix.index-tag }}"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${{ matrix.index-tag }}s,"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${{ matrix.index-tag }}'"
+          echo "MY_INDEXES=$MY_INDEXES"
+          echo "$REGISTRY_MIRROR_PW" | $OPP_CONTAINER_TOOL login $OPP_MIRROR_INDEX_REGISTRY -u $OPP_REGISTRY_MIRROR_USER --password-stdin || { echo "Problem to login to '$OPP_MIRROR_INDEX_REGISTRY' !!!"; exit 1; }
+          ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e container_tool=$OPP_CONTAINER_TOOL upstream/local.yml --tags reset_tools,index_verify  -e iv_indexes="$MY_INDEXES"
 
-#   push-to-quay-{{ default_config.production.type }}:
-#     name: "Push to quay / {{ default_config.production.type }}"
-# {% raw %}
-#     needs: pr-check
-#     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.pr-check.outputs.opp_name != '' && needs.pr-check.outputs.opp_version != ''
-#     runs-on: ubuntu-latest
-#     env:
-#       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
-#       OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
-#     steps:
-#       - name: Push to quay
-#         run: |
-#           echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-#           bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH || true
 
-# {% endraw %}
-#   release-sha-{{ default_config.production.type }}:
-#     name: "Index production / {{ default_config.production.type }}"
-#     needs: [ pr-check, release-{{ default_config.production.type }} ]
-# {% raw %}
-#     if: needs.pr-check.outputs.opp_release_ready == '1' && ( github.event.inputs.mirror_index_to_final_location == '' || github.event.inputs.mirror_index_to_final_location != '0')
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-# {% endraw %}
-# {% if puct_custom_var != 'manual_release' %}
-#         index-tag: {{ default_config.production.index.tags }}
-# {% endif %}
-# {% if puct_custom_var == 'manual_release' %}
-# {% raw %}
-#         index-tag: ['${{ github.event.inputs.index }}']
-# {% endraw %}
-# {% endif %}
-# {% raw %}
-#       fail-fast: false
-#     steps:
-      # - name: Download operator_info
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: operator_info
-      #     path: /tmp/operator-test/
-      # - name: Download converted operators
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: operators_converted
-      #     path: /tmp/operator-test/operators
 
-      # - name: Release final index
-      #   env:
-      #     OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
-      #     IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
-      #     IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
-      #   run: |
-      #     FAKE_RC=false
-      #     FAKE_TYPE=$(echo $OPERATOR_INDEX_TAG | cut -d '-' -f 2)
-      #     [[ $FAKE_TYPE == *rc* ]] && FAKE_RC=true || true
 
-      #     echo "openshift: $OPERATOR_INDEX_TAG"
-      #     bash <(curl -sL $OPP_SCRIPT_ISS_URL) openshift $OPERATOR_INDEX_TAG || $FAKE_RC
-# {% endraw %}
 
+
+
+
+
+
+
+
+
+
+
+{% endraw %}
+{% endif %}
 {% endif %}
 {% if default_config.operatorhubio.enabled == 1 %}
 {% if default_config.production.type == 'k8s' %}
@@ -978,16 +1003,16 @@ jobs:
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% if default_config.operatorhubio.enabled == 1 %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }}, index-verify-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
 {% else %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, release-{{ default_config.production.type }}, index-verify-{{ default_config.production.type }}]
 {% endif %}
 
 {% else %}
 {% if default_config.operatorhubio.enabled == 1 %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}, index-verify-{{ default_config.production.type }} , ohio-image-{{ default_config.production.type }}, ohio-page-{{ default_config.production.type }} ]
 {% else %}
-    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }} ]
+    needs: [ pr-check, remove-{{ default_config.production.type }}, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }} , index-verify-{{ default_config.production.type }} ]
 {% endif %}
 {% endif %}
 {% raw %}
