@@ -500,8 +500,8 @@ jobs:
           MY_TAG=$(echo $MY_TAG | cut -d '-' -f 1)
 {% endraw %}
           MY_INDEXES="{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}"
-          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}s,"
-          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${MY_TAG}'"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}s"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${MY_TAG}"
 {% raw %}
           echo "MY_INDEXES=$MY_INDEXES"
           echo "$REGISTRY_MIRROR_PW" | $OPP_CONTAINER_TOOL login $OPP_MIRROR_INDEX_REGISTRY -u $OPP_REGISTRY_MIRROR_USER --password-stdin || { echo "Problem to login to '$OPP_MIRROR_INDEX_REGISTRY' !!!"; exit 1; }
@@ -884,8 +884,8 @@ jobs:
           MY_TAG=$(echo $MY_TAG | cut -d '-' -f 1)
 {% endraw %}
           MY_INDEXES="{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}"
-          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}s,"
-          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${MY_TAG}'"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.index.registry }}/{{ default_config.production.index.organization }}/{{ default_config.production.index.name }}:${MY_TAG}s"
+          MY_INDEXES="$MY_INDEXES,{{ default_config.production.mirror.registry }}/{{ default_config.production.mirror.organization }}/{{ default_config.production.mirror.name }}:${MY_TAG}"
 {% raw %}
           echo "MY_INDEXES=$MY_INDEXES"
           echo "$REGISTRY_MIRROR_PW" | $OPP_CONTAINER_TOOL login $OPP_MIRROR_INDEX_REGISTRY -u $OPP_REGISTRY_MIRROR_USER --password-stdin || { echo "Problem to login to '$OPP_MIRROR_INDEX_REGISTRY' !!!"; exit 1; }
