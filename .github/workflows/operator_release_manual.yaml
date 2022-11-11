@@ -358,12 +358,11 @@ jobs:
 
 
 
+  index-verify-k8s:
+    name: "Index Verify / k8s"
+    needs: [ pr-check, operators-k8s, bundles-k8s, release-k8s]
+    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-k8s.outputs.opp_uncomplete_operators != ''
 
-  index-verify-{{ default_config.production.type }}:
-    name: "Index Verify / {{ default_config.production.type }}"
-    needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}]
-    if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
-{% raw %}
     runs-on: ubuntu-latest
     strategy:
       matrix:
