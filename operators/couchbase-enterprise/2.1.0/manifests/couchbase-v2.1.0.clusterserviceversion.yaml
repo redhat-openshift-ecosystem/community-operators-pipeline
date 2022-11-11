@@ -8,6 +8,7 @@ metadata:
     # Following the findings for this distribution:
     # this bundle is using APIs which were deprecated and removed in v1.22. More info: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22. Migrate the API(s) for CRD: (["couchbaseautoscalers.couchbase.com" "couchbasebackuprestores.couchbase.com" "couchbasebackups.couchbase.com" "couchbasebuckets.couchbase.com" "couchbaseclusters.couchbase.com" "couchbaseephemeralbuckets.couchbase.com" "couchbasegroups.couchbase.com" "couchbasememcachedbuckets.couchbase.com" "couchbasereplications.couchbase.com" "couchbaserolebindings.couchbase.com" "couchbaseusers.couchbase.com"])
     operatorhub.io/ui-metadata-max-k8s-version: "1.21"
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
     alm-examples: |-
       [
         {
