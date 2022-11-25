@@ -1,0 +1,34 @@
+---
+defaultChannel: stable-5.x
+name: cockroachdb
+schema: olm.package
+
+---
+entries: []
+name: stable
+package: cockroachdb
+schema: olm.channel
+
+---
+entries: []
+name: stable-3.x
+package: cockroachdb
+schema: olm.channel
+
+---
+entries:
+-   name: cockroachdb.v5.0.3
+-   name: cockroachdb.v5.0.4
+    replaces: cockroachdb.v5.0.3
+name: stable-5.x
+package: cockroachdb
+schema: olm.channel
+
+---
+image: quay.io/openshift-community-operators/cockroachdb:v5.0.3
+schema: olm.bundle
+
+---
+image: quay.io/openshift-community-operators/cockroachdb:v5.0.4
+schema: olm.bundle
+
