@@ -111,6 +111,7 @@ spec:
     selectors to limit the volumes that are snapshotted. An example schedule
     could be:
 
+
     > *Snapshot **all volumes** in a namespace **daily at midnight**, retaining
     > the most recent **7** snapshots for each volume.*
 
