@@ -1,0 +1,44 @@
+site_name: Community operators pipeline admin
+repo_name: community-operators-pipeline
+repo_url: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
+nav:
+    - 'Overview': README.md
+
+extra:
+    version: 0.1
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - mermaid2
+  - macros
+  - git-revision-date-localized:
+      fallback_to_build_date: false
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - meta
+  - pymdownx.arithmatex
+  - pymdownx.tabbed
+  - attr_list
+  - toc:
+      toc_depth: 2
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+
+

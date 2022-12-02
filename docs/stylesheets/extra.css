@@ -1,0 +1,39 @@
+@media only screen and (min-width: 120em) {
+  .md-main__inner {
+    max-width: 72rem;
+  }
+
+  
+  .md-typeset {
+    font-size: 0.75rem;
+  }
+
+  .md-grid {
+    max-width: 70rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .md-sidebar--secondary {
+    margin-left: 58rem;
+  }   
+}
+
+@media only screen and (min-width: 160em) {
+  .md-main__inner {
+    max-width: 72rem;
+  }
+  .md-sidebar--secondary {
+    margin-left: 63rem;
+  }   
+  
+
+  .md-typeset {
+    font-size: 0.65rem;
+  }
+
+  .md-grid {
+    max-width: 75rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
