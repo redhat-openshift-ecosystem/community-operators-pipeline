@@ -1,14 +1,10 @@
+name: "Documentation admin"
 
-name: "Documentation"
 on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
-    inputs:
-      number-of-prs:
-        description: 'Number of PRs'     
-        required: true
-        default: '5000'
+
 env:
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
 
@@ -20,7 +16,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: redhat-openshift-ecosystem/community-operators-pipeline
-        ref: documentation
+        ref: documentation-admin
+
     - name: Generate docs
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -30,7 +27,7 @@ jobs:
         OPP_THIS_REPO_SED=${OPP_THIS_REPO_SED//\//\\/}
         sed -i 's/repo_url.*/repo_url: '$OPP_THIS_REPO_SED'/g' mkdocs.yml
         cat mkdocs.yml
-        ci/operator-flow/doc.sh ${NPR} ${OPP_THIS_REPO}
+
         mkdocs build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
