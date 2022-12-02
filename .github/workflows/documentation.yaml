@@ -4,7 +4,11 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
-
+    inputs:
+      number-of-prs:
+        description: 'Number of PRs'     
+        required: true
+        default: '5000'
 env:
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
 
