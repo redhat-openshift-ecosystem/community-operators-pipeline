@@ -1,4 +1,4 @@
-# Maintainer documentation
+# Maintainer documentation [in progress...]
 
 Community team is responsible for review
 - [OCP operators](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
