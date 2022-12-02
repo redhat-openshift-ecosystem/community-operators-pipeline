@@ -1,6 +1,6 @@
 FROM fedora:36
 RUN dnf install python3-pip git python3-root python3-devel -y
-RUN pip install --no-cache-dir mkdocs-material mkpdfs-mkdocs mkdocs-mermaid2-plugin mkdocs-macros-plugin
+RUN pip install --no-cache-dir pip install --no-cache-dir mkdocs-material mkdocs-bibtex mkpdfs-mkdocs mkdocs-mermaid2-plugin mkdocs-macros-plugin mkdocs-git-revision-date-localized-plugin
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 CMD ["/bin/bash"]
