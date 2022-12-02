@@ -24,6 +24,7 @@ nav:
     - 'Github Action' : action.md
     - 'Best practices' : best-practices.md
     - 'Troubleshooting' : troubleshooting.md
+    - 'Maintainer' : maintainer-documentation.md
     - 'Statistics' : stats.md
 theme:
   name: material
