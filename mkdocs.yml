@@ -24,8 +24,6 @@ plugins:
   - search
   - mermaid2
   - macros
-  - git-revision-date-localized:
-      fallback_to_build_date: false
 
 markdown_extensions:
   - admonition
