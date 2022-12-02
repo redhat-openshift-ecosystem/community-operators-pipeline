@@ -1,5 +1,9 @@
-{% raw %}
+{% if default_config.pipeline.repo == 'redhat-openshift-ecosystem/community-operators-pipeline' %}
+name: "Documentation admin"
+{% else %}
 name: "Documentation"
+{% endif %}
+{% raw %}
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -21,7 +25,13 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: redhat-openshift-ecosystem/community-operators-pipeline
+{% endraw %}
+{% if default_config.pipeline.repo == 'redhat-openshift-ecosystem/community-operators-pipeline' %}
+        ref: documentation-admin
+{% else %}
         ref: documentation
+{% endif %}
+{% raw %}
     - name: Generate docs
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -31,7 +41,11 @@ jobs:
         OPP_THIS_REPO_SED=${OPP_THIS_REPO_SED//\//\\/}
         sed -i 's/repo_url.*/repo_url: '$OPP_THIS_REPO_SED'/g' mkdocs.yml
         cat mkdocs.yml
+{% endraw %}
+{% if default_config.pipeline.repo != 'redhat-openshift-ecosystem/community-operators-pipeline' %}
         ci/operator-flow/doc.sh ${NPR} ${OPP_THIS_REPO}
+{% endif %}
+{% raw %}
         mkdocs build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
