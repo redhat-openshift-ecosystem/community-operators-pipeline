@@ -8,11 +8,15 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
+{% endraw %}
+{% if default_config.pipeline.repo != 'redhat-openshift-ecosystem/community-operators-pipeline' %}
     inputs:
       number-of-prs:
         description: 'Number of PRs'     
         required: true
         default: '5000'
+{% endif %}
+{% raw %}
 env:
 {% endraw %}
   OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
