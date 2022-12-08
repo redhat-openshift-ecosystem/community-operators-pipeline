@@ -1,6 +1,6 @@
 ## PR Continuous Integration
 
-Operators submitted to this repo are automatically tested on a Kubernetes cluster before being merged. The Kubernetes distribution used for testing depends on which directory the operator is submitted to. Ideally all tests should pass before merging.
+Operators submitted to this repo are automatically tested on a Kubernetes cluster before being merged. The Kubernetes distribution used for testing depends on which directory the operator is submitted to. Ideally, all tests should pass before merging.
 
 You can test operators locally using [following](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/master/docs/upstream/users/README.md)
  documentation.
@@ -9,7 +9,7 @@ You can test operators locally using [following](https://github.com/redhat-opens
 
 Test scripts are written in Ansible and located in our upstream-community [branch](https://github.com/redhat-operator-ecosystem/operator-test-playbooks/tree/upstream-community).
 
-There are 3 test types. List of tests are shown in the following table.
+There are 3 test types. A list of tests is shown in the following table.
 
 |Test type|Description|
 |:--------|:----------|
@@ -25,31 +25,31 @@ Full operator tests
     - from bundle format
 - Sanity check of operator version (when multiple only last test is done)
 - Validation using `operator-sdk validate`
-- Building temporary catalog with one operator version in it
-- Deployment of operator on kind (k8s) cluster (only for kuberbetes-operator)
+- Building a temporary catalog with one operator version in it
+- Deployment of an operator on kind (k8s) cluster (only for kuberbetes-operator)
 
 #### [lemon] - Test of operator to be deployed from scratch
-Test if deploy is possible from the scratch. I means creating bundle images and index image.
+Test if deployment is possible from the scratch. It means creating bundle images and index image.
 
 - Build all bundle images
 - Build catalog
 
 #### [orange] - Test of operator to be deployed with existing bundles in quay registry
-Test if operator can be added to index from existing bundles from production (quay.io)
+Test if an operator can be added to index from existing bundles from production (quay.io)
 
-- Build current operator version locally
-- Use older versions from from quay.io
+- Build a current operator version locally
+- Use older versions from quay.io
 - Build catalog
 
 #### OLM
 
-Deployment with the [OLM](https://github.com/operator-framework/operator-lifecycle-manager) involves creating several required manifest files to create `CustomResourceDefinitions` (CRD's) and the operators' `Deployment` using its `ClusterServiceVersion` (CSV) in-cluster. `test-operator` will create a [`operator-registry`][registry] Docker image containing the operators' bundled manifests, and `CatalogSource` and `Subscription` manifests that allow the OLM to find the registry image and deploy a particular CSV from the registry, respectively.
+Deployment with the [OLM](https://github.com/operator-framework/operator-lifecycle-manager) involves creating several required manifest files to create `CustomResourceDefinitions` (CRD's) and the operators' `Deployment` using its `ClusterServiceVersion` (CSV) in-cluster. `test-operator` will create a [`operator-registry`][registry] Docker image containing the operators' bundled manifests, and `CatalogSource` and `Subscription` manifest that allows the OLM to find the registry image and deploy a particular CSV from the registry, respectively.
 
-Failure to successfully deploy an operator using the OLM results in test failure, as all operators are expected to be deployable in this manner.
+Failure to successfully deploy an operator using the OLM results in a test failure, as all operators are expected to be deployable in this manner.
 
 #### Scorecard
 
-The [Operator SDK scorecard][sdk-scorecard] suggests modifications applicable to an operator based on development best-practices. The scorecard runs static checks on operator manifests and runtime tests to ensure an operator is using cluster resources correctly. A Custom Resource (CR) is created by the scorecard for use in runtime tests, so [`alm-examples`][olm-alm-examples] must be populated.
+The [Operator SDK scorecard][sdk-scorecard] suggests modifications applicable to an operator based on development best practices. The scorecard runs static checks on operator manifests and runtime tests to ensure an operator is using cluster resources correctly. A Custom Resource (CR) is created by the scorecard for use in runtime tests, so [`alm-examples`][olm-alm-examples] must be populated.
 
 The scorecard utility runs through multiple test scenarios, some of which are required and others are optional. Currently the tests are configured like this.
 
@@ -65,7 +65,7 @@ The scorecard utility runs through multiple test scenarios, some of which are re
 
 See the [scorecard test documentation][scorecard-test-docs] for more information.
 
-`test-operator` injects a scorecard proxy container and volume into an operators' CSV manifest before deployment; this is necessary to get API server logs, from which the scorecard determines runtime test results. These modifications are not persistent, as they're only needed for testing.
+`test-operator` injects a scorecard proxy container and volume into an operator's CSV manifest before deployment; this is necessary to get API server logs, from which the scorecard determines runtime test results. These modifications are not persistent, as they're only needed for testing.
 
 **Note**: no explicit number of points or percentage is necessary to achieve before merging _yet_. These are suggestions to improve your operator.
 

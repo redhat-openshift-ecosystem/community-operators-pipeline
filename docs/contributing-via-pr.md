@@ -33,27 +33,27 @@ More detailed information about our Continuous Integration process can be found 
 
 ## Test results
 
-Test results are located in `Checks` tab. Then they can be found in `Operator test` list on left side. Once clicked on it the summary of test will be shown. 
+Test results are located in `Checks` tab. Then they can be found in `Operator test` list on the left side. Once clicked on it the summary of the test will be shown. 
 
 ![Summary of test results](images/op_pr_tests_all_ok.png)
 
-There are multiple tests. For easy mapping different fruit names were chosen. Look at our [testing suite](./tests-in-pr.md) for more information.
-One can see more details about tests when clicking on directly on them. 
+There are multiple tests. For easy mapping, different fruit names were chosen. Look at our [testing suite](./tests-in-pr.md) for more information.
+One can see more details about tests when clicking directly on them. 
 
 ## Test on an Openshift cluster
-For an Openshift operator (operators in `community-operators` directory), the deployment of operator is executed on an Openshift cluster via `ci/prow/deploy-operator-on-openshift`.
+For an Openshift operator (operators in `community-operators` directory), the deployment of an operator is executed on an Openshift cluster via `ci/prow/deploy-operator-on-openshift`.
 
 !!! note
-    The `kiwi` test does not include the deployment test on k8s cluster . This can be forced by specifying label `test/force-deploy-on-kubernetes` in the PR.
+    The `kiwi` test does not include the deployment test on k8s cluster. This can be forced by specifying label `test/force-deploy-on-kubernetes` in the PR.
 
 ## You are done
-User is done when all tests are green. When the PR is merged, on can follow process explained in [Release pipeline](./operator-release-process.md).
+User is done when all tests are green. When the PR is merged, one can follow the process explained in [Release pipeline](./operator-release-process.md).
 ## Test results failed?
-When operator tests are failing, one can see following picture
+When operator tests are failing, one can see a following picture
 
 ![Summary of test results when failing](images/op_pr_tests_failed.png)
 
-In case of failures, please have a look at logs of specific tests. If error is not clear to you, please ask in the PR. Maintainers will be happy to help you with it.
+In case of failures, please have a look at the logs of specific tests. If an error is not clear to you, please ask in the PR. Maintainers will be happy to help you with it.
 
 ## Useful commands interacting with the pipeline
 You can post the following comment/command:
