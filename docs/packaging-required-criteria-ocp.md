@@ -2,7 +2,7 @@
 
 ### Overview
 
-To distribute on OpenShift Catalogs, you will need to comply with the same standard criteria defined for `OperatorHub.io` (see [Common recommendations and suggestions](https://olm.operatorframework.io/docs/best-practices/common/#validate-your-bundle-before-publish-it)). Then, additionally, you have some requirements and options which follows.
+To distribute on OpenShift Catalogs, you will need to comply with the same standard criteria defined for `OperatorHub.io` (see [Common recommendations and suggestions](https://olm.operatorframework.io/docs/best-practices/common/#validate-your-bundle-before-publish-it)). Then, additionally, you have some requirements and options which follow.
 
 > **IMPORTANT** Kubernetes has been deprecating API(s) which will be removed and no longer available in `1.22` and in the Openshift version `4.9`. Note that your project will be unable to use them on `OCP 4.9/K8s 1.22` and then, it is strongly recommended to check [Deprecated API Migration Guide from v1.22][k8s-deprecated-guide] and ensure that your projects have them migrated and are not using any deprecated API.
 
@@ -38,7 +38,7 @@ Use the annotation `com.redhat.openshift.versions` in `bundle/metadata/annotatio
 com.redhat.openshift.versions: "v4.6-v4.8"
 ```
 
-This option is also useful when you know that the current version of your project will not work well on some specific OpenShift version. By using it you defined the Openshift versions where the Operator should be distributed and the Operator will not appear in a catalog of an Openshift version which is outside of the range. You must use it if you are distributing a solution that contains deprecated API(s) and will no longer be available in later versions. For more information see [Managing OpenShift Versions][managing-openshift-versions].
+This option is also useful when you know that the current version of your project will not work well on some specific OpenShift version. By using it you defined the Openshift versions where the Operator should be distributed and the Operator will not appear in a catalog of an Openshift version that is outside of the range. You must use it if you are distributing a solution that contains deprecated API(s) and will no longer be available in later versions. For more information see [Managing OpenShift Versions][managing-openshift-versions].
 
 ### Validate the bundle with the common criteria to distribute via OLM with SDK
 
@@ -47,7 +47,7 @@ Also, you can check the bundle via [`operator-sdk bundle validate`][sdk-cli-bund
 ```sh
 operator-sdk bundle validate ./bundle --select-optional suite=operatorframework --optional-values=k8s-version=1.22
 ```
-**NOTE:** The validators only checks the manifests which are shipped in the bundle. They are unable to ensure that the project's code does not use the [Deprecated/Removed API(s) in 1.22][k8s-deprecated-guide] and/or that it does not have as dependency another operator that uses them.
+**NOTE:** The validators only check the manifests which are shipped in the bundle. They are unable to ensure that the project's code does not use the [Deprecated/Removed API(s) in 1.22][k8s-deprecated-guide] and/or that it does not have as dependency another operator that uses them.
 
 ### Validate the bundle with the specific criteria to distribute in Openshift catalogs
 
@@ -61,7 +61,7 @@ In this case, we need to inform the bundle and the annotations.yaml file paths:
 $ ocp-olm-catalog-validator my-bundle-path/bundle  --optional-values="file=bundle-path/bundle/metadata/annotations.yaml"
 ```
 
-Following an example of an Operator bundle which uses the removed APIs in 1.22 and is not configured accordingly:
+Following is an example of an Operator bundle that uses the removed APIs in 1.22 and is not configured accordingly:
 
 ```sh
 $ ocp-olm-catalog-validator bundle/ --optional-values="file=bundle/metadata/annotations.yaml"

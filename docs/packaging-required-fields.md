@@ -56,7 +56,7 @@ If none of these categories fit your operator, please open a separate PR against
 
 ## Example CSV
 
-Below is an example of what the descheduler CSV may look like if it contained the expected annotations:
+Below is an example of what the `descheduler` CSV may look like if it contained the expected annotations:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
