@@ -4,7 +4,10 @@
 Run tests by entering 'community-operators' project directory and run following command using options bellow. '<git repo>' and '<git branch>' options are optional.
 ```
 cd <community-operators>
-OPP_PRODUCTION_TYPE=<k8s/ocp> OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1 \
+OPP_PRODUCTION_TYPE=<k8s/ocp> \
+OPP_DEBUG= 1 \
+OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1 \
+OPP_RELEASE_INDEX_NAME="catalog_tmp" \
 bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
 <test-type1,test-type2,...,test-typeN> \
 <operator-version-dir-relative-to-community-operators-project> \
