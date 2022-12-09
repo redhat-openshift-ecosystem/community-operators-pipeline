@@ -6,9 +6,15 @@ The community team is responsible for reviewing the following:
 - [OCP operators](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
 - [K8S operators](https://github.com/k8s-operatorhub/community-operators/pulls)
 
+{% if 'k8s' == cluster_type %}
+This documentation is focused on K8S operators. 
+{% else %}
+This documentation is focused on OCP operators. 
+{% endif %}
+
 When a pull request (PR) is opened, tests are automatically triggered to ensure that it meets all quality standards. If the PR passes these tests, it is automatically merged, and the new operator is published to a specific index. 
 
-In order for an automatic merge to be executed, three labels must be present:
+For an automatic merge to be executed, three labels must be present:
 
 - `package-validated`
 - `installation-validated`
@@ -25,17 +31,22 @@ There are three tests as described below.
 Simulating a release of an affected operator to the current index(es). Helpful to prevent future failures on current indexes.
 
 ### Lemon test
-It catches incompatibilities in a release of a new index from scratch. Orange, lemon even kiwi in some cases have to be green which applies `package-validated` label.
+It catches incompatibilities in a release of a new index from scratch. Orange, lemon {% if 'ocp' == cluster_type %} and kiwi {% endif %} have to obtain `package-validated` label.
 
 ### Kiwi test
-Basic checks like linting, etc.
+Basic checks like linting.
+
+{% if 'k8s' == cluster_type %} 
 In k8s pipeline, it is also testing operator installation and will apply `installation-validated` label. 
+{% endif %}
 
 ## Installation-validated
 This means that the pipeline can install the operator.
 
+{% if 'k8s' == cluster_type %} 
 For K8S it is executed during a kiwi test.
 
+{% else %}
 For OCP, prow jobs for every supported OCP are triggered.
 
 ### Prow job
@@ -44,7 +55,7 @@ For every index we support, a dedicated cluster is started and we are testing if
 To debug a red prow job go to `Details -> Artifacts -> artifacts/deploy-operator-on-openshift/deploy-operator/build-log.txt`
 
 When all supported OCP clusters are green a label `installation-validated` is applied.
-
+{% endif %}
 ## Authorized-changes
 
 There are a few reasons why the `authorized-changes` label may be missing from a PR:
@@ -54,7 +65,7 @@ There are a few reasons why the `authorized-changes` label may be missing from a
 If the `new-operator` label is present, the following steps should be taken:
 
 1. Copy the contents of the clusterserviceversion.yaml file to https://operatorhub.io/preview
-2. Visually inspect the content to ensure that it looks correct and that all fields on the right do not contain `N/A`, except for the channel field. The channel field has no ability to display any information.
+2. Visually inspect the content to ensure that it looks correct and that all fields on the right do not contain `N/A`, except for the channel field. The channel field cannot display any information.
 
 ### No reviewer in `ci.yaml` file
 
