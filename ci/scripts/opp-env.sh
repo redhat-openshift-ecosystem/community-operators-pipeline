@@ -231,7 +231,7 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
   # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' Skipping test ..."; OPP_TEST_READY=0; }
 
   OPERATOR_PATH=$(echo $sf | cut -d '/' -f 1-3)
-  # [ -f $OPERATOR_PATH ] && { echo "Operator path '$OPERATOR_PATH' is file and it should be directory !!!"; exit 1; }
+  [ -f $OPERATOR_PATH ] && { echo "Operator path '$OPERATOR_PATH' is file and it should be directory !!!"; exit 1; }
   FILES="$FILES $OPERATOR_PATH"
 
   # Check if outdside of "community-operators" and "upstream-community-operators"
