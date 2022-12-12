@@ -51,7 +51,7 @@ extra:
         - v4.10
         - v4.11
         - v4.12
-    cluster_type: openshift
+    cluster_type: ocp
 
 plugins:
   - search
