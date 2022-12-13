@@ -48,6 +48,7 @@ OPP_LABELS=${OPP_LABELS-""}
 OPP_PROD=${OPP_PROD-0}
 OPP_SKIP_INDEX=${OPP_SKIP_INDEX-0}
 OPP_FORCE_INDEX_UPDATE=${OPP_FORCE_INDEX_UPDATE-0}
+OPP_SKIP_BUNDLES=${OPP_SKIP_BUNDLES-0}
 OPP_PRETEST_CUSTOM_SCRIPT=${OPP_PRETEST_CUSTOM_SCRIPT-""}
 OPP_DEBUG=${OPP_DEBUG-0}
 OPP_DRY_RUN=${OPP_DRY_RUN-0}
@@ -414,6 +415,8 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
     
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_INDEX -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e index_skip=true"
+    [[ $1 == orange* ]] && [[ $OPP_PROD -eq 1 ]] && [[ $OPP_SKIP_BUNDLES -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e bundles_skip=true"
+
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_index=$OPP_PRODUCTION_REGISTRY_NAMESPACE/$OPP_RELEASE_INDEX_NAME"
 

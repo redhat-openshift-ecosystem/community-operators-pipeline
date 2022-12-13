@@ -373,6 +373,7 @@ jobs:
           OPP_IIB_INSTALL: 0
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
+          OPP_SKIP_BUNDLES: 0
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
@@ -429,6 +430,7 @@ jobs:
           OPP_IIB_INSTALL: 1
           #OPP_MIRROR_INDEX_ENABLED: 0
           OPP_FORCE_INDEX_UPDATE: 1
+          OPP_SKIP_BUNDLES: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
 {% endraw %}
@@ -701,6 +703,7 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: latest
           OPP_SKIP_INDEX: 1
+          OPP_SKIP_BUNDLES: 0
 {% endraw %}
           OPP_FORCE_OPERATORS: "${{ '{{' }} needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators {{ '}}' }}"
 {% raw %}
@@ -763,6 +766,7 @@ jobs:
 {% endif %}
 {% raw %}
           OPP_FORCE_INDEX_UPDATE: 1
+          OPP_SKIP_BUNDLES: 1
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           IIB_OUTPUT_REGISTRY_TOKEN: ${{ secrets.IIB_OUTPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
