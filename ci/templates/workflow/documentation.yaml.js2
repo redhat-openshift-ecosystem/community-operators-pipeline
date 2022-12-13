@@ -1,14 +1,22 @@
-{% raw %}
+{% if default_config.pipeline.repo == 'redhat-openshift-ecosystem/community-operators-pipeline' %}
+name: "Documentation admin"
+{% else %}
 name: "Documentation"
+{% endif %}
+{% raw %}
 on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
+{% endraw %}
+{% if default_config.pipeline.repo != 'redhat-openshift-ecosystem/community-operators-pipeline' %}
     inputs:
       number-of-prs:
         description: 'Number of PRs'     
         required: true
         default: '5000'
+{% endif %}
+{% raw %}
 env:
 {% endraw %}
   OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
@@ -21,7 +29,13 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: redhat-openshift-ecosystem/community-operators-pipeline
+{% endraw %}
+{% if default_config.pipeline.repo == 'redhat-openshift-ecosystem/community-operators-pipeline' %}
+        ref: documentation-admin
+{% else %}
         ref: documentation
+{% endif %}
+{% raw %}
     - name: Generate docs
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -30,8 +44,19 @@ jobs:
         OPP_THIS_REPO_SED="https://github.com/$OPP_THIS_REPO"
         OPP_THIS_REPO_SED=${OPP_THIS_REPO_SED//\//\\/}
         sed -i 's/repo_url.*/repo_url: '$OPP_THIS_REPO_SED'/g' mkdocs.yml
+{% endraw %}
+{% if default_config.production.type == 'k8s' %}
+{% raw %}
+        sed -i 's/    cluster_type: ocp/    cluster_type: k8s/g' mkdocs.yml
+{% endraw %}
+{% endif %}
+{% raw %}
         cat mkdocs.yml
+{% endraw %}
+{% if default_config.pipeline.repo != 'redhat-openshift-ecosystem/community-operators-pipeline' %}
         ci/operator-flow/doc.sh ${NPR} ${OPP_THIS_REPO}
+{% endif %}
+{% raw %}
         mkdocs build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
