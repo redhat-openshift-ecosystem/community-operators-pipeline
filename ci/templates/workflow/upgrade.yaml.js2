@@ -29,10 +29,6 @@ on:
         description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'     
         required: true
         default: ''
-[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e pu_from_index=quay.io/operator_testing/index_empty" && shift
-
-
-
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
