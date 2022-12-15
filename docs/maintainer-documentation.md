@@ -18,11 +18,35 @@ For an automatic merge to be executed, three labels must be present:
 
 ```mermaid
 graph LR
-  A[Start] --> B{Error?};
-  B -->|Yes| C[Hmm...];
-  C --> D[Debug];
-  D --> B;
-  B ---->|No| E[Yay!];
+id1(Operator CI Labels / authorized-changes-handler) --> authorized-changes
+id2(DCO test / PR-traffic-light) --> id14([aa])
+id3(Operator CI / operator-automerge-enabled) --> id15([aa])
+id4(Operator test / PR-traffic-light) --> id16([aa])
+id5(DCO test / DCO test) --> id17([aa])
+id6(Operator CI / operator-ci) --> id18([aa])
+id7(Operator test / kiwi / Full operator test)  --> package-validated
+id8(DCO test / Summary) --> id19(DCO failed)
+id9(Operator CI / operator-ci-ok-to-test) --> id20([aa])
+id10(Operator test / lemon / Deploy from scratch) --> package-validated
+id11(Operator test / orange / Deploy o7t) --> package-validated
+id12(Operator test / Summary) --> id21([aa])
+id13(DCO DCO) --> id22([aa])
+ci/prow/4.8-deploy-operator-on-openshift --> installation-validated-4.8
+ci/prow/4.9-deploy-operator-on-openshift --> installation-validated-4.9
+ci/prow/4.10-deploy-operator-on-openshift --> installation-validated-4.10
+ci/prow/4.11-deploy-operator-on-openshift --> installation-validated-4.11
+ci/prow/4.12-deploy-operator-on-openshift --> installation-validated-4.12
+
+ci/prow/4.9-deploy-operator-on-openshift --> installation-failed-4.9
+ci/prow/4.10-deploy-operator-on-openshift --> installation-failed-4.10
+ci/prow/4.11-deploy-operator-on-openshift --> installation-failed-4.11
+ci/prow/4.12-deploy-operator-on-openshift --> installation-failed-4.12
+
+installation-validated-4.8 --> installation-validated
+installation-validated-4.9 --> installation-validated
+installation-validated-4.10 --> installation-validated
+installation-validated-4.11 --> installation-validated
+installation-validated-4.12 --> installation-validated
 ```
 
 ## Package-validated
