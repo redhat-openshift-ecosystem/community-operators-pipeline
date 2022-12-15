@@ -27,7 +27,6 @@ on:
 {% raw %}
       index_from:
         description: 'From index (quay.io/operator_testing/index_empty:latest)'     
-        required: true
         default: ''
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
