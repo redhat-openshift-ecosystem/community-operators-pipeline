@@ -8,15 +8,15 @@ on:
         required: true
         default: 'Upgrade CI'
       repo:
-        description: 'Source repsitory'     
+        description: 'Source repsitory'
         required: true
         default: 'https://github.com/redhat-openshift-ecosystem/community-operators-pipeline'
       branch:
-        description: 'Source branch'     
+        description: 'Source branch'
         required: true
         default: 'ci/latest'
       playbook_branch:
-        description: 'Playbook branch'     
+        description: 'Playbook branch'
         required: true
         default: 'upstream-community'
       cluster:
@@ -25,8 +25,7 @@ on:
         default: 'ocp'
 
       index_from:
-        description: 'From index (quay.io/operator_testing/index_empty:latest)'     
-        required: true
+        description: 'From index (quay.io/operator_testing/index_empty:latest)'
         default: ''
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
