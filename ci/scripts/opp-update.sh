@@ -16,8 +16,6 @@ OPP_ANSIBLE_EXTRA_ARGS=""
 
 OPP_INDEX_IMAGE_POSTFIX=${OPP_INDEX_IMAGE_POSTFIX-"s"}
 
-[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e empty_index=quay.io/operator_testing/index_empty" && shift
-
 OPP_TMP_DIR="/tmp/opp-update"
 
 if [ -n "$1" ];then
@@ -29,6 +27,8 @@ if [ -n "$1" ];then
     cd -
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
+
+[ -n "$2" ] && OPP_ANSIBLE_EXTRA_ARGS="-e pu_from_index=$2"
 
 [ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
 mkdir -p $OPP_TMP_DIR

@@ -25,6 +25,13 @@ on:
 {% endraw %}
         default: '{{ default_config.production.type }}'
 {% raw %}
+      index_from:
+        description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'     
+        required: true
+        default: ''
+[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e pu_from_index=quay.io/operator_testing/index_empty" && shift
+
+
 
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
@@ -53,9 +60,10 @@ jobs:
       - name: Create local changes
         env:
           CLUSTER_TYPE: ${{ github.event.inputs.cluster }}
+          INDEX_FROM: ${{ github.event.inputs.index_from }}
         run: |
           echo "$OPP_INPUT_REPO $OPP_INPUT_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL) $CLUSTER_TYPE
+          bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL) $CLUSTER_TYPE $INDEX_FROM
       - name: Commit files
         run: |
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com"
