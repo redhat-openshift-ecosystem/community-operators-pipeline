@@ -26,7 +26,7 @@ on:
         default: '{{ default_config.production.type }}'
 {% raw %}
       index_from:
-        description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'     
+        description: 'From index (quay.io/operator_testing/index_empty:latest)'     
         required: true
         default: ''
 env:
