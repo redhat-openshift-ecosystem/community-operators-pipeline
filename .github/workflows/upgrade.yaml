@@ -8,15 +8,15 @@ on:
         required: true
         default: 'Upgrade CI'
       repo:
-        description: 'Source repsitory'     
+        description: 'Source repsitory'
         required: true
         default: 'https://github.com/redhat-openshift-ecosystem/community-operators-pipeline'
       branch:
-        description: 'Source branch'     
+        description: 'Source branch'
         required: true
         default: 'ci/latest'
       playbook_branch:
-        description: 'Playbook branch'     
+        description: 'Playbook branch'
         required: true
         default: 'upstream-community'
       cluster:
@@ -25,10 +25,9 @@ on:
         default: 'ocp'
 
       index_from:
-        description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'     
+        description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'
         required: true
         default: ''
-[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e pu_from_index=quay.io/operator_testing/index_empty" && shift
 
 
 
