@@ -77,10 +77,18 @@ ln -sfn ../$OPP_CI_SCRIPTS_DIR scripts/ci
 
 ######## Gen empty index ###############################
 #
-#/tmp/operator-test/bin/opm index add --bundles quay.io/operator_testing/aqua:v0.0.1 --tag quay.io/operator_testing/index_empty:latest --mode semver -p none
-#podman login quay.io -u mavala
-#podman push quay.io/operator_testing/index_empty:latest
-#/tmp/operator-test/bin/opm index rm -o aqua --from-index quay.io/operator_testing/index_empty:latest --tag quay.io/operator_testing/index_empty:latest -p none
-#podman push quay.io/operator_testing/index_empty:latest
+# opm index add --bundles quay.io/operator_testing/aqua:v0.0.1 --tag quay.io/operator_testing/index_empty:latest --mode semver -p none
+# podman login quay.io -u mavala
+# podman push quay.io/operator_testing/index_empty:latest
+# opm index rm -o aqua --from-index quay.io/operator_testing/index_empty:latest --tag quay.io/operator_testing/index_empty:latest -p none
+# podman push quay.io/operator_testing/index_empty:latest
+# podman tag quay.io/operator_testing/index_empty:latest quay.io/operator_testing/index_empty:latests
+# podman push quay.io/operator_testing/index_empty:latests
+#
+# Ignore list image
+# $cat Dockerfile 
+#  FROM scratch
+# podman build -t quay.io/operator_testing/index_empty:latesti .
+# podman push quay.io/operator_testing/index_empty:latesti
 #
 ########################################################
