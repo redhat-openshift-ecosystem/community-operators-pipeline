@@ -1,15 +1,11 @@
 # Maintainer Documentation
 
 ## Overview
-The community team is responsible for reviewing the following:
-
-- [OCP operators](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
-- [K8S operators](https://github.com/k8s-operatorhub/community-operators/pulls)
 
 {% if 'k8s' == cluster_type %}
-This documentation is focused on K8S operators. 
+This documentation is focused on K8S operators. A maintainer is responsible for PR review on the following link [https://github.com/k8s-operatorhub/community-operators/pulls](https://github.com/k8s-operatorhub/community-operators/pulls)
 {% else %}
-This documentation is focused on OCP operators. 
+This documentation is focused on OCP operators. A maintainer is responsible for PR review on the following link [https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
 {% endif %}
 
 When a pull request (PR) is opened, tests are automatically triggered to ensure that it meets all quality standards. If the PR passes these tests, it is automatically merged, and the new operator is published to a specific index. 
@@ -19,6 +15,15 @@ For an automatic merge to be executed, three labels must be present:
 - `package-validated`
 - `installation-validated`
 - `authorized-changes`
+
+```mermaid
+graph LR
+  A[Start] --> B{Error?};
+  B -->|Yes| C[Hmm...];
+  C --> D[Debug];
+  D --> B;
+  B ---->|No| E[Yay!];
+```
 
 ## Package-validated
 To ensure that a release pipeline will not fail, a simulated local release is triggered. It is executing the same steps as sharp lease, the only difference is that everything is happening locally and not pushing to any official registry.
