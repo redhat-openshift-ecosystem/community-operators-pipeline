@@ -25,7 +25,7 @@ on:
         default: 'ocp'
 
       index_from:
-        description: 'From index. (eg. quay.io/operator_testing/index_empty:latest)'     
+        description: 'From index (quay.io/operator_testing/index_empty:latest)'     
         required: true
         default: ''
 env:
