@@ -61,6 +61,12 @@ jobs:
           echo "$OPP_INPUT_REPO $OPP_INPUT_BRANCH"
           echo "::set-output name=index_from::$INDEX_FROM"
           bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL) $CLUSTER_TYPE $INDEX_FROM
+
+          if [ -f "/tmp/operators_to_recreate.yaml" ];then
+            echo '```' > $GITHUB_STEP_SUMMARY
+            cat /tmp/operators_to_recreate.yaml >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
       - name: Commit files
         run: |
           FAKE_RC=false
