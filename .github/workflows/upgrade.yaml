@@ -61,7 +61,6 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL) $CLUSTER_TYPE $INDEX_FROM
       - name: Commit files
         run: |
-          [ ]
           FAKE_RC=false
           [ -n "$INDEX_FROM" ] && FAKE_RC=true || true
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
