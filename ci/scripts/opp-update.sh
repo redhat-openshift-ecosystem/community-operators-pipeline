@@ -87,7 +87,8 @@ ln -sfn ../$OPP_CI_SCRIPTS_DIR scripts/ci
 #
 # Ignore list image
 # $cat Dockerfile 
-#  FROM scratch
+# FROM scratch
+#
 # podman build -t quay.io/operator_testing/index_empty:latesti .
 # podman push quay.io/operator_testing/index_empty:latesti
 #
