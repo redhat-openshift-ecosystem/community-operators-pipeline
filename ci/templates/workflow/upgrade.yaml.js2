@@ -31,6 +31,7 @@ on:
 env:
   OPP_INPUT_REPO: "${{ github.event.inputs.repo }}"
   OPP_INPUT_BRANCH: "${{ github.event.inputs.branch }}"
+  INDEX_FROM: ${{ github.event.inputs.index_from }}
   OPP_ANSIBLE_PULL_BRANCH: "${{ github.event.inputs.playbook_branch }}"
 {% endraw %}
   OPP_SCRIPT_UPGRADE_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-update.sh"
@@ -55,16 +56,19 @@ jobs:
       - name: Create local changes
         env:
           CLUSTER_TYPE: ${{ github.event.inputs.cluster }}
-          INDEX_FROM: ${{ github.event.inputs.index_from }}
           REGISTRY_RELEASE_API_TOKEN: ${{ secrets.REGISTRY_RELEASE_API_TOKEN }}
         run: |
           echo "$OPP_INPUT_REPO $OPP_INPUT_BRANCH"
+          echo "::set-output name=index_from::$INDEX_FROM"
           bash <(curl -sL $OPP_SCRIPT_UPGRADE_URL) $CLUSTER_TYPE $INDEX_FROM
       - name: Commit files
         run: |
-          git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com"
-          git config --local user.name "framework-automation"
-          git add .
-          git commit -m "${{ github.event.inputs.commit-message }} ($(date +"%d %b %Y %T"))" -a
-          git push
+          [ ]
+          FAKE_RC=false
+          [ -n "$INDEX_FROM" ] && FAKE_RC=true || true
+          git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
+          git config --local user.name "framework-automation" || $FAKE_RC
+          git add . || $FAKE_RC
+          git commit -m "${{ github.event.inputs.commit-message }} ($(date +"%d %b %Y %T"))" -a || $FAKE_RC
+          git push || $FAKE_RC
 {% endraw %}
