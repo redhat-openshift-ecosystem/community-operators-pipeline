@@ -65,7 +65,7 @@ jobs:
           if [ -f "/tmp/operators_to_recreate.yaml" ];then
             echo '```' > $GITHUB_STEP_SUMMARY
             echo >> $GITHUB_STEP_SUMMARY
-            echo "operators: $(cat /tmp/operators_to_recreate.yaml) >> $GITHUB_STEP_SUMMARY
+            echo "operators: $(cat /tmp/operators_to_recreate.yaml)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
