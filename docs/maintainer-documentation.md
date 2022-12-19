@@ -103,7 +103,6 @@ id27([installation-validated-4.12]) --> id33([installation-validated])
 
 ##### The label `openshift-started-<VERSION>` is present after a couple of hours
 
-
 In case of `openshift-started-<VERSION>` label is present and prow job is not running, it means that the temporary index was triggered but not finished and failed due to some reason. You can inspect it on [`Actions -> Prepare Test Index`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/prepare_test_index.yaml).
 {% endif %}
 
@@ -162,3 +161,16 @@ There can be a case when `do-not-merge/hold` label is present. If the `openshift
 
 ## Release pipeline maintainer documentation
 
+When all conditions are met, the operator has merged automatically and a release pipeline is triggered at {% if 'k8s' == cluster_type %} [https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml](https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml). {% else %} [https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml). {% endif %}  
+
+The release pipeline is not just releasing a single merged operator. Rather it is based on synchronization. So after merging multiple operators at once. Despite the operators being in different PRs, the first release will detect differences and sync every missing operator to related indexes.
+
+Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
+
+- [N] - means a new operator, universal sync is executed
+- [O] - operator-specific version overwrite
+- [CI] - operator specific re-create
+- [R] - operator specific re-create
+- no flag - universal sync, restarting will automatically sync missing operators
+
+In many cases, just a pipeline restart is needed. However, if a sync failed, any sync can be restarted to fix it. If `[O]`,`[R]` or `[CI]` failed, you need to restart this specific run.
