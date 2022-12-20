@@ -2,10 +2,15 @@ site_name: Community operators pipeline admin
 repo_name: community-operators-pipeline
 repo_url: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
 nav:
-    - 'Overview': README.md
+  - "Overview": README.md
+  - "Project":
+      - "Overview": project-overview.md
+      - "Create": project-create.md
+      - "Maintain": project-maintain.md
+      - "Develop": project-development.md
 
 extra:
-    version: 0.1
+  version: 0.1
 
 theme:
   name: material
@@ -40,5 +45,3 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-
-
