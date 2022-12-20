@@ -16,8 +16,6 @@ OPP_ANSIBLE_EXTRA_ARGS=""
 
 OPP_INDEX_IMAGE_POSTFIX=${OPP_INDEX_IMAGE_POSTFIX-"s"}
 
-[ "$1" = "reset" ] && OPP_ANSIBLE_EXTRA_ARGS="-e empty_index=quay.io/operator_testing/index_empty" && shift
-
 OPP_TMP_DIR="/tmp/opp-update"
 
 if [ -n "$1" ];then
@@ -30,11 +28,12 @@ if [ -n "$1" ];then
     CLUSTER_TYPE="-$CLUSTER_TYPE"
 fi
 
+[ -n "$2" ] && OPP_ANSIBLE_EXTRA_ARGS="-e pu_from_index=$2"
+
 [ -d $OPP_TMP_DIR ] && rm -rf $OPP_TMP_DIR
 mkdir -p $OPP_TMP_DIR
 git clone $OPP_INPUT_REPO --branch $OPP_INPUT_BRANCH $OPP_TMP_DIR/opp-input
-
-ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
+ANSIBLE_DISPLAY_SKIPPED_HOSTS=0 ANSIBLE_STDOUT_CALLBACK=yaml ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH $OPP_ANSIBLE_ARGS \
 -e pipeline_config_name="pipeline-config${CLUSTER_TYPE}.yaml" \
 -e output_project_directory="$PWD" \
 -e workflow_config_path="$PWD/ci" \
@@ -78,10 +77,19 @@ ln -sfn ../$OPP_CI_SCRIPTS_DIR scripts/ci
 
 ######## Gen empty index ###############################
 #
-#/tmp/operator-test/bin/opm index add --bundles quay.io/operator_testing/aqua:v0.0.1 --tag quay.io/operator_testing/index_empty:latest --mode semver -p none
-#podman login quay.io -u mavala
-#podman push quay.io/operator_testing/index_empty:latest
-#/tmp/operator-test/bin/opm index rm -o aqua --from-index quay.io/operator_testing/index_empty:latest --tag quay.io/operator_testing/index_empty:latest -p none
-#podman push quay.io/operator_testing/index_empty:latest
+# opm index add --bundles quay.io/operator_testing/aqua:v0.0.1 --tag quay.io/operator_testing/index_empty:latest --mode semver -p none
+# podman login quay.io -u mavala
+# podman push quay.io/operator_testing/index_empty:latest
+# opm index rm -o aqua --from-index quay.io/operator_testing/index_empty:latest --tag quay.io/operator_testing/index_empty:latest -p none
+# podman push quay.io/operator_testing/index_empty:latest
+# podman tag quay.io/operator_testing/index_empty:latest quay.io/operator_testing/index_empty:latests
+# podman push quay.io/operator_testing/index_empty:latests
+#
+# Ignore list image
+# $cat Dockerfile 
+# FROM scratch
+#
+# podman build -t quay.io/operator_testing/index_empty:latesti .
+# podman push quay.io/operator_testing/index_empty:latesti
 #
 ########################################################
