@@ -23,6 +23,8 @@ id10([installation-validated]) --> id1(automatc merge is triggered)
 id11([authorized-changes]) --> id1(automatc merge is triggered)
 ```
 
+When a PR is opened, the original title is automatically replaced with a standardized one containing operator versions which were changed. There is also a flag in square braces indicating things like the single version will be overwritten including bundle delete and create and so on. More info in the [release pipeline section](#pr-flags). Don't worry about deleted bundles, there is still a copy available, so existing indexes will work as designed.
+
 We will go over situations when some label is missing or something went wrong in the following paragraphs.
 
 ### **The package-validated label is missing**
@@ -113,7 +115,6 @@ id1(Operator CI Labels / authorized-changes-handler) --> id2([authorized-changes
 ```
 There are a few reasons why the `authorized-changes` label may be missing from a PR:
 
-
 #### New-operator label is present
 
 If the `new-operator` label is present, the following steps should be taken:
@@ -165,12 +166,38 @@ When all conditions are met, the operator has merged automatically and a release
 
 The release pipeline is not just releasing a single merged operator. Rather it is based on synchronization. So after merging multiple operators at once. Despite the operators being in different PRs, the first release will detect differences and sync every missing operator to related indexes.
 
+### PR flags
+
 Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
 
 - [N] - means a new operator, universal sync is executed
-- [O] - operator-specific version overwrite
-- [CI] - operator specific re-create
-- [R] - operator specific re-create
+- [O] - operator-specific version overwrite, deleting bundles from repositories (copies are not deleted)
+- [CI] - ci files changed, merging only
+- [R] - operator-specific re-create, deleting all bundles in a package
 - no flag - universal sync, restarting will automatically sync missing operators
 
-In many cases, just a pipeline restart is needed. However, if a sync failed, any sync can be restarted to fix it. If `[O]`,`[R]` or `[CI]` failed, you need to restart this specific run.
+In many cases, just a pipeline restart is needed. However, if a sync failed, any sync can be restarted to fix it. If `[O]` or`[R]` failed, you need to restart this specific run.
+
+All releases have the same steps. The only difference for `[O]` or`[R]` flagged releases is that in `Remove` step there is an additional action:
+
+-  `[O]` - delete a single bundle image from the registry and preserve copies
+-  `[R]` - delete all bundle images related to the package and preserve copies
+
+
+```mermaid
+graph TD
+id1(PR-traffic-light) --> id2(Remove) --> id3(Index check) --> id4(Bundles) --> id5(Index) --> id6(Index verify) --> id7(Slack notification)
+```
+
+
+### Operators not released, only merged because of `installation_skip`
+
+If there is some strong reason not to trigger a test and release, an operator is just merged. For example, operators named `ack*` have around 10 PRs opened at the same time. This merges 10 operators at the same time. In this case, 10 pipeline runs can be ineffective because we need just a single pipeline run to synchronize everything. 
+
+!!! info "Operator with `installation-skipped` PR label is just merged and will be released with the next operator."
+
+In rare cases, there is no other pipeline run triggered, please restart some pipeline run with no flag inside square braces.
+
+### Placeholders to reserve an operator name for future PRs
+If a contributor needs to reserve an operator name, it is possible to open a PR with just a `ci.yaml` file in an operator directory. Pipeline supports such functionality and skipping tests and release.
+
