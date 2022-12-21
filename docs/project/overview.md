@@ -10,4 +10,6 @@ Maybe some mermaid graph
   - Operator release manual
   - More info about all GitHub action points to the framework
 
+## Upgrade CI
+
 ## Project structure
