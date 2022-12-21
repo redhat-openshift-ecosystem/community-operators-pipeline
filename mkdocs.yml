@@ -3,11 +3,16 @@ repo_name: community-operators-pipeline
 repo_url: https://github.com/redhat-openshift-ecosystem/community-operators-pipeline
 nav:
   - "Overview": README.md
-  - "Project":
-      - "Overview": project-overview.md
-      - "Create": project-create.md
-      - "Maintain": project-maintain.md
-      - "Develop": project-development.md
+  - "Framework":
+      - "Overview": framework/overview.md
+      - "Develop": framework/development.md
+  - "Project": 
+      - "Overview": project/overview.md
+      - "Create": project/create.md
+      - "Maintainance": 
+        - "Common": project/maintain.md
+        - "Kubernetes": project/k8s.md
+        - "Openshift (OCP)": project/ocp.md
 
 extra:
   version: 0.1
@@ -39,7 +44,7 @@ markdown_extensions:
   - pymdownx.tabbed
   - attr_list
   - toc:
-      toc_depth: 2
+      toc_depth: 3
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
