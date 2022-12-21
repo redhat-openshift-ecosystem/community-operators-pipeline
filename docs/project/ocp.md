@@ -11,7 +11,7 @@ The following part is related to Openshift only.
   - playbook dev and dev image
   - Temporary index action to check
 
-## Overview
+## Prow
 The prow job is automatically triggered for every OCP PR if GH Action did not fail at the beginning. See the structure below.
 
 ```mermaid
@@ -55,9 +55,11 @@ When an edit is needed, go to [templates](https://github.com/redhat-openshift-ec
 
 !!! info "Consider using `ci/dev` instead of `ci/latest` during development as described [here](../framework/development.md#cidev-vs-cilatest)."
 
-## How to edit prow building block configuration
+### How to edit prow building block configuration
 
 Prow is configured at [openshift repository](https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod). Open a PR and get `LGTM` approval from your colleague to get an automatic merge.
+
+In case you are creating a new project, make sure `openshift-ci-robot` is added as a collaborator to the project with `Admin` rights.
 
 ## Upgrade index
 
