@@ -61,13 +61,59 @@ Prow is configured at [openshift repository](https://github.com/openshift/releas
 
 In case you are creating a new project, make sure `openshift-ci-robot` is added as a collaborator to the project with `Admin` rights.
 
-## Upgrade index
+## New Openshift index release
+
+### Prerequisities
+https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml
+
+#### Testing breaking APIs
+If there is a breaking API in a new index, please edit `bundle_validation_filter` role details.
+
+### Add new index support
+Always check and add the current index version to
+- `operator_info` role defaults
+- `OCP2K8S` and `KIND_SUPPORT_TABLE` variable in ci/dev and ci/latest consequently
+
+### Enable pyxis support
+To enable pyxis support, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562).
+
+### Maximum
+Edit `oc_version_max` in playbook defaults only if `4.x` is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
+Also consider changing `current_openshift_run` when deleting a prow job.
+
+### K8S alignment
+Despite this documentation being focused on OCP, alignment with k8s is needed.
+
+Edit **k8s-operatorhub** ci/config latest ocp as `kind_kube_version` and upgrade by action.
+You may need to edit also kind_version and the following [file](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) according to https://github.com/kubernetes-sigs/kind/releases 
+
+
+### Release process
+Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.
+
+The very first step is to have the entry in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) like in the example: `- v4.12-maintenance`. This is a label for the target index in case of a new index release.
+
+### Release from a previous index
+
+This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called [`CI Upgrade`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml). Fill fields as shown below. The most important field is `From index`. There should be a path directly to a previous `_tmp` image. Use path like `quay.io/openshift-community-operators/catalog_tmp:v4.11` if you would like to release `v4.12`.
+
+When the workflow is finished, see the list of operators to fix in the new index. The list is located on the GH workflow output page as `Upgrade summary`.
+
 
 ![PR](../images/upgrade_with_index_upgrade.png)
 
-The example `Upgrade` pipeline is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547){:target="_blank"}. `Create local changes` step in `upgrade` job does whole process. Log is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232) 
+The example `Upgrade` pipeline is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547){:target="_blank"}. `Create local changes` step in `upgrade` job does the whole process. The log is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232) 
 
+Then you need to fix operators by running [`Operator release manual`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml). Set values as in the example below. The most important field is the `List of operators ...` - it is a place to put the output from the previous workflow under the `Upgrade summary`. The list is already space delimited.
 
 ![PR](../images/manual_replease_after_index_upgrade.png)
 
 The example `Manual release` pipeline is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606){:target="_blank"}. ...[here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153){:target="_blank"}
+
+### Release from scratch
+
+There can be cases when differences between an actual and a new index are huge. In this case, it makes sense to fill the new index from scratch. You need only [`Operator release manual`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml). Be ready for a day or more and multiple manual triggers of the same workflow type with a different set of operators.
+
+This time, a `List of operators...` is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. Best practise is to use 1/5th of the full operator list divided by a space. 
+
+!!! warning "Do not enable `Push final index to production` until all operators are processed. Or you can always leave the value `0` and the next automatic merge will push also your changes to production."
