@@ -264,9 +264,53 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#upgrade-index">
-    Upgrade index
+<a class="md-nav__link" href="#new-openshift-index-release">
+    New Openshift index release
   </a>
+<nav aria-label="New Openshift index release" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisities">
+    Prerequisities
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-new-index-support">
+    Add new index support
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#enable-pyxis-support">
+    Enable pyxis support
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#maximum">
+    Maximum
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#k8s-alignment">
+    K8S alignment
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#release-process">
+    Release process
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#release-from-a-previous-index">
+    Release from a previous index
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#release-from-scratch">
+    Release from scratch
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -343,11 +387,41 @@ end
 <h3 id="how-to-edit-prow-building-block-configuration">How to edit prow building block configuration</h3>
 <p>Prow is configured at <a href="https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod">openshift repository</a>. Open a PR and get <code>LGTM</code> approval from your colleague to get an automatic merge.</p>
 <p>In case you are creating a new project, make sure <code>openshift-ci-robot</code> is added as a collaborator to the project with <code>Admin</code> rights.</p>
-<h2 id="upgrade-index">Upgrade index</h2>
+<h2 id="new-openshift-index-release">New Openshift index release</h2>
+<h3 id="prerequisities">Prerequisities</h3>
+<p>https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml</p>
+<h4 id="testing-breaking-apis">Testing breaking APIs</h4>
+<p>If there is a breaking API in a new index, please edit <code>bundle_validation_filter</code> role details.</p>
+<h3 id="add-new-index-support">Add new index support</h3>
+<p>Always check and add the current index version to
+- <code>operator_info</code> role defaults
+- <code>OCP2K8S</code> and <code>KIND_SUPPORT_TABLE</code> variable in ci/dev and ci/latest consequently</p>
+<h3 id="enable-pyxis-support">Enable pyxis support</h3>
+<p>To enable pyxis support, clone the <a href="https://issues.redhat.com/browse/CWFHEALTH-1562">issue</a>.</p>
+<h3 id="maximum">Maximum</h3>
+<p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
+Also consider changing <code>current_openshift_run</code> when deleting a prow job.</p>
+<h3 id="k8s-alignment">K8S alignment</h3>
+<p>Despite this documentation being focused on OCP, alignment with k8s is needed.</p>
+<p>Edit <strong>k8s-operatorhub</strong> ci/config latest ocp as <code>kind_kube_version</code> and upgrade by action.
+You may need to edit also kind_version and the following <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5">file</a> according to https://github.com/kubernetes-sigs/kind/releases </p>
+<h3 id="release-process">Release process</h3>
+<p>Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.</p>
+<p>The very first step is to have the entry in <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml"><code>pipeline-config-ocp.yaml</code></a> like in the example: <code>- v4.12-maintenance</code>. This is a label for the target index in case of a new index release.</p>
+<h3 id="release-from-a-previous-index">Release from a previous index</h3>
+<p>This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml"><code>CI Upgrade</code></a>. Fill fields as shown below. The most important field is <code>From index</code>. There should be a path directly to a previous <code>_tmp</code> image. Use path like <code>quay.io/openshift-community-operators/catalog_tmp:v4.11</code> if you would like to release <code>v4.12</code>.</p>
+<p>When the workflow is finished, see the list of operators to fix in the new index. The list is located on the GH workflow output page as <code>Upgrade summary</code>.</p>
 <p><img alt="PR" src="../../images/upgrade_with_index_upgrade.png"/></p>
-<p>The example <code>Upgrade</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547" target="_blank">here</a>. <code>Create local changes</code> step in <code>upgrade</code> job does whole process. Log is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232">here</a> </p>
+<p>The example <code>Upgrade</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547" target="_blank">here</a>. <code>Create local changes</code> step in <code>upgrade</code> job does the whole process. The log is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232">here</a> </p>
+<p>Then you need to fix operators by running <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Set values as in the example below. The most important field is the <code>List of operators ...</code> - it is a place to put the output from the previous workflow under the <code>Upgrade summary</code>. The list is already space delimited.</p>
 <p><img alt="PR" src="../../images/manual_replease_after_index_upgrade.png"/></p>
 <p>The example <code>Manual release</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606" target="_blank">here</a>. ...<a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153" target="_blank">here</a></p>
+<h3 id="release-from-scratch">Release from scratch</h3>
+<p>There can be cases when differences between an actual and a new index are huge. In this case, it makes sense to fill the new index from scratch. You need only <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Be ready for a day or more and multiple manual triggers of the same workflow type with a different set of operators.</p>
+<p>This time, a <code>List of operators...</code> is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. Best practise is to use 1/5th of the full operator list divided by a space. </p>
+<div class="admonition warning">
+<p class="admonition-title">Do not enable <code>Push final index to production</code> until all operators are processed. Or you can always leave the value <code>0</code> and the next automatic merge will push also your changes to production.</p>
+</div>
 </article>
 </div>
 </div>
