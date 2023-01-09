@@ -1,37 +1,38 @@
 # OCP
 
 The following part is related to Openshift only.
-## TODO
-- prow setup
-  - Init prow
-    - add robot to repo
-  - PR to openshift repository
-  - script and script dev
-  - playbook
-  - playbook dev and dev image
-  - Temporary index action to check
 
-## Prow
+## How OCP installation is tested
+Prow is an external OpenShift release tooling framework that is used as an installation test in the community pipeline.
+
+### How to edit prow building block configuration
+
+Prow is configured at [openshift repository](https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod). Open a PR and get `LGTM` approval from your colleague to get an automatic merge.
+
+In case you are creating a new project, make sure `openshift-ci-robot` is added as a collaborator to the project with `Admin` rights.
+
+### Overview
+
 The prow job is automatically triggered for every OCP PR if GH Action did not fail at the beginning. See the structure below.
 
 ```mermaid
 graph TD
-openshift-deploy.sh --> openshift-deploy-core.sh --> deploy_olm_operator_openshift_upstream
+openshift-deploy.sh --> openshift-deploy-core.sh --> waiting("wait for hash label on Quay") --> deploy_olm_operator_openshift_upstream
 openshift-deploy-core.sh --> prepare_test_index
-prepare_test_index -.-> quay
-quay -.-> deploy_olm_operator_openshift_upstream
+prepare_test_index -.-> Quay
+Quay -.-> deploy_olm_operator_openshift_upstream
 
-style quay stroke-dasharray: 5 5
+style Quay stroke-dasharray: 5 5
 
 subgraph prow
-openshift-deploy.sh & openshift-deploy-core.sh
-subgraph Ansible
+openshift-deploy.sh & openshift-deploy-core.sh & waiting
+subgraph Ansible role
 deploy_olm_operator_openshift_upstream
 end
 end
 
-subgraph GH Action
-prepare_test_index & quay
+subgraph GH Action job
+prepare_test_index & Quay
 end
 
 ```
@@ -55,38 +56,39 @@ When an edit is needed, go to [templates](https://github.com/redhat-openshift-ec
 
 !!! info "Consider using `ci/dev` instead of `ci/latest` during development as described [here](../framework/development.md#cidev-vs-cilatest)."
 
-### How to edit prow building block configuration
-
-Prow is configured at [openshift repository](https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod). Open a PR and get `LGTM` approval from your colleague to get an automatic merge.
-
-In case you are creating a new project, make sure `openshift-ci-robot` is added as a collaborator to the project with `Admin` rights.
-
-## New Openshift index release
+## Release brand new index for OCP
 
 ### Prerequisities
-https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml
 
-#### Testing breaking APIs
-If there is a breaking API in a new index, please edit `bundle_validation_filter` role details.
+Before running an automatic GH action that creates indexes itself, there are some prerequisites administrator should prepare in a specific order:
 
-### Add new index support
+1. Add new index mapping
+1. Enable Pyxis support  for a specific index
+1. Set maximum `oc` version available
+1. OCP and K8S alignment
+1. Enable breaking API testing if supported by `operator-sdk`
+
+
+### Add new index mapping
 Always check and add the current index version to
 - `operator_info` role defaults
 - `OCP2K8S` and `KIND_SUPPORT_TABLE` variable in ci/dev and ci/latest consequently
 
-### Enable pyxis support
+### Enable Pyxis support  for a specific index
 To enable pyxis support, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562).
 
-### Maximum
+### Set maximum `oc` version available
 Edit `oc_version_max` in playbook defaults only if `4.x` is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
 Also consider changing `current_openshift_run` when deleting a prow job.
 
-### K8S alignment
+### OCP and K8S alignment
 Despite this documentation being focused on OCP, alignment with k8s is needed.
 
 Edit **k8s-operatorhub** ci/config latest ocp as `kind_kube_version` and upgrade by action.
 You may need to edit also kind_version and the following [file](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) according to https://github.com/kubernetes-sigs/kind/releases 
 
+#### Enable breaking API testing if supported by `operator-sdk`
+If there is a breaking API in a new index, please edit [`bundle_validation_filter`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml) role defaults.
 
 ### Release process
 Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.
