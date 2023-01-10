@@ -1,20 +1,25 @@
 ## Testing pipeline maintainer documentation
 
-{% if 'k8s' == cluster_type %}
-This documentation is focused on K8S operators. A maintainer is responsible for PR review on the following link [https://github.com/k8s-operatorhub/community-operators/pulls](https://github.com/k8s-operatorhub/community-operators/pulls)
+{% if cluster_type == 'k8s' %}
+This documentation is focused on Kubernetes (k8s) operators. A maintainer is responsible for PR review on the following link
+
+- [https://github.com/k8s-operatorhub/community-operators/pulls](https://github.com/k8s-operatorhub/community-operators/pulls)
 {% else %}
-This documentation is focused on OCP operators. A maintainer is responsible for PR review on the following link [https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
+This documentation is focused on OCP (o7t - Openshift) operators. A maintainer is responsible for PR review on the following link 
+
+- [https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
 {% endif %}
-!!! info "The first part is related to the testing pipeline and how to get a PR green and merged. For failed operator release handling, please jump to [Release pipeline maintainer documentation](#release-pipeline-maintainer-documentation)."
 
 ### **Overview**
+
+!!! info "The first part is related to the testing pipeline and how to get a PR green and merged. For failed operator release handling, please jump to [Release pipeline maintainer documentation](#release-pipeline-maintainer-documentation)."
 
 When a pull request (PR) is opened, tests are automatically triggered to ensure that it meets all quality standards. Tests produce labels. If the PR passes these tests, it is automatically merged, and the new operator is published to a specific index. 
 
 
 !!! warning "Do use the `merge` button. It can cause a failed release. Always make PR green and it will be merged automatically. To restart a test use `/retest` comment or as a last resort close and reopen a PR."
 
-For an automatic merge to be executed non of `*-failed` labels, but the following three labels must be present:
+For an automatic merge to be executed non of `*-failed` labels, the following three labels must be present:
 
 ```mermaid
 graph LR
@@ -23,12 +28,12 @@ id10([installation-validated]) --> id1(automatc merge is triggered)
 id11([authorized-changes]) --> id1(automatc merge is triggered)
 ```
 
-When a PR is opened, the original title is automatically replaced with a standardized one containing operator versions which were changed. There is also a flag in square braces indicating things like the single version will be overwritten including bundle delete and create and so on. More info in the [release pipeline section](#pr-flags). Don't worry about deleted bundles, there is still a copy available, so existing indexes will work as designed.
+When a PR is opened, the original title is automatically replaced with a standardized one containing operator versions that were changed. There is also a flag in square braces indicating things like the single version will be overwritten including bundle delete and create and so on. More info is in the [release](#pr-flags) pipeline section](#pr-flags). Don't worry about deleted bundles, there is still a copy available, so existing indexes will work as designed.
 
 We will go over situations when some label is missing or something went wrong in the following paragraphs.
 
 ### **The package-validated label is missing**
-{% if 'ocp' == cluster_type %}
+{% if cluster_type == 'ocp' %}
 ```mermaid
 graph LR
 id7(Operator test / kiwi / Full operator test)  --> id1([package-validated])
@@ -36,7 +41,7 @@ id10(Operator test / lemon / Deploy from scratch) --> id1([package-validated])
 id11(Operator test / orange / Deploy o7t) --> id1([package-validated])
 ```
 {% endif %}
-{% if 'k8s' == cluster_type %} 
+{% if cluster_type == 'k8s' %} 
 ```mermaid
 graph LR
 id10(Operator test / lemon / Deploy from scratch) --> id1([package-validated])
@@ -53,18 +58,18 @@ There are three tests as described below.
 Simulating a release of an affected operator to the current index(es). Helpful to prevent future failures on current indexes.
 
 #### Lemon test
-It catches incompatibilities in a release of a new index from scratch. Orange, lemon {% if 'ocp' == cluster_type %} and kiwi {% endif %} have to obtain `package-validated` label.
+It catches incompatibilities in a release of a new index from scratch. Orange, lemon {% if cluster_type == 'ocp' %} and kiwi {% endif %} have to obtain `package-validated` label.
 
 #### Kiwi test
 Basic checks like linting.
-{% if 'k8s' == cluster_type %} 
-In k8s pipeline, it is also testing operator installation and will apply `installation-validated` label. 
+{% if cluster_type == 'k8s' %} 
+In `k8s` pipeline, it is also testing operator installation and will apply `installation-validated` label. 
 {% endif %}
 
 ### **The installation-validated label is missing**
 This means that the pipeline can install the operator.
 
-{% if 'k8s' == cluster_type %} 
+{% if cluster_type == 'k8s' %} 
 ```mermaid
 graph LR
 id7(Operator test / kiwi / Full operator test)  --> id2([installation-validated])
@@ -77,8 +82,12 @@ For OCP, prow jobs for every supported OCP are triggered.
 #### Prow job
 For every index we support, a dedicated cluster is started and we are testing if operator installation without any problems. If the operator will not be released to some cluster, an installation test is not needed. In this case, a specific installation test passes early without any installation attempt.
 
-To debug a red prow job go to `Details -> Artifacts -> artifacts/deploy-operator-on-openshift/deploy-operator/build-log.txt`
+To debug a red prow job go to 
+
+`Details -> Artifacts -> artifacts/deploy-operator-on-openshift/deploy-operator/build-log.txt`
+
 ![PR](images/maintainer-prow-details.png)
+
 ![PR](images/maintainer-prow-artifacts.png)
 
 When all supported OCP clusters are green a label `installation-validated` is applied.
@@ -162,13 +171,13 @@ There can be a case when `do-not-merge/hold` label is present. If the `openshift
 
 ## Release pipeline maintainer documentation
 
-When all conditions are met, the operator has merged automatically and a release pipeline is triggered at {% if 'k8s' == cluster_type %} [https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml](https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml). {% else %} [https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml). {% endif %}  
+When all conditions are met, the operator has merged automatically and a release pipeline is triggered at {% if cluster_type == 'k8s' %} [https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml](https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml). {% else %} [https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml). {% endif %}  
 
 The release pipeline is not just releasing a single merged operator. Rather it is based on synchronization. So after merging multiple operators at once. Despite the operators being in different PRs, the first release will detect differences and sync every missing operator to related indexes.
 
-### PR flags
+### PR title flags
 
-Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
+The PR title is changed Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
 
 - [N] - means a new operator, universal sync is executed
 - [O] - operator-specific version overwrite, deleting bundles from repositories (copies are not deleted)
@@ -183,7 +192,6 @@ All releases have the same steps. The only difference for `[O]` or`[R]` flagged 
 -  `[O]` - delete a single bundle image from the registry and preserve copies
 -  `[R]` - delete all bundle images related to the package and preserve copies
 
-
 ```mermaid
 graph TD
 id1(PR-traffic-light) --> id2(Remove) --> id3(Index check) --> id4(Bundles) --> id5(Index) --> id6(Index verify) --> id7(Slack notification)
@@ -196,8 +204,17 @@ If there is some strong reason not to trigger a test and release, an operator is
 
 !!! info "Operator with `installation-skipped` PR label is just merged and will be released with the next operator."
 
-In rare cases, there is no other pipeline run triggered, please restart some pipeline run with no flag inside square braces.
+In rare cases, there is no other pipeline run triggered, please restart some pipeline runs with no flag inside square braces.
+
+### Verify index
+
+The `Verify index` job is checking count of versions for each operator between two internal indexes (tag, sha) and final productions. If the version count is not equal for all three indexes then the job fails and produces a list of failed operators. The following example shows that `bookkeeper-operator` and `zookeeper-operator` are not in sync.
+
+![Verify index fail](images/verify_index_fail.png)
+
+One should recreate these operators for specific indexes by asking the project admin to run `manual release` job with the following setting.
+
+![Manual Release when verify index fail](images/manual_release_verify_index_fail.png)
 
 ### Placeholders to reserve an operator name for future PRs
 If a contributor needs to reserve an operator name, it is possible to open a PR with just a `ci.yaml` file in an operator directory. Pipeline supports such functionality and skipping tests and release.
-
