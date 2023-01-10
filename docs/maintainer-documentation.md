@@ -1,15 +1,18 @@
 ## Testing pipeline maintainer documentation
 
 {% if cluster_type == 'k8s' %}
-This documentation is focused on Kubernetes (k8s) operators. 
+This documentation is focused on Kubernetes (k8s) operators. A maintainer is responsible for PR review on the following link
 
-A maintainer is responsible for PR review on the following link [https://github.com/k8s-operatorhub/community-operators/pulls](https://github.com/k8s-operatorhub/community-operators/pulls)
+- [https://github.com/k8s-operatorhub/community-operators/pulls](https://github.com/k8s-operatorhub/community-operators/pulls)
 {% else %}
-This documentation is focused on OCP (o7t - Openshift) operators. A maintainer is responsible for PR review on the following link [https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
+This documentation is focused on OCP (o7t - Openshift) operators. A maintainer is responsible for PR review on the following link 
+
+- [https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls](https://github.com/redhat-openshift-ecosystem/community-operators-prod/pulls)
 {% endif %}
-!!! info "The first part is related to the testing pipeline and how to get a PR green and merged. For failed operator release handling, please jump to [Release pipeline maintainer documentation](#release-pipeline-maintainer-documentation)."
 
 ### **Overview**
+
+!!! info "The first part is related to the testing pipeline and how to get a PR green and merged. For failed operator release handling, please jump to [Release pipeline maintainer documentation](#release-pipeline-maintainer-documentation)."
 
 When a pull request (PR) is opened, tests are automatically triggered to ensure that it meets all quality standards. Tests produce labels. If the PR passes these tests, it is automatically merged, and the new operator is published to a specific index. 
 
@@ -174,7 +177,7 @@ The release pipeline is not just releasing a single merged operator. Rather it i
 
 ### PR title flags
 
-Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
+The PR title is changed Every release pipeline run is named by an operator name, the version in brackets and one of the following flags in square brackets:
 
 - [N] - means a new operator, universal sync is executed
 - [O] - operator-specific version overwrite, deleting bundles from repositories (copies are not deleted)
@@ -203,9 +206,6 @@ If there is some strong reason not to trigger a test and release, an operator is
 
 In rare cases, there is no other pipeline run triggered, please restart some pipeline runs with no flag inside square braces.
 
-### Placeholders to reserve an operator name for future PRs
-If a contributor needs to reserve an operator name, it is possible to open a PR with just a `ci.yaml` file in an operator directory. Pipeline supports such functionality and skipping tests and release.
-
 ### Verify index
 
 The `Verify index` job is checking count of versions for each operator between two internal indexes (tag, sha) and final productions. If the version count is not equal for all three indexes then the job fails and produces a list of failed operators. The following example shows that `bookkeeper-operator` and `zookeeper-operator` are not in sync.
@@ -215,3 +215,6 @@ The `Verify index` job is checking count of versions for each operator between t
 One should recreate these operators for specific indexes by asking the project admin to run `manual release` job with the following setting.
 
 ![Manual Release when verify index fail](images/manual_release_verify_index_fail.png)
+
+### Placeholders to reserve an operator name for future PRs
+If a contributor needs to reserve an operator name, it is possible to open a PR with just a `ci.yaml` file in an operator directory. Pipeline supports such functionality and skipping tests and release.
