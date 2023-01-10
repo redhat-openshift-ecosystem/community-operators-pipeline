@@ -68,14 +68,13 @@ Before running an automatic GH action that creates indexes itself, there are som
 1. OCP and K8S alignment
 1. Enable breaking API testing if supported by `operator-sdk`
 
-
 ### Add new index mapping
 Always check and add the current index version to
-- `operator_info` role defaults
-- `OCP2K8S` and `KIND_SUPPORT_TABLE` variable in ci/dev and ci/latest consequently
+- `operator_info` role [defaults](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/operator_info/defaults/main.yml#L25) and to [k8s2ocp](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L16) and [ocp2k8s](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L31) converting tables in `bundle_validation_filter`
+- [`OCP2K8S`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy-core.sh#L27) and [`KIND_SUPPORT_TABLE`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) variable in ci/dev and ci/latest consequently
 
-### Enable Pyxis support  for a specific index
-To enable pyxis support, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562).
+### Enable Pyxis support for a new index
+To enable pyxis support for a specific index, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562). And update index number in the description.
 
 ### Set maximum `oc` version available
 Edit `oc_version_max` in playbook defaults only if `4.x` is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
@@ -91,6 +90,12 @@ You may need to edit also kind_version and the following [file](https://github.c
 If there is a breaking API in a new index, please edit [`bundle_validation_filter`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml) role defaults.
 
 ### Release process
+
+Firstly, the index must be defined in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) file. There are old entries like `v4.10-db` where `-db` means index is in SQLlite format. It is just for the information, not important here. A new entry can be one of the following:
+- `v4.13-maintenance` - release the specific index will not be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
+- `v4.13-rc` - release the specific index will be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
+- `v4.13` - full production setup, needs all tests green before merge action
+
 Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.
 
 The very first step is to have the entry in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) like in the example: `- v4.12-maintenance`. This is a label for the target index in case of a new index release.
@@ -110,12 +115,16 @@ Then you need to fix operators by running [`Operator release manual`](https://gi
 
 ![PR](../images/manual_replease_after_index_upgrade.png)
 
-The example `Manual release` pipeline is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606){:target="_blank"}. ...[here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153){:target="_blank"}
+The example `Manual release` pipeline schema is located [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606){:target="_blank"} and the example output with steps [here](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153)](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153){:target="_blank"}.
 
-### Release from scratch
+### How to rebuild an existing index from scratch
 
 There can be cases when differences between an actual and a new index are huge. In this case, it makes sense to fill the new index from scratch. You need only [`Operator release manual`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml). Be ready for a day or more and multiple manual triggers of the same workflow type with a different set of operators.
 
-This time, a `List of operators...` is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. Best practise is to use 1/5th of the full operator list divided by a space. 
+This time, a `List of operators...` is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. The best practice is to use 1/5th of the full operator list divided by a space. 
+
+A release process in this case is long this way so use it as a last resort. It can be partially optimized by running over operators sorted by the number of versions inside a package. It helps the parallel process to finish smaller operators sooner.
 
 !!! warning "Do not enable `Push final index to production` until all operators are processed. Or you can always leave the value `0` and the next automatic merge will push also your changes to production."
+
+!!! info "Release process is expected to fail at the end due to the fact, that index is not fully synchronized until all operators are processed. It is OK."
