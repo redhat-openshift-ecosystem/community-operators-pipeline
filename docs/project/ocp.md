@@ -58,6 +58,7 @@ When an edit is needed, go to [templates](https://github.com/redhat-openshift-ec
 
 ## Release brand new index for OCP
 
+Let's assume we are going to release the index for `OCP v{{ ocp_version_example }}`.
 ### Prerequisities
 
 Before running an automatic GH action that creates indexes itself, there are some prerequisites administrator should prepare in a specific order:
@@ -67,42 +68,44 @@ Before running an automatic GH action that creates indexes itself, there are som
 1. Set maximum `oc` version available
 1. OCP and K8S alignment
 1. Enable breaking API testing if supported by `operator-sdk`
+1. When all done, bump [`ocp_version_example`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/documentation-admin/mkdocs.yml#L19) variable so next time examples are up to date :)
 
 ### Add new index mapping
-Always check and add the current index version to
+Always check and add the current index (e.g. `v{{ ocp_version_example }}`) version to
+
 - `operator_info` role [defaults](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/operator_info/defaults/main.yml#L25) and to [k8s2ocp](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L16) and [ocp2k8s](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L31) converting tables in `bundle_validation_filter`
 - [`OCP2K8S`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy-core.sh#L27) and [`KIND_SUPPORT_TABLE`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) variable in ci/dev and ci/latest consequently
 
 ### Enable Pyxis support for a new index
-To enable pyxis support for a specific index, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562). And update index number in the description.
+To enable pyxis support for a specific index, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562). And update index number (e.g. `v{{ ocp_version_example }}`) in the description.
 
 ### Set maximum `oc` version available
-Edit `oc_version_max` in playbook defaults only if `4.x` is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
-Also consider changing `current_openshift_run` when deleting a prow job.
+Edit `oc_version_max` in playbook defaults only if `4.x` (e.g. `v{{ ocp_version_example }}`) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz 
+
+(e.g. https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-{{ ocp_version_example }}/openshift-client-linux.tar.gz)
 
 ### OCP and K8S alignment
-Despite this documentation being focused on OCP, alignment with k8s is needed.
+Despite this documentation being focused on OCP, alignment with k8s is needed on [community-operators **k8s-operatorhub**](https://github.com/k8s-operatorhub/community-operators) repository.
 
-Edit **k8s-operatorhub** ci/config latest ocp as `kind_kube_version` and upgrade by action.
-You may need to edit also kind_version and the following [file](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) according to https://github.com/kubernetes-sigs/kind/releases 
+Firstly, set [`kind_version`](https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml#L63) to the latest `kind` according to https://github.com/kubernetes-sigs/kind/releases (e.g. v0.17.0). Also the same [page](https://github.com/kubernetes-sigs/kind/releases) contains semver version of a specific k8s image. So for `1.25` we are reading `v1.25.3`. Set the value as [`kind_kube_version`](https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml#L65).
 
 #### Enable breaking API testing if supported by `operator-sdk`
-If there is a breaking API in a new index, please edit [`bundle_validation_filter`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml) role defaults.
+If there is some breaking API in a new index (e.g. `v{{ ocp_version_example }}`), please edit [`bundle_validation_filter`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml) role defaults to enable testing if API is broken in a specific operator.
 
 ### Release process
 
 Firstly, the index must be defined in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) file. There are old entries like `v4.10-db` where `-db` means index is in SQLlite format. It is just for the information, not important here. A new entry can be one of the following:
-- `v4.13-maintenance` - release the specific index will not be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
-- `v4.13-rc` - release the specific index will be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
-- `v4.13` - full production setup, needs all tests green before merge action
+- `v{{ ocp_version_example }}-maintenance` - release the specific index will not be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
+- `v{{ ocp_version_example }}-rc` - release the specific index will be executed, `kiwi lemon orange` tests are always green, failed Prow is not blocking merge action
+- `v{{ ocp_version_example }}` - full production setup, needs all tests green before merge action
 
 Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.
 
-The very first step is to have the entry in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) like in the example: `- v4.12-maintenance`. This is a label for the target index in case of a new index release.
+The very first step is to have the entry in [`pipeline-config-ocp.yaml`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml) like in the example: `- v{{ ocp_version_example }}-maintenance`. This is a label for the target index in case of a new index release.
 
 ### Release from a previous index
 
-This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called [`CI Upgrade`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml). Fill fields as shown below. The most important field is `From index`. There should be a path directly to a previous `_tmp` image. Use path like `quay.io/openshift-community-operators/catalog_tmp:v4.11` if you would like to release `v4.12`.
+This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called [`CI Upgrade`](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml). Fill fields as shown below. The most important field is `From index`. There should be a path directly to a previous `_tmp` image. Use path like `quay.io/openshift-community-operators/catalog_tmp:v{{ ocp_previous_version_example }}` if you would like to release `v{{ ocp_version_example }}`.
 
 When the workflow is finished, see the list of operators to fix in the new index. The list is located on the GH workflow output page as `Upgrade summary`.
 
