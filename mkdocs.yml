@@ -16,6 +16,8 @@ nav:
 
 extra:
   version: 0.1
+  ocp_version_example: 4.13
+  ocp_previous_version_example: 4.12
 
 theme:
   name: material
