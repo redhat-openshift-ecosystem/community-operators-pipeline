@@ -230,16 +230,21 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#todo">
-    TODO
+<a class="md-nav__link" href="#how-ocp-installation-is-tested">
+    How OCP installation is tested
+  </a>
+<nav aria-label="How OCP installation is tested" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-to-edit-prow-building-block-configuration">
+    How to edit prow building block configuration
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#prow">
-    Prow
+<a class="md-nav__link" href="#overview">
+    Overview
   </a>
-<nav aria-label="Prow" class="md-nav">
-<ul class="md-nav__list">
+</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#where-to-edit-the-main-openshift-script">
     Where to edit the main openshift script
@@ -255,19 +260,14 @@
     Where to edit or restart prepare_test_index action
   </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#how-to-edit-prow-building-block-configuration">
-    How to edit prow building block configuration
-  </a>
-</li>
 </ul>
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#new-openshift-index-release">
-    New Openshift index release
+<a class="md-nav__link" href="#release-brand-new-index-for-ocp">
+    Release brand new index for OCP
   </a>
-<nav aria-label="New Openshift index release" class="md-nav">
+<nav aria-label="Release brand new index for OCP" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#prerequisities">
@@ -275,23 +275,23 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#add-new-index-support">
-    Add new index support
+<a class="md-nav__link" href="#add-new-index-mapping">
+    Add new index mapping
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#enable-pyxis-support">
-    Enable pyxis support
+<a class="md-nav__link" href="#enable-pyxis-support-for-a-new-index">
+    Enable Pyxis support for a new index
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#maximum">
-    Maximum
+<a class="md-nav__link" href="#set-maximum-oc-version-available">
+    Set maximum oc version available
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#k8s-alignment">
-    K8S alignment
+<a class="md-nav__link" href="#ocp-and-k8s-alignment">
+    OCP and K8S alignment
   </a>
 </li>
 <li class="md-nav__item">
@@ -305,8 +305,8 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#release-from-scratch">
-    Release from scratch
+<a class="md-nav__link" href="#how-to-rebuild-an-existing-index-from-scratch">
+    How to rebuild an existing index from scratch
   </a>
 </li>
 </ul>
@@ -333,38 +333,30 @@
 </a>
 <h1 id="ocp">OCP</h1>
 <p>The following part is related to Openshift only.</p>
-<h2 id="todo">TODO</h2>
-<ul>
-<li>prow setup</li>
-<li>Init prow<ul>
-<li>add robot to repo</li>
-</ul>
-</li>
-<li>PR to openshift repository</li>
-<li>script and script dev</li>
-<li>playbook</li>
-<li>playbook dev and dev image</li>
-<li>Temporary index action to check</li>
-</ul>
-<h2 id="prow">Prow</h2>
+<h2 id="how-ocp-installation-is-tested">How OCP installation is tested</h2>
+<p>Prow is an external OpenShift release tooling framework that is used as an installation test in the community pipeline.</p>
+<h3 id="how-to-edit-prow-building-block-configuration">How to edit prow building block configuration</h3>
+<p>Prow is configured at <a href="https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod">openshift repository</a>. Open a PR and get <code>LGTM</code> approval from your colleague to get an automatic merge.</p>
+<p>In case you are creating a new project, make sure <code>openshift-ci-robot</code> is added as a collaborator to the project with <code>Admin</code> rights.</p>
+<h3 id="overview">Overview</h3>
 <p>The prow job is automatically triggered for every OCP PR if GH Action did not fail at the beginning. See the structure below.</p>
 <pre class="mermaid"><code>graph TD
-openshift-deploy.sh --&gt; openshift-deploy-core.sh --&gt; deploy_olm_operator_openshift_upstream
+openshift-deploy.sh --&gt; openshift-deploy-core.sh --&gt; waiting("wait for hash label on Quay") --&gt; deploy_olm_operator_openshift_upstream
 openshift-deploy-core.sh --&gt; prepare_test_index
-prepare_test_index -.-&gt; quay
-quay -.-&gt; deploy_olm_operator_openshift_upstream
+prepare_test_index -.-&gt; Quay
+Quay -.-&gt; deploy_olm_operator_openshift_upstream
 
-style quay stroke-dasharray: 5 5
+style Quay stroke-dasharray: 5 5
 
 subgraph prow
-openshift-deploy.sh &amp; openshift-deploy-core.sh
-subgraph Ansible
+openshift-deploy.sh &amp; openshift-deploy-core.sh &amp; waiting
+subgraph Ansible role
 deploy_olm_operator_openshift_upstream
 end
 end
 
-subgraph GH Action
-prepare_test_index &amp; quay
+subgraph GH Action job
+prepare_test_index &amp; Quay
 end
 </code></pre>
 <p>Openshift robot triggers cluster setup for every supported OCP version. When the cluster is ready, <code>openshift-deploy.sh</code> is executed. The script calls another script <code>openshift-deploy-core.sh</code> which triggers GH Action <code>prepare_test_index</code>. During the action run, it pushes the index and a bundle to Quay tagged by a commit hash. Once images are pushed, the playbook role <code>deploy_olm_operator_openshift_upstream</code> is triggered which pulls the images and installs the operator. </p>
@@ -384,43 +376,58 @@ end
 <div class="admonition info">
 <p class="admonition-title">Consider using <code>ci/dev</code> instead of <code>ci/latest</code> during development as described <a href="../../framework/development/#cidev-vs-cilatest">here</a>.</p>
 </div>
-<h3 id="how-to-edit-prow-building-block-configuration">How to edit prow building block configuration</h3>
-<p>Prow is configured at <a href="https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod">openshift repository</a>. Open a PR and get <code>LGTM</code> approval from your colleague to get an automatic merge.</p>
-<p>In case you are creating a new project, make sure <code>openshift-ci-robot</code> is added as a collaborator to the project with <code>Admin</code> rights.</p>
-<h2 id="new-openshift-index-release">New Openshift index release</h2>
+<h2 id="release-brand-new-index-for-ocp">Release brand new index for OCP</h2>
+<p>Let's assume we are going to release the index for <code>OCP v4.13</code>.</p>
 <h3 id="prerequisities">Prerequisities</h3>
-<p>https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml</p>
-<h4 id="testing-breaking-apis">Testing breaking APIs</h4>
-<p>If there is a breaking API in a new index, please edit <code>bundle_validation_filter</code> role details.</p>
-<h3 id="add-new-index-support">Add new index support</h3>
-<p>Always check and add the current index version to
-- <code>operator_info</code> role defaults
-- <code>OCP2K8S</code> and <code>KIND_SUPPORT_TABLE</code> variable in ci/dev and ci/latest consequently</p>
-<h3 id="enable-pyxis-support">Enable pyxis support</h3>
-<p>To enable pyxis support, clone the <a href="https://issues.redhat.com/browse/CWFHEALTH-1562">issue</a>.</p>
-<h3 id="maximum">Maximum</h3>
-<p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz
-Also consider changing <code>current_openshift_run</code> when deleting a prow job.</p>
-<h3 id="k8s-alignment">K8S alignment</h3>
-<p>Despite this documentation being focused on OCP, alignment with k8s is needed.</p>
-<p>Edit <strong>k8s-operatorhub</strong> ci/config latest ocp as <code>kind_kube_version</code> and upgrade by action.
-You may need to edit also kind_version and the following <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5">file</a> according to https://github.com/kubernetes-sigs/kind/releases </p>
+<p>Before running an automatic GH action that creates indexes itself, there are some prerequisites administrator should prepare in a specific order:</p>
+<ol>
+<li>Add new index mapping</li>
+<li>Enable Pyxis support  for a specific index</li>
+<li>Set maximum <code>oc</code> version available</li>
+<li>OCP and K8S alignment</li>
+<li>Enable breaking API testing if supported by <code>operator-sdk</code></li>
+<li>When all done, bump <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/documentation-admin/mkdocs.yml#L19"><code>ocp_version_example</code></a> variable so next time examples are up to date :)</li>
+</ol>
+<h3 id="add-new-index-mapping">Add new index mapping</h3>
+<p>Always check and add the current index (e.g. <code>v4.13</code>) version to</p>
+<ul>
+<li><code>operator_info</code> role <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/operator_info/defaults/main.yml#L25">defaults</a> and to <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L16">k8s2ocp</a> and <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L31">ocp2k8s</a> converting tables in <code>bundle_validation_filter</code></li>
+<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy-core.sh#L27"><code>OCP2K8S</code></a> and <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5"><code>KIND_SUPPORT_TABLE</code></a> variable in ci/dev and ci/latest consequently</li>
+</ul>
+<h3 id="enable-pyxis-support-for-a-new-index">Enable Pyxis support for a new index</h3>
+<p>To enable pyxis support for a specific index, clone the <a href="https://issues.redhat.com/browse/CWFHEALTH-1562">issue</a>. And update index number (e.g. <code>v4.13</code>) in the description.</p>
+<h3 id="set-maximum-oc-version-available">Set maximum <code>oc</code> version available</h3>
+<p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> (e.g. <code>v4.13</code>) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz </p>
+<p>(e.g. https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.13/openshift-client-linux.tar.gz)</p>
+<h3 id="ocp-and-k8s-alignment">OCP and K8S alignment</h3>
+<p>Despite this documentation being focused on OCP, alignment with k8s is needed on <a href="https://github.com/k8s-operatorhub/community-operators">community-operators <strong>k8s-operatorhub</strong></a> repository.</p>
+<p>Firstly, set <a href="https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml#L63"><code>kind_version</code></a> to the latest <code>kind</code> according to https://github.com/kubernetes-sigs/kind/releases (e.g. v0.17.0). Also the same <a href="https://github.com/kubernetes-sigs/kind/releases">page</a> contains semver version of a specific k8s image. So for <code>1.25</code> we are reading <code>v1.25.3</code>. Set the value as <a href="https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml#L65"><code>kind_kube_version</code></a>.</p>
+<h4 id="enable-breaking-api-testing-if-supported-by-operator-sdk">Enable breaking API testing if supported by <code>operator-sdk</code></h4>
+<p>If there is some breaking API in a new index (e.g. <code>v4.13</code>), please edit <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml"><code>bundle_validation_filter</code></a> role defaults to enable testing if API is broken in a specific operator.</p>
 <h3 id="release-process">Release process</h3>
+<p>Firstly, the index must be defined in <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml"><code>pipeline-config-ocp.yaml</code></a> file. There are old entries like <code>v4.10-db</code> where <code>-db</code> means index is in SQLlite format. It is just for the information, not important here. A new entry can be one of the following:
+- <code>v4.13-maintenance</code> - release the specific index will not be executed, <code>kiwi lemon orange</code> tests are always green, failed Prow is not blocking merge action
+- <code>v4.13-rc</code> - release the specific index will be executed, <code>kiwi lemon orange</code> tests are always green, failed Prow is not blocking merge action
+- <code>v4.13</code> - full production setup, needs all tests green before merge action</p>
 <p>Admins are asked to provide a new Openshift index a couple of months before a new Openshift version is GA. There are 2 ways of releasing a new index.</p>
-<p>The very first step is to have the entry in <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml"><code>pipeline-config-ocp.yaml</code></a> like in the example: <code>- v4.12-maintenance</code>. This is a label for the target index in case of a new index release.</p>
+<p>The very first step is to have the entry in <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml"><code>pipeline-config-ocp.yaml</code></a> like in the example: <code>- v4.13-maintenance</code>. This is a label for the target index in case of a new index release.</p>
 <h3 id="release-from-a-previous-index">Release from a previous index</h3>
-<p>This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml"><code>CI Upgrade</code></a>. Fill fields as shown below. The most important field is <code>From index</code>. There should be a path directly to a previous <code>_tmp</code> image. Use path like <code>quay.io/openshift-community-operators/catalog_tmp:v4.11</code> if you would like to release <code>v4.12</code>.</p>
+<p>This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml"><code>CI Upgrade</code></a>. Fill fields as shown below. The most important field is <code>From index</code>. There should be a path directly to a previous <code>_tmp</code> image. Use path like <code>quay.io/openshift-community-operators/catalog_tmp:v4.12</code> if you would like to release <code>v4.13</code>.</p>
 <p>When the workflow is finished, see the list of operators to fix in the new index. The list is located on the GH workflow output page as <code>Upgrade summary</code>.</p>
 <p><img alt="PR" src="../../images/upgrade_with_index_upgrade.png"/></p>
 <p>The example <code>Upgrade</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547" target="_blank">here</a>. <code>Create local changes</code> step in <code>upgrade</code> job does the whole process. The log is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232">here</a> </p>
 <p>Then you need to fix operators by running <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Set values as in the example below. The most important field is the <code>List of operators ...</code> - it is a place to put the output from the previous workflow under the <code>Upgrade summary</code>. The list is already space delimited.</p>
 <p><img alt="PR" src="../../images/manual_replease_after_index_upgrade.png"/></p>
-<p>The example <code>Manual release</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606" target="_blank">here</a>. ...<a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153" target="_blank">here</a></p>
-<h3 id="release-from-scratch">Release from scratch</h3>
+<p>The example <code>Manual release</code> pipeline schema is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606" target="_blank">here</a> and the example output with steps <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153">here</a>](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153){:target="_blank"}.</p>
+<h3 id="how-to-rebuild-an-existing-index-from-scratch">How to rebuild an existing index from scratch</h3>
 <p>There can be cases when differences between an actual and a new index are huge. In this case, it makes sense to fill the new index from scratch. You need only <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Be ready for a day or more and multiple manual triggers of the same workflow type with a different set of operators.</p>
-<p>This time, a <code>List of operators...</code> is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. Best practise is to use 1/5th of the full operator list divided by a space. </p>
+<p>This time, a <code>List of operators...</code> is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. The best practice is to use 1/5th of the full operator list divided by a space. </p>
+<p>A release process in this case is long this way so use it as a last resort. It can be partially optimized by running over operators sorted by the number of versions inside a package. It helps the parallel process to finish smaller operators sooner.</p>
 <div class="admonition warning">
 <p class="admonition-title">Do not enable <code>Push final index to production</code> until all operators are processed. Or you can always leave the value <code>0</code> and the next automatic merge will push also your changes to production.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Release process is expected to fail at the end due to the fact, that index is not fully synchronized until all operators are processed. It is OK.</p>
 </div>
 </article>
 </div>
