@@ -62,7 +62,7 @@ The following table is describing each file or directory
 ## Generate Github Action workflows
 
 !!! note
-    On newly created projects one should copy the file ([upgrade](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml).yaml](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml)) to `.github/workflows/upgrade.yaml` and push it in to `main` branch so `CI Upgrade` workflow is enabled in `Actions` tab in GitHub project.
+    On newly created projects one should copy the file ([upgrade.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml)) to `.github/workflows/upgrade.yaml` and push it in to `main` branch so `CI Upgrade` workflow is enabled in `Actions` tab in GitHub project.
 
 After the directory and configurations are in place one can generate all workflows by running [Upgrade Action](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml) from the configured project.
 
