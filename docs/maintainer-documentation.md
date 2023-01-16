@@ -169,6 +169,12 @@ The pipeline is checking if every commit is signed. This is an easy fix, just fo
 ### **Everything is green but not merged**
 There can be a case when `do-not-merge/hold` label is present. If the `openshift-robot` has added it, please remove it. If a contributor has added it, ask for removal. 
 
+### The traffic light failed due to `error interpreting channels, please manually input channels instead`
+This is a misleading error in most cases. `OPM` tool is unable to find a channel name. When creating bundles from a package manifest, it is failing on the first one despite the fact, that the first bundle was correct in the past. The reason behind this is that during the first bundle conversion, it is checking the whole update graph for the package. So the issue is anywhere on the "update graph", especially on newly changed files.
+
+Please check if a bundle is in a channel. For packagemanifest format check `package` file.
+Check every operator name versus `replaces` value from a higher operator version against typos. During the check, start with a channel head, eg. the latest operator version.
+
 ## Release pipeline maintainer documentation
 
 When all conditions are met, the operator has merged automatically and a release pipeline is triggered at {% if cluster_type == 'k8s' %} [https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml](https://github.com/k8s-operatorhub/community-operators/actions/workflows/operator_release.yaml). {% else %} [https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release.yaml). {% endif %}  
