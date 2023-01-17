@@ -369,6 +369,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create-empty-project" class="md-nav__link">
+    Create empty project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-github-action-workflows" class="md-nav__link">
+    Generate Github Action workflows
+  </a>
+  
+    <nav class="md-nav" aria-label="Generate Github Action workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-action-ci-upgrade" class="md-nav__link">
+    GitHub Action - CI Upgrade
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -545,6 +572,56 @@
 
 <h1 id="project-development-structure">Project development structure</h1>
 <h2 id="todo">TODO</h2>
+<h2 id="create-empty-project">Create empty project</h2>
+<p>The project administrator has to</p>
+<ul>
+<li>create an empty GitHub project</li>
+<li>configure one configuration file</li>
+<li>set up various secrets</li>
+<li>create the directory structure shown bellow</li>
+</ul>
+<h2 id="generate-github-action-workflows">Generate Github Action workflows</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On newly created projects one should copy the file (<a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml">upgrade.yaml</a>) to <code>.github/workflows/upgrade.yaml</code> and push it in to <code>main</code> branch so <code>CI Upgrade</code> workflow is enabled in <code>Actions</code> tab in GitHub project.</p>
+</div>
+<p>After the directory and configurations are in place one can generate all workflows by running <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml">Upgrade Action</a> from the configured project.</p>
+<h3 id="github-action-ci-upgrade">GitHub Action - CI Upgrade</h3>
+<p><img alt="PR" src="../../images/ci_upgrade_wk.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Commit message prefix</code></td>
+<td>Prefix added to commit message after upgrade</td>
+</tr>
+<tr>
+<td><code>Source repository</code></td>
+<td>Framework project (<a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a>)</td>
+</tr>
+<tr>
+<td><code>Source branch</code></td>
+<td>Framework branch (<code>upstream-community</code>)</td>
+</tr>
+<tr>
+<td><code>Playbook branch</code></td>
+<td>Branch (<code>upstream-community</code>) in <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks">ansible playbooks</a> are taken to upgrade</td>
+</tr>
+<tr>
+<td><code>Cluster type (k8s or ocp)</code></td>
+<td>Cluster type for repo. Possible options <code>k8s</code> or <code>ocp</code></td>
+</tr>
+<tr>
+<td><code>From index (quay.io/operator_testing/index_empty:latest)</code></td>
+<td>Optional parameter to initialize or copy index image to nonexisten images</td>
+</tr>
+</tbody>
+</table>
 <h1 id="branches">Branches</h1>
 <h2 id="cidev-vs-ci-latest"><code>ci/dev</code> vs <code>ci-latest</code></h2>
 <h2 id="upstream-community-dev-vs-upstream-community"><code>upstream-community-dev</code> vs <code>upstream-community</code></h2>
