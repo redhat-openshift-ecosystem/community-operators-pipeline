@@ -220,6 +220,14 @@ spec:
     ## About this Operator
     This Operator is based on a Helm chart for CockroachDB. It supports reconfiguration for some parameters, but notably does not handle scale down of the replica count in a seamless manner. Scale up works great.
 
+
+
+
+
+
+
+
+
     ## Core capabilities
     * **StatefulSet** - Sets up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet
     * **Expand Replicas** - Supports expanding the set of replicas by simply editing your object
