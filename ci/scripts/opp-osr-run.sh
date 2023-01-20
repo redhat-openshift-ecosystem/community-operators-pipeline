@@ -75,6 +75,6 @@ $CONTAINER_TOOL exec -t \
 -e OP_OSR_HASH="quay.io/operator_testing|$OP_TOKEN|$COMMIT" \
 -e OP_DEBUG=$OP_DEBUG \
 -e ANSIBLE_CONFIG="/playbooks/upstream/ansible.cfg" \
-$OPP_EXEC_USER /
-$OPP_EXEC_USER_SECRETS /
+$OPP_EXEC_USER \
+$OPP_EXEC_USER_SECRETS \
 test /playbooks/upstream/test/osr_test.sh
