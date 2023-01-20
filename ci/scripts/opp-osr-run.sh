@@ -63,6 +63,8 @@ $CONTAINER_TOOL run -d --net=host --privileged -e STORAGE_DRIVER=vfs --rm -t --n
 [ -z "$COMMIT" ] && { echo "Error: Missing '\$COMMIT'"; exit 1; }
 [ -z "$OP_TOKEN" ] && { echo "Error: Missing '\$OP_TOKEN'"; exit 1; }
 
+echo "Exec user is $OPP_EXEC_USER"
+
 $CONTAINER_TOOL exec -t \
 -e automatic_cluster_version_label=true \
 -e bundle_force_rebuild=true \
