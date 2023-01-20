@@ -61,6 +61,7 @@ echo "git pull --rebase upstream $OPP_OPRT_SRC_BRANCH"
 git pull --rebase upstream $OPP_OPRT_SRC_BRANCH || handleError
 echo "Repo rebased over branch OPP_OPRT_SRC_BRANCH - $OPP_OPRT_SRC_BRANCH"
 
+[[ $OPP_MIRROR_INDEX_MULTIARCH_IMAGE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_IMAGE"
 [ -n "$IIB_INPUT_REGISTRY_USER" ] && export OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=$IIB_INPUT_REGISTRY_USER"
 [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && export OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
 export OPP_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
