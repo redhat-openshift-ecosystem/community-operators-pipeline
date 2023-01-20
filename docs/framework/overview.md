@@ -77,22 +77,22 @@ flowchart TD
     B10 --> B2(Operator Workflow Complete)
     B11 --> B2
     B12 --> B2
-    B2 --> |handle label|B3{{package-validated}}
-    B3 --> |handle label|B4{{installation-validated}}
-    B4 --> |make comment|B5[&#47merge possible]
+    B2 --> |handle label| B3[package-validated]
+    B3 --> |handle label| B4[installation-validated]
+    B4 --> |make comment| B5[&#47merge possible]
     C0 --> |job|C1[operator-automerge-enabled]
-    C1 --> |handled label|C2{{automerge-disabled}}
+    C1 --> |handled label|C2[automerge-disabled]
     C2 --> |job|C20[operator-ci]
-    C20 --> |handle label|C21{{new-operator}}
-    C20 --> |handle label|C22{{allow/operator-version-overwrite}}
-    C20 --> |handle label|C23{{allow/operator-recreate}}
+    C20 --> |handle label|C21[new-operator]
+    C20 --> |handle label|C22[allow/operator-version-overwrite]
+    C20 --> |handle label|C23[allow/operator-recreate]
     C20 --> |on error|C24[Fail + PR comment]
-    D0 --> |handle label|D1{{authorized-changes}}
+    D0 --> |handle label|D1[authorized-changes]
     D1 --> |make comment|G0
     G1 --> G2[automerge]
     F1 --> |make comment|F20[&#47hold]
     F1 --> |make comment|F21[&#47hold cancel]
-    E1 --> |handle label|E2{{dco-failed}}
+    E1 --> |handle label|E2[dco-failed]
 ```
  [Download or edit](https://mermaid.live/edit#pako:eNqFlGFvmzAQhv-KxaQp04oGNNOkfJg0IESVJrXqJk0a6QcHX4IXYyPbNNog_30GTJJuzsYnm3te3713mNYrBAFv4W2ZOBQllhp9TdccmedTkD88Pk1r5PsfUVc3quxQHMzua5BYC4k0KP3GBSUXUHL3B8LwBhiQDqUvKPS5f6-c5y2DWZrcu_IVoqqA6w5lQf761fyDhB56ugKtRqgCuQNUC6XohoGFYwv_EJsuDoOcQSW4MxbmQmK-cwujfE8P1IaWY2gZDuV_E3LftxoloqqZKdR6yUYqC2d3SjXQh_tyFfLRaMdyq5FbObjBkcVM8QMXR-f2XkttzFh22kcv9-O2KzEnDNAwui6-bdsaF3u8A_8ZM0qwBnI8WsWtSzFvW8qVxoxhTQV3yOajrMJ7QNO84vfXx5VcdD0xE7FOfdxoMQh84NjgZOLDy7qILSyJ2vasIFQNkqmoJLrIEQXnJMU0YPPWYTeJwrblcPAnwflAN95Xwcx43p0yPINUfaOEWRwk1fC_I27_OkJCIQE7lIIjkFJIo5rnGaYMvUUPj1PXrbPUlSYNh3aVQtJfQHzzzzDXQE0J0tAxw1VgP94xuIryU79tpswly6LxqpaCkX9z4YlDBeYFsOnuhQ4DS9NpUgh_a1z3c_ZuPFNKhSkxv8G2F649XUIFa29hlgS2uGF67a15jzZ1_80uCTXt9RZbzBTceL2dLz954S20bGCCUop3Elcnqsb8uxDT_vgb-wq9ow){:target="_blank"}
 
@@ -126,6 +126,7 @@ flowchart LR
     A6 --> A7(Slack notification)
     A51 --> A7
 ```
+
  [Download or edit](https://mermaid.live/edit#pako:eNpdkM1qwzAQhF9F6KRC3Mb5BR8KKS00UHBxbsWXrbSyRWTJyFLaEPLuVbGVQ3RazTfandWFciuQFlRq-8NbcJ58VLUh8ezm7LPKvAMpFc-0alr_kAjJsmeyy1mFnT0hKXt04K1LPB_5gu2NwF_CW-THxBYjW7KXYITGIenLUV-Nb5K6GtX1nJXv-5KoDhq8Z_k05oROyXOi6ynkJobUCAOSJ2KnnG34flQ2OTejccsOGviRGOtV3Bi8subWbNpoS2e0Q9eBEvHPLv-0pr7FDmtaxFKghKB9TWtzjdbQC_D4JlScSQsJesAZheDt4Ww4LbwLmEyvChoH3c3Vg_myNt2vfzEqfgM){:target="_blank"}
 
 
