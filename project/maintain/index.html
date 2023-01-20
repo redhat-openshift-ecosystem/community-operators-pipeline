@@ -476,16 +476,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#project-upgrade" class="md-nav__link">
+    Project upgrade
+  </a>
+  
+    <nav class="md-nav" aria-label="Project upgrade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-action-ci-upgrade" class="md-nav__link">
+    GitHub Action - CI Upgrade
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#standard-project-upgrade" class="md-nav__link">
-    Standard project upgrade
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -564,11 +570,45 @@
 <ul>
 <li>How to upgrade</li>
 </ul>
-<h2 id="overview">Overview</h2>
+<h2 id="project-upgrade">Project upgrade</h2>
 <p><img alt="PR" src="../../images/project-upgrade-action.png" /></p>
-<h2 id="standard-project-upgrade">Standard project upgrade</h2>
-<p>Every time the config is changed one has to run an upgrade to apply changes.</p>
+<h3 id="github-action-ci-upgrade">GitHub Action - CI Upgrade</h3>
+<p>On every workflow template and config change, one has to run an upgrade to apply changes for each project.</p>
 <p><img alt="PR" src="../../images/project-upgrade-std.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Commit message prefix</code></td>
+<td>Prefix added to commit message after upgrade</td>
+</tr>
+<tr>
+<td><code>Source repository</code></td>
+<td>Framework project (<a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a>)</td>
+</tr>
+<tr>
+<td><code>Source branch</code></td>
+<td>Framework branch (<code>upstream-community</code>)</td>
+</tr>
+<tr>
+<td><code>Playbook branch</code></td>
+<td>Branch (<code>upstream-community</code>) in <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks">ansible playbooks</a> are taken to upgrade</td>
+</tr>
+<tr>
+<td><code>Cluster type (k8s or ocp)</code></td>
+<td>Cluster type for repo. Possible options <code>k8s</code> or <code>ocp</code></td>
+</tr>
+<tr>
+<td><code>From index (quay.io/operator_testing/index_empty:latest)</code></td>
+<td>Optional parameter to initialize or copy index image to nonexisten images</td>
+</tr>
+</tbody>
+</table>
 
 
 

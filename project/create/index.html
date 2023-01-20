@@ -431,6 +431,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create-empty-project" class="md-nav__link">
+    Create empty project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#production" class="md-nav__link">
+    Production
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline" class="md-nav__link">
+    Pipeline
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operatorhubio" class="md-nav__link">
+    Operatorhubio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secrets" class="md-nav__link">
+    Secrets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-github-action-workflows" class="md-nav__link">
+    Generate Github Action workflows
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -551,6 +606,304 @@
 <li>How to do first upgrade</li>
 <li>Test first operator</li>
 </ul>
+<h2 id="create-empty-project">Create empty project</h2>
+<p>The project administrator has to</p>
+<ul>
+<li>create an empty GitHub project</li>
+<li>configure one configuration file</li>
+<li>set up various secrets</li>
+<li>create the directory structure shown <a href="/framework/overview/#project-structure">here</a></li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<p>The configuration file has to be stored in <code>$PROJECT_DIR/ci/pipeline-config.yaml</code>. There are three main sections</p>
+<ul>
+<li>production</li>
+<li>pipeline</li>
+<li>operatorhubio (for <code>k8s</code>)</li>
+</ul>
+<p>Supported config options are explained for all sections below</p>
+<h3 id="production">Production</h3>
+<div class="highlight"><pre><span></span><code>production:
+  type: ocp
+  bundle:
+    registry: quay.io
+    organization: openshift-community-operators
+  index:
+    registry: quay.io
+    organization: openshift-community-operators
+    name: catalog_tmp
+    tags:
+      - v4.8-db
+      - v4.9-db
+      - v4.10-db
+      - v4.11
+      - v4.12
+    signature:
+      enabled: 1
+      alias: registry.redhat.io/redhat/community-operator-index
+      endpoint: https://community-signing-pipeline-prod.apps.pipelines-prod.ijdb.p1.openshiftapps.com
+  mirror:
+    enabled: 1
+    multiarch:
+      base: registry.redhat.io/openshift4/ose-operator-registry
+      base_tags:
+        - v4.5
+        - v4.6
+        - v4.7
+        - v4.8
+        - v4.9
+        - v4.10
+        - v4.11
+      postfix: s
+    registry: quay.io
+    organization: redhat
+    name: redhat----community-operator-index
+    username:
+      in: mavala
+      out: redhat+iib_community
+  test:
+    installation_skip:
+      - ack-
+      - community-windows-machine-config-operator
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Possible options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>production.type</code></td>
+<td>Cluster type</td>
+<td><code>k8s</code> or <code>ocp</code></td>
+</tr>
+<tr>
+<td><code>production.bundle</code></td>
+<td>Registry and organization for bundles</td>
+<td><code>registry</code> and <code>organization</code></td>
+</tr>
+<tr>
+<td><code>production.index</code></td>
+<td>Registry, organization and for temporary index</td>
+<td><code>registry</code>, <code>organization</code> and <code>name</code></td>
+</tr>
+<tr>
+<td><code>production.index.tags</code></td>
+<td>List of index tags</td>
+<td><code>latest</code> for <code>k8s</code> and <code>v4.8-db, v4.9-db, v4.10-db, v4.11, v4.12</code> for <code>ocp</code></td>
+</tr>
+<tr>
+<td><code>production.index.signature</code></td>
+<td>Alias and endpoint to sign index image</td>
+<td><code>enabled</code>, <code>alias</code> and <code>endpoint</code></td>
+</tr>
+<tr>
+<td><code>production.mirror</code></td>
+<td>Production index setup</td>
+<td><code>enabled</code>, <code>registry</code>, <code>organization</code> and <code>name</code></td>
+</tr>
+<tr>
+<td><code>production.mirror.base</code></td>
+<td>From image used for index</td>
+<td><code>enabled</code>, <code>registry</code>, <code>organization</code> and <code>name</code></td>
+</tr>
+<tr>
+<td><code>production.mirror.base_tags</code></td>
+<td>List of tags used for from index. (When not exist most recent used)</td>
+<td><code>v4.5 ... v4.11</code></td>
+</tr>
+<tr>
+<td><code>production.mirror.postfix</code></td>
+<td>Type of index used for production</td>
+<td>tag index: <code>&lt;empty&gt;</code> or sha index:<code>s</code></td>
+</tr>
+<tr>
+<td><code>production.mirror.username.in</code></td>
+<td>Credential username used for accessing <code>registry.redhat.io</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>production.mirror.username.out</code></td>
+<td>Credential username used for pushing to production registry</td>
+<td></td>
+</tr>
+<tr>
+<td><code>production.test.installation_skip</code></td>
+<td>List of projects that installation test will be skipped</td>
+<td>multiple operator names (eg. <code>ack-</code> is for operators starting with <code>ack-</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pipeline">Pipeline</h3>
+<div class="highlight"><pre><span></span><code>pipeline:
+  base: https://github.com
+  repo: k8s-operatorhub/community-operators
+  branch: main
+  ci_scripts_dir: https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts
+  image: quay.io/operator_testing/operator-test-playbooks:latest
+  playbooks:
+    repo: https://github.com/redhat-openshift-ecosystem/operator-test-playbooks
+    branch: &quot;upstream-community&quot;
+  automerge:
+    enabled: 1
+  reviewers:
+    enabled: 1
+  notifications:
+    slack: 1
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Possble options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pipeline.base</code></td>
+<td>GitHub project base</td>
+<td><code>https://github.com</code></td>
+</tr>
+<tr>
+<td><code>pipeline.repo</code></td>
+<td>GitHub project org/repo</td>
+<td>eg. <code>k8s-operatorhub/community-operators</code></td>
+</tr>
+<tr>
+<td><code>pipeline.branch</code></td>
+<td>GitHub project branch used for operators</td>
+<td>eg. <code>main</code></td>
+</tr>
+<tr>
+<td><code>pipeline.ci_scripts_dir</code></td>
+<td>Location of framework ci scripts</td>
+<td>using <code>ci/latest</code> branch</td>
+</tr>
+<tr>
+<td><code>pipeline.image</code></td>
+<td>Image used for container that tests and release</td>
+<td><code>quay.io/operator_testing/operator-test-playbooks:latest</code> or <code>quay.io/operator_testing/operator-test-playbooks:dev</code></td>
+</tr>
+<tr>
+<td><code>pipeline.playbooks</code></td>
+<td>Playbook repo used as default</td>
+<td><code>repo</code> and <code>branch</code></td>
+</tr>
+<tr>
+<td><code>pipeline.automerge</code></td>
+<td>Flag if automerge is enabled</td>
+<td><code>enabled</code></td>
+</tr>
+<tr>
+<td><code>pipeline.reviewers</code></td>
+<td>Flag if reviewers is enabled</td>
+<td><code>enabled</code></td>
+</tr>
+<tr>
+<td><code>pipeline.notifications</code></td>
+<td>Flag if notifications is enabled</td>
+<td><code>slack</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="operatorhubio">Operatorhubio</h3>
+<div class="highlight"><pre><span></span><code>operatorhubio:
+  enabled: 1
+  registry: quay.io
+  organization: operator-framework
+  name: upstream-community-operators
+  tag: latest
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>production.operatorhubio</code></td>
+<td>Index image used to generate <code>operatorhub.io</code> page</td>
+<td><code>enabled</code>, <code>registry</code>, <code>organization</code>, <code>name</code> and <code>tag</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="secrets">Secrets</h2>
+<p>Screenshot of GitHub action secrets</p>
+<p><img alt="Secrets" src="../../images/project_secrets.png" /></p>
+<p>The table is explaining  </p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ACTION_MONITORING_SLACK</code></td>
+<td>Slack webhook credentials</td>
+</tr>
+<tr>
+<td><code>FRAMEWORK_MERGE</code></td>
+<td>GitHub action token for <code>framework-automation</code> user to be able to automerge</td>
+</tr>
+<tr>
+<td><code>GH_TOKEN</code></td>
+<td>GitHub action token for <code>framework-automation</code> to produce statistics</td>
+</tr>
+<tr>
+<td><code>IIB_INPUT_REGISTRY_TOKEN</code></td>
+<td>Token for user <code>$IIB_INPUT_REGISTRY_USER</code> to be able to access <code>registry.redhat.io</code></td>
+</tr>
+<tr>
+<td><code>PREPARE_INDEX_API_TOKEN</code></td>
+<td>Quay application Token (user: <code>$oauth</code>) used for preparing temporary index for prow jobs</td>
+</tr>
+<tr>
+<td><code>REGISTRY_MIRROR_PW</code></td>
+<td>Token for user <code>$REGISTRY_MIRROR_USER</code> to be able to push to production (mirror) index</td>
+</tr>
+<tr>
+<td><code>REGISTRY_RELEASE_API_TOKEN</code></td>
+<td>Quay application Token (user: <code>$oauth</code>) used for pushing to release index</td>
+</tr>
+<tr>
+<td><code>REPO_GHA_PAT</code></td>
+<td>GitHub access token (deprecated)</td>
+</tr>
+<tr>
+<td><code>OHIO_REGISTRY_TOKEN</code></td>
+<td>Quay application token (user: <code>$oauth</code>) to push index image used for <code>operatorhub.io</code> web page</td>
+</tr>
+<tr>
+<td><code>SIGNATURE_WEBHOOK_PASSWD</code></td>
+<td>Index signrature password</td>
+</tr>
+<tr>
+<td><code>SIGNATURE_WEBHOOK_REQUESTER_EMAIL</code></td>
+<td>Index signrature requester email</td>
+</tr>
+<tr>
+<td><code>SIGNATURE_WEBHOOK_SECRET</code></td>
+<td>Index signrature secret</td>
+</tr>
+</tbody>
+</table>
+<h2 id="generate-github-action-workflows">Generate Github Action workflows</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On newly created projects one should copy the file (<a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml">upgrade.yaml</a>) to <code>.github/workflows/upgrade.yaml</code> and push it into <code>main</code> branch so <code>CI Upgrade</code> workflow is enabled in the <code>Actions</code> tab in the GitHub project.</p>
+</div>
+<p>After the directory and configurations are in place one can generate all workflows by running <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml">Upgrade Action</a> from the configured project. More details one can find <a href="/project/maintain/#project-upgrade">here</a></p>
+<p>One can verify <code>Upgrade CI</code> GitHub Action. See screenshot below</p>
+<p><img alt="Upgrade CI" src="../../images/project-upgrade-action.png" /></p>
 
 
 
