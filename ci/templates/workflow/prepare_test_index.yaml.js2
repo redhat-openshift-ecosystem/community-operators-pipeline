@@ -59,7 +59,10 @@ jobs:
           COMMIT: ${{ steps.variables.outputs.opp_commit }}
           OPP_OPRT_REPO: ${{ steps.variables.outputs.opp_repo }}
           OPP_OPRT_SHA: ${{ steps.variables.outputs.opp_commit }}
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 {% endraw %}
+          IIB_INPUT_REGISTRY_USER: "{{ default_config.production.mirror.username.in }}"
+          OPP_MIRROR_INDEX_MULTIARCH_IMAGE: "quay.io/operator-framework/opm:latest"
           OPP_SCRIPT_ENV_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-osr-run.sh"
           OPP_OPRT_SRC_BASE:  "{{ default_config.pipeline.base }}"
           OPP_OPRT_SRC_REPO:  "{{ default_config.pipeline.repo }}"
