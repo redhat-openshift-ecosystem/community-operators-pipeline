@@ -20,6 +20,8 @@ env:
   OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
   OPP_THIS_REPO_BASE: "{{ default_config.pipeline.base }}"
   OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
+  OPP_THIS_REPO_NAME: "{{ default_config.pipeline.repo.split('/')[1] }}"
+  OPP_THIS_REPO_ORG: "{{ default_config.pipeline.repo.split('/')[0] }}"
   OPP_THIS_BRANCH: "{{ default_config.pipeline.branch }}"
   OPP_RELEASE_BUNDLE_REGISTRY: "{{ default_config.production.bundle.registry }}"
   OPP_RELEASE_BUNDLE_ORGANIZATION: "{{ default_config.production.bundle.organization }}"
@@ -163,7 +165,7 @@ jobs:
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1" || true
       - name: Operator info (comment)
         id: op-info-comment
-        if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
+        #if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
         uses: mshick/add-pr-comment@v1
         with:
           message: |
@@ -176,7 +178,7 @@ jobs:
             $ cat <path-to-operator>/ci.yaml
             packagemanifestClusterVersionLabel: auto
             ```
-            More info [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#automatic-cluster-version-label-ocp-packagemanifest-only).
+            More info [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#automatic-cluster-version-label-ocp-packagemanifest-only).
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
