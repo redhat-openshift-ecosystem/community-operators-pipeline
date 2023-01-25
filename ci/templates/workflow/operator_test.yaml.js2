@@ -20,6 +20,8 @@ env:
   OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
   OPP_THIS_REPO_BASE: "{{ default_config.pipeline.base }}"
   OPP_THIS_REPO: "{{ default_config.pipeline.repo }}"
+  OPP_THIS_REPO_NAME: "{{ default_config.pipeline.repo.split('/')[1] }}"
+  OPP_THIS_REPO_ORG: "{{ default_config.pipeline.repo.split('/')[0] }}"
   OPP_THIS_BRANCH: "{{ default_config.pipeline.branch }}"
   OPP_RELEASE_BUNDLE_REGISTRY: "{{ default_config.production.bundle.registry }}"
   OPP_RELEASE_BUNDLE_ORGANIZATION: "{{ default_config.production.bundle.organization }}"
@@ -47,6 +49,8 @@ jobs:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
     steps:
+      - name: Print context
+        run: env | sort
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -63,6 +67,7 @@ jobs:
           OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
           OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
         run: |
+          echo $OPP_THIS_REPO_NAME
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
@@ -148,7 +153,7 @@ jobs:
             
             Affected versions : `${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}`
             
-            More info in 'Kubernetes max version in CSV' section [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#kubernetes-max-version-in-csv).
+            More info in 'Kubernetes max version in CSV' section [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml/#kubernetes-max-version-in-csv).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
