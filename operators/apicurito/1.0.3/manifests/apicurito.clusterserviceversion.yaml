@@ -75,6 +75,11 @@ spec:
        - apicurito-generator (Apicurito fuse project generator)
        - apicurito route (to access apicurito from outside openshift)
 
+
+
+
+
+
     ### How to install
     When the operator is installed (you have created a subscription and the operator is running in the selected namespace) create a new CR of Kind Apicurito (click the Create New button). The CR spec contains all defaults.
 
