@@ -59,6 +59,11 @@ jobs:
     if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'allow/test-in-draft-mode')
     needs: operator-automerge-enabled
     runs-on: ubuntu-latest
+    env:
+{% endraw %}
+      OPP_THIS_REPO_NAME: "{{ default_config.pipeline.repo.split('/')[1] }}"
+      OPP_THIS_REPO_ORG: "{{ default_config.pipeline.repo.split('/')[0] }}"
+{% raw %}
     steps:
       # - name: Setting labels from changes in directory changes
       #   uses: actions/labeler@v2
@@ -136,13 +141,12 @@ jobs:
         if: (steps.op-traffic-light.outputs.opp_pr_revievers != '') && (!contains(github.event.pull_request.labels.*.name, 'allow/ci-changes'))
         uses: mshick/add-pr-comment@v1
         with:
-{% endraw %}
-          OPP_THIS_REPO_NAME: "{{ default_config.pipeline.repo.split('/')[1] }}"
-          OPP_THIS_REPO_ORG: "{{ default_config.pipeline.repo.split('/')[0] }}"
-{% raw %}
           message: |
             ${{ steps.op-traffic-light.outputs.opp_pr_revievers }}, please approve as you are original reviewer(s).
-
+            - To add more contributors to `ci.yaml` follow instruction {% endraw %}[here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml). 
+{% raw %}
+            - To approve follow instruction {% endraw %}[here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/self-merge-updates/#how-can-i-approve-a-pr-against-my-operator)
+{% raw %}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false
