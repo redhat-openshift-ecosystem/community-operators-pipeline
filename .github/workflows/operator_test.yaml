@@ -19,6 +19,8 @@ env:
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
+  OPP_THIS_REPO_NAME: "community-operators-pipeline"
+  OPP_THIS_REPO_ORG: "redhat-openshift-ecosystem"
   OPP_THIS_BRANCH: "main"
   OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
   OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"
