@@ -143,11 +143,10 @@ jobs:
         with:
           message: |
             ${{ steps.op-traffic-light.outputs.opp_pr_revievers }}, please approve as you are original reviewer(s).
-
-
-
-
-
+            - To add more contributors to `ci.yaml` follow instruction {% endraw %}[here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml). 
+{% raw %}
+            - To approve follow instruction {% endraw %}[here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/self-merge-updates/#how-can-i-approve-a-pr-against-my-operator)
+{% raw %}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false
