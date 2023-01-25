@@ -19,6 +19,8 @@ env:
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
+  OPP_THIS_REPO_NAME: "community-operators-pipeline"
+  OPP_THIS_REPO_ORG: "redhat-openshift-ecosystem"
   OPP_THIS_BRANCH: "main"
   OPP_RELEASE_BUNDLE_REGISTRY: "quay.io"
   OPP_RELEASE_BUNDLE_ORGANIZATION: "community-operators-pipeline"
@@ -46,6 +48,8 @@ jobs:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
     steps:
+      - name: Print context
+        run: env | sort
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -62,6 +66,7 @@ jobs:
           OPP_OPRT_SRC_REPO: "${{ github.event.pull_request.base.repo.full_name }}"
           OPP_OPRT_SRC_BRANCH: "${{ github.event.pull_request.base.ref }}"
         run: |
+          echo $OPP_THIS_REPO_NAME
           echo "Using script '$OPP_SCRIPT_ENV_OPRT_URL' ..."
           echo "global labels $OPP_LABELS"
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
