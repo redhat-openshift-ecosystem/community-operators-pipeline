@@ -150,7 +150,7 @@ jobs:
             
             Affected versions : `${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}`
             
-            More info in 'Kubernetes max version in CSV' section [here](https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/operator-ci-yaml/#kubernetes-max-version-in-csv).
+            More info in 'Kubernetes max version in CSV' section [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#kubernetes-max-version-in-csv).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
@@ -165,7 +165,7 @@ jobs:
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "::set-output name=opp_check_err_cluster_version_autolabel::1" || true
       - name: Operator info (comment)
         id: op-info-comment
-        #if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
+        if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
         uses: mshick/add-pr-comment@v1
         with:
           message: |
