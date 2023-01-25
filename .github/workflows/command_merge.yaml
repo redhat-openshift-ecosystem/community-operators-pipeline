@@ -3,8 +3,6 @@ on: issue_comment
 name: Issue Comments - merge
 env:
   OPP_PRODUCTION_TYPE: "k8s"
-  OPP_THIS_REPO_NAME: "community-operators-pipeline"
-  OPP_THIS_REPO_ORG: "redhat-openshift-ecosystem"
 
 jobs:
   handle_comments:
@@ -66,7 +64,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml/#reviewers).'
+              body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://operator-framework.github.io/community-operators/operator-ci-yaml/#reviewers).'
             })
 
       - name: Message when automerge is disabled
