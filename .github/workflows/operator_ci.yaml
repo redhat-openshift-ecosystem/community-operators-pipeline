@@ -133,17 +133,12 @@ jobs:
       - name: "Mention reviewers if exist"
         if: (steps.op-traffic-light.outputs.opp_pr_revievers != '') && (!contains(github.event.pull_request.labels.*.name, 'allow/ci-changes'))
         uses: mshick/add-pr-comment@v1
-        env:
+        with:
           OPP_THIS_REPO_NAME: "community-operators-pipeline"
           OPP_THIS_REPO_ORG: "redhat-openshift-ecosystem"
 
-        with:
           message: |
             ${{ steps.op-traffic-light.outputs.opp_pr_revievers }}, please approve as you are original reviewer(s).
-
-
-
-
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
