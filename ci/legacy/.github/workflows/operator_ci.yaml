@@ -4,6 +4,8 @@ on:
    types: [opened, synchronize, reopened, ready_for_review, unlabeled]
 env:
   AUTOMERGE_ENABLED: 0
+  OPP_THIS_REPO_NAME: "{{ default_config.pipeline.repo.split('/')[1] }}"
+  OPP_THIS_REPO_ORG: "{{ default_config.pipeline.repo.split('/')[0] }}"
   
 jobs:
   operator-automerge-enabled:
@@ -143,7 +145,7 @@ jobs:
       #   uses: mshick/add-pr-comment@v1
       #   with:
       #     message: |
-      #       If you want to accelerate publishing your changes, consider adding yourself and others you trust to the reviewers list see how that works [here](https://operator-framework.github.io/community-operators/operator-ci-yaml).
+      #       If you want to accelerate publishing your changes, consider adding yourself and others you trust to the reviewers list see how that works [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml).
       #     repo-token: ${{ secrets.GITHUB_TOKEN }}
       #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
       #     allow-repeats: false
@@ -171,7 +173,7 @@ jobs:
         with:
           message: |
             ${{ steps.op-traffic-light.outputs.op_test_pr_revievers }}, please approve as you are original reviewer(s).
-            Please note, that you can more contributors to ci.yaml. More info [here](https://operator-framework.github.io/community-operators/operator-ci-yaml).
+            Please note, that you can more contributors to ci.yaml. More info [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false
@@ -234,7 +236,7 @@ jobs:
           message: |
             /hold
             
-            File `${{ steps.op-traffic-light.outputs.op_test_stream }}/${{ steps.op-traffic-light.outputs.op_test_name }}/ci.yaml` is missing or not valid. More details in failed test `Operator CI / operator-ci` logs. Documentation how to setup valid `ci.yaml` file can be found at https://operator-framework.github.io/community-operators/operator-ci-yaml."
+            File `${{ steps.op-traffic-light.outputs.op_test_stream }}/${{ steps.op-traffic-light.outputs.op_test_name }}/ci.yaml` is missing or not valid. More details in failed test `Operator CI / operator-ci` logs. Documentation how to setup valid `ci.yaml` file can be found at https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml."
 
             Note: Only single file modification on `ci.yaml` is allowed. Please make separate PR to apply `ci.yaml` file updates and get it merged before current PR.
 
@@ -349,7 +351,7 @@ jobs:
             
             <details>
             Reason: Non CSV files were changed in existing operator !!!
-            More info about allowed changes can be found in [documetnation](https://operator-framework.github.io/community-operators/operator-version-update/#minor-cosmetics-changes).
+            More info about allowed changes can be found in [documetnation](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-version-update/#minor-cosmetics-changes).
             </details>
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
@@ -383,7 +385,7 @@ jobs:
             
             <details>
 
-            More info about allowed changes can be found in [documetnation](https://operator-framework.github.io/community-operators/troubleshooting/#minor-changes).
+            More info about allowed changes can be found in [documentation](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/troubleshooting/#minor-changes).
             </details>
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
