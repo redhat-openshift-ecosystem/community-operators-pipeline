@@ -138,7 +138,6 @@ jobs:
             ${{ steps.op-traffic-light.outputs.opp_pr_revievers }}, please approve as you are original reviewer(s).
             
             - To add more contributors to `ci.yaml` follow instruction [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml).
-
             - To approve follow instruction [here](https://redhat-openshift-ecosystem.github.io/community-operators-prod/self-merge-updates/#how-can-i-approve-a-pr-against-my-operator)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
