@@ -8,7 +8,9 @@ nav:
       - "Develop": framework/development.md
   - "Project": 
       - "Overview": project/overview.md
-      - "Create": project/create.md
+      - "Deploy":
+        - "Initialize": project/init.md
+        - "Developent": project/develop.md
       - "Maintainance": 
         - "Common": project/maintain.md
         - "Kubernetes": project/k8s.md

@@ -1,4 +1,4 @@
-# Create new project
+# Initialize new project
 
 ## TODO
 
