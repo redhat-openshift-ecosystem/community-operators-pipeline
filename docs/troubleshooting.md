@@ -40,3 +40,6 @@
 
 !!! error "All operator versions are already in the catalog"
     You are trying to edit an existing operator version. It is not recommended. But there are some exceptions, where you just edit some description or link. In this case, repository maintainers can set appropriate labels to override such errors and approve release pipeline action to overwrite an existing operator.
+
+!!! error "Manifest unknown"
+    A system is unable to find a manifest. Please check if `replaces` directive in some operator versions is not pointing to a non-existing operator version. The case happens mainly when an operator version delete exists in a PR. Complete removal of `replaces` directive which is broken fixes the issue.
