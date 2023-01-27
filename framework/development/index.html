@@ -13,7 +13,7 @@
     
     
       
-        <title>Develop - Community operators pipeline admin</title>
+        <title>Development - Community operators pipeline admin</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#project-development-structure" class="md-skip">
+        <a href="#development" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Develop
+              Development
             
           </span>
         </div>
@@ -339,12 +339,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Develop
+          Development
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Develop
+        Development
       </a>
       
         
@@ -366,6 +366,54 @@
   <a href="#todo" class="md-nav__link">
     TODO
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#process" class="md-nav__link">
+    Process
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#production-vs-development" class="md-nav__link">
+    Production vs. Development
+  </a>
+  
+    <nav class="md-nav" aria-label="Production vs. Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-action-workflows-and-scripts" class="md-nav__link">
+    GitHub action workflows and scripts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansible-playbook-images" class="md-nav__link">
+    Ansible playbook images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-k8s-and-ocp" class="md-nav__link">
+    Switch K8S and OCP
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -592,42 +640,64 @@
   </a>
 
 
-<h1 id="project-development-structure">Project development structure</h1>
-<h2 id="todo">TODO</h2>
-<ul>
-<li>Explain that it is in 3 parts (project+ playbooks+ framework(workflows))</li>
-<li>add main brach to <code>Producion operator repositories</code> table</li>
-<li>explain opp.sh and point to function where it desides what ansible arguments to use</li>
-<li>what happen when dev is changed to latest (only workflows changes) and in latest playbook image (latest) is generated</li>
-<li>Staging vs prod (dev vs latest in image) point to config file</li>
-<li>how to produce dev playbook image</li>
-<li>Switch k8s and ocp in staging</li>
-<li></li>
-</ul>
 <h1 id="development">Development</h1>
-<p>The staging environment is located at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a> prject. It can simulate stable and development setup. The </p>
+<h2 id="todo">TODO</h2>
+<h2 id="overview">Overview</h2>
+<p>Three main components are used in each pipeline</p>
+<ul>
+<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/latest/ci/templates/workflow" target="_blank">GitHub action workflows</a></li>
+<li>Driver scripts</li>
+<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh" target="_blank">opp-env.sh</a></li>
+<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a></li>
+<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/" target="_blank">helper scripts</a></li>
+<li><a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community/upstream" target="_blank">Ansible playbooks</a> from <code>upstream-community</code> branch <code>upstream</code> directory</li>
+</ul>
+<h2 id="process">Process</h2>
+<ol>
+<li>GitHub action workflows are stored as ansible templates and during the <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> process</li>
+<li>Workflows are resolved using <a href="/framework/overview/#producion-operator-repositories">config files</a> and applied to the running project.</li>
+<li>The testing and release pipelines are triggered by these workflows and followed by running <code>Ansible playbook</code> with various parameters.</li>
+<li>These parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script
+   and the most relevant part is <code>function ExecParameters()</code>.</li>
+<li>These parameters are passed to Ansible Playbook <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/local.yml" target="_blank">local.yaml</a></li>
+<li>The playbook is executed inside the container produced by <a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:latest</a> image.</li>
+</ol>
+<h2 id="production-vs-development">Production vs. Development</h2>
+<p>The <a href="/framework/overview/#codebase-and-development" target="_blank">Codebase and development</a> table shows various branches used for <code>production</code> and <code>development</code>. Let's summarize it in the table bellow</p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Project</th>
-<th>Barnches</th>
+<th>Type</th>
+<th>GitHub action workflows and scripts</th>
+<th>Ansible playbooks</th>
+<th>Ansible playbook image</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Framework</td>
-<td><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a></td>
-<td><code>ci/latest</code> and <code>ci/dev</code></td>
+<td>Production</td>
+<td><code>ci/latest</code></td>
+<td><code>upstream-community</code></td>
+<td><a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:latest</a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline" target="_blank">Development or staging</a></td>
+<td><code>ci/dev</code></td>
+<td><code>upstream-community-dev</code></td>
+<td><a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:dev</a></td>
 </tr>
 </tbody>
 </table>
-<h2 id="cidev-vs-cilatest"><code>ci/dev</code> vs <code>ci/latest</code></h2>
-<h2 id="upstream-community-dev-vs-upstream-community"><code>upstream-community-dev</code> vs <code>upstream-community</code></h2>
-<h3 id="how-to-trigger-playbook-image-build">How to trigger playbook image build</h3>
-<h3 id="custom-de-image-from-custom-branch">Custom de image from custom branch</h3>
-<p>There is also an option to use your own branch <code>upstream-community-dev-&lt;SOMETHING&gt;</code>. Then you can trigger playbook <code>dev</code> image build the same way as described above.</p>
-<h2 id="playbook-image-build">Playbook image build</h2>
+<h3 id="github-action-workflows-and-scripts">GitHub action workflows and scripts</h3>
+<p>The <code>ci/latest</code> and <code>ci/dev</code> branches can be used in both production and development projects by specifying the branch name in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow</p>
+<h3 id="ansible-playbook-images">Ansible playbook images</h3>
+<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="/framework/overview/#producion-operator-repositories" target="_blank">Producion operator repositories</a> in <code>pipline.image</code> key.</p>
+<ul>
+<li>The <code>latest</code> tag is produced automatically by pushing changes into <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks" target="_blank">https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</a> in <code>upstream-community</code> branch.</li>
+<li>The <code>dev</code> tag is produced by manually triggering Github Action <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml" target="_blank">Build playbook image</a> and choosing a branch that starts with <code>upstream-community-*</code>. More info in the script <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh" target="_blank">here</a>. The developer should choose a name starting with <code>upstream-community-*</code> for the branch before doing development.</li>
+</ul>
+<h3 id="switch-k8s-and-ocp">Switch K8S and OCP</h3>
+<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting corresponding value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
 
 
 
