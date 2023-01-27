@@ -16,11 +16,11 @@ GitHub projects via GitHub Action technology are supported. Currently, the follo
 
 
 ## Producion operator repositories
-| Name | Project| Configuration |
-|------|--------|---------------|
-|Kubernetes operators ([OperatorHub.io](https://operatorhub.io/))|[https://github.com/k8s-operatorhub/community-operators](https://github.com/k8s-operatorhub/community-operators)|[pipeline-config.yaml](https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml)|
-|OpenShift ([OCP](https://www.redhat.com/en/technologies/cloud-computing/openshift)) operators|[https://github.com/redhat-openshift-ecosystem/community-operators-prod](https://github.com/redhat-openshift-ecosystem/community-operators-prod)|[pipeline-config.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml)|
-|Staging environment|[https://github.com/redhat-openshift-ecosystem/community-operators-pipeline](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline)|[pipeline-config-k8s.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-k8s.yaml) and [pipeline-config-ocp.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml)|
+| Name | Project| Configuration | Branch |
+|------|--------|---------------|--------|
+|Kubernetes operators ([OperatorHub.io](https://operatorhub.io/))|[https://github.com/k8s-operatorhub/community-operators](https://github.com/k8s-operatorhub/community-operators)|[pipeline-config.yaml](https://github.com/k8s-operatorhub/community-operators/blob/main/ci/pipeline-config-k8s.yaml)|`main`|
+|OpenShift ([OCP](https://www.redhat.com/en/technologies/cloud-computing/openshift)) operators|[https://github.com/redhat-openshift-ecosystem/community-operators-prod](https://github.com/redhat-openshift-ecosystem/community-operators-prod)|[pipeline-config.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml)|`main`|
+|Staging environment|[https://github.com/redhat-openshift-ecosystem/community-operators-pipeline](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline)|[pipeline-config-k8s.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-k8s.yaml) and [pipeline-config-ocp.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-prod/blob/main/ci/pipeline-config-ocp.yaml)|`main`|
 
 ### Project structure
 Each project should contain the following directory structure

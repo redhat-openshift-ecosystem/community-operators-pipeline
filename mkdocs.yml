@@ -5,7 +5,7 @@ nav:
   - "Overview": README.md
   - "Framework":
       - "Overview": framework/overview.md
-      - "Develop": framework/development.md
+      - "Development": framework/development.md
   - "Project": 
       - "Overview": project/overview.md
       - "Deploy":
