@@ -431,10 +431,59 @@
   
   
   
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          Deploy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deploy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Deploy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../project/create/" class="md-nav__link">
-        Create
+      <a href="../../project/init/" class="md-nav__link">
+        Initialize
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/develop/" class="md-nav__link">
+        Developent
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -545,8 +594,35 @@
 
 <h1 id="project-development-structure">Project development structure</h1>
 <h2 id="todo">TODO</h2>
-<h1 id="branches">Branches</h1>
-<h2 id="cidev-vs-ci-latest"><code>ci/dev</code> vs <code>ci-latest</code></h2>
+<ul>
+<li>Explain that it is in 3 parts (project+ playbooks+ framework(workflows))</li>
+<li>add main brach to <code>Producion operator repositories</code> table</li>
+<li>explain opp.sh and point to function where it desides what ansible arguments to use</li>
+<li>what happen when dev is changed to latest (only workflows changes) and in latest playbook image (latest) is generated</li>
+<li>Staging vs prod (dev vs latest in image) point to config file</li>
+<li>how to produce dev playbook image</li>
+<li>Switch k8s and ocp in staging</li>
+<li></li>
+</ul>
+<h1 id="development">Development</h1>
+<p>The staging environment is located at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a> prject. It can simulate stable and development setup. The </p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Project</th>
+<th>Barnches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Framework</td>
+<td><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline</a></td>
+<td><code>ci/latest</code> and <code>ci/dev</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cidev-vs-cilatest"><code>ci/dev</code> vs <code>ci/latest</code></h2>
 <h2 id="upstream-community-dev-vs-upstream-community"><code>upstream-community-dev</code> vs <code>upstream-community</code></h2>
 <h3 id="how-to-trigger-playbook-image-build">How to trigger playbook image build</h3>
 <h3 id="custom-de-image-from-custom-branch">Custom de image from custom branch</h3>
