@@ -363,13 +363,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#todo" class="md-nav__link">
-    TODO
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
     Overview
   </a>
@@ -401,6 +394,13 @@
           <li class="md-nav__item">
   <a href="#ansible-playbook-images" class="md-nav__link">
     Ansible playbook images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansible-playbook-example" class="md-nav__link">
+    Ansible playbook example
   </a>
   
 </li>
@@ -641,7 +641,6 @@
 
 
 <h1 id="development">Development</h1>
-<h2 id="todo">TODO</h2>
 <h2 id="overview">Overview</h2>
 <p>Three main components are used in each pipeline</p>
 <ul>
@@ -696,8 +695,76 @@
 <li>The <code>latest</code> tag is produced automatically by pushing changes into <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks" target="_blank">https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</a> in <code>upstream-community</code> branch.</li>
 <li>The <code>dev</code> tag is produced by manually triggering Github Action <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml" target="_blank">Build playbook image</a> and choosing a branch that starts with <code>upstream-community-*</code>. More info in the script <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh" target="_blank">here</a>. The developer should choose a name starting with <code>upstream-community-*</code> for the branch before doing development.</li>
 </ul>
+<h3 id="ansible-playbook-example">Ansible playbook example</h3>
+<p>Ansible playbook parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script via <code>ExecParameters()</code>. The following example shows how <code>operator_info</code> is created by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/operator_release.yaml#L230" target="_blank">Operator release</a> pipeline</p>
+<div class="highlight"><pre><span></span><code>ansible-playbook -i localhost, -e ansible_connection=local \
+upstream/local.yml \
+--tags reset_tools,operator_info \
+-e run_upstream=true \
+-e run_prepare_catalog_repo_upstream=true \
+-e catalog_repo=https://github.com/redhat-openshift-ecosystem/community-operators-pipeline -e catalog_repo_branch=main \
+-e operator_base_dir=/tmp/community-operators-for-catalog/operators \
+-e operators=auqa,cockroachdb \
+-e cluster_type=ocp \
+-e strict_cluster_version_labels=true \
+-e production_registry_namespace=quay.io/community-operators-pipeline 
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible-playbook -i localhost, -e ansible_connection=local</code></td>
+<td>ansible command used in local run</td>
+</tr>
+<tr>
+<td><code>upstream/local.yml</code></td>
+<td>path to main playbook <code>local.yaml</code> in <code>upstream</code> dicrectory</td>
+</tr>
+<tr>
+<td><code>--tags reset_tools,operator_info</code></td>
+<td><code>reset_tools</code> tag to install tools and <code>operator_info</code> to produce file contains info about operators</td>
+</tr>
+<tr>
+<td><code>-e run_upstream=true</code></td>
+<td>flag that upstream version is used</td>
+</tr>
+<tr>
+<td><code>-e run_prepare_catalog_repo_upstream=true</code></td>
+<td>flag that project and branch (see row bellow ) will be clonned to <code>/tmp/community-operators-for-catalog</code></td>
+</tr>
+<tr>
+<td><code>-e catalog_repo=... -e catalog_repo_branch=...</code></td>
+<td>repo and branch that operators are stored</td>
+</tr>
+<tr>
+<td><code>-e operator_base_dir=/tmp/community-operators-for-catalog/operators</code></td>
+<td>path where operators are taken</td>
+</tr>
+<tr>
+<td><code>-e operators=auqa,cockroachdb</code></td>
+<td>list of operators to be processed</td>
+</tr>
+<tr>
+<td><code>-e cluster_type=ocp</code></td>
+<td>cluster type to be used (<code>k8s</code> or <code>ocp</code>)</td>
+</tr>
+<tr>
+<td><code>-e strict_cluster_version_labels=true</code></td>
+<td>flat that cluster version is checked</td>
+</tr>
+<tr>
+<td><code>-e production_registry_namespace=quay.io/community-operators-pipeline</code></td>
+<td>registry/namepace used for bundles already published to be combined for index</td>
+</tr>
+</tbody>
+</table>
 <h3 id="switch-k8s-and-ocp">Switch K8S and OCP</h3>
-<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting corresponding value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
+<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
 
 
 
