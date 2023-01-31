@@ -5,7 +5,6 @@
 The goal of [the community operator pipeline framework project](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline) is to deploy and configure pipelines for various flavors of Kubernetes or Openshift clusters and publish multiple versions of operator indexes.
 GitHub projects via GitHub Action technology are supported. Currently, the following projects are supported:
 
-
 ## Codebase and development
 | Name | Project| Barnches |
 |------|--------|---------------|
