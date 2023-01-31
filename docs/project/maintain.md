@@ -1,6 +1,9 @@
 # Project maintain
 
 ## TODO
+
+- admin action labels: allow-longer, allow ci
+- standard automatic labels
 - How to upgrade
 
 ## Project upgrade

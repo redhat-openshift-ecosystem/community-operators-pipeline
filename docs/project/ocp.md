@@ -1,5 +1,10 @@
 # OCP
 
+## TODO
+- ui max k8s
+- latest
+- where are bundles
+
 The following part is related to Openshift only.
 
 ## How OCP installation is tested

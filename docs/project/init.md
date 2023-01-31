@@ -1,19 +1,12 @@
 # Initialize new project
 
-## TODO
-
-- Project directory structure
-- Secrets
-- How to do first upgrade
-- Test first operator
-
 ## Create empty project
 The project administrator has to
 
-- create an empty GitHub project
-- configure one configuration file
-- set up various secrets
-- create the directory structure shown [here](/framework/overview/#project-structure)
+1. create an empty GitHub project
+1. configure one configuration file
+1. set up various secrets
+1. create the directory structure shown [here](/framework/overview/#project-structure)
 
 
 ## Configuration
