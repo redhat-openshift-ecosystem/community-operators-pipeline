@@ -57,3 +57,27 @@ In both cases (`upstream-community-dev-[something]` and `upstream-community-dev`
 No need to build any image. To populate edited workflow templates to the testing project, please execute [Upgrade GH action](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml). Set branches which you want to test. The standard setup is `ci-dev` and `upstream-community-dev`.
 
 ### Test a playbook funkcionality
+
+ To test a currently implemented feature,  one or more test cases need to be set. 
+ The only test which is expected to fail is `ci/prow/4.8-pipeline-functionality`. There is a space for improvement to make the test work as a quality gate for Prow job workflow file changes.
+ 
+ Back to tests, we should focus on. We will test the following parts of the test suite:
+- Basic PR tests
+- Temp index test
+- Prow test
+- Release test
+
+#### Basic PR tests
+
+To execute all basic PR tests, please edit a description in an operator in the [test pipeline environment](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/main/operators). Please do not add more operators if not necessary, it can increase the repository size for workflow templates. We recommend editing just a description in an operator. Push to your branch on your own GH repository. Then open a PR. This corresponds with setup how contributors work against the community repositories.
+
+#### Prow test
+Every PR triggers a Prow test no matter if it is K8S or OCP. This is a standard setup only for `community-operators-pipeline` pipeline. Production pipelines run Prow only if needed. More information on where to find the Prow debug log is [here](https://redhat-openshift-ecosystem.github.io/community-operators-prod/maintainer-documentation/#the-installation-validated-label-is-missing).
+
+#### Temp index test
+
+When prow fails it can be due to a missing temporary index or temporary bundle. Temp index and the bundle is processed by [Prepare Test Index](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/prepare_test_index.yaml) workflow. Logs are diretly available. If you are not sure to which PR is a workflow run related, check `Build temp index and push` stage. You should see something like `Preparing temp index for PR: 347`.
+
+### Release test
+
+When all tests are green, expect `ci/prow/4.8-pipeline-functionality` as mentioned above, we can test release by merging the PR. Then a release can be checked directly [here](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/operator_release.yaml), we expect green result.
