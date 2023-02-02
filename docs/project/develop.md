@@ -26,7 +26,7 @@ We will provide more details about some steps below:
 #### Playbook case
  To develop a new feature, a developer has to start from [`upstream-community-dev`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community-dev) branch in playbooks by creating their own branch. 
  
- Make sure that development branch `upstream-community-dev` is synchronized with production one `upstream-community`.
+ Make sure that the development branch `upstream-community-dev` is synchronized with production one `upstream-community`.
 
 #### Workflow case
 The development branch which is your base branch is [`ci/dev`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/dev). Please make sure that the development branch `ci/dev` is synchronized with the production branch `ci/latest`.
@@ -69,15 +69,33 @@ No need to build any image. To populate edited workflow templates to the testing
 
 #### Basic PR tests
 
-To execute all basic PR tests, please edit a description in an operator in the [test pipeline environment](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/main/operators). Please do not add more operators if not necessary, it can increase the repository size for workflow templates. We recommend editing just a description in an operator. Push to your branch on your own GH repository. Then open a PR. This corresponds with setup how contributors work against the community repositories.
+To execute all basic PR tests, please edit a description in an operator in the [test pipeline environment](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/main/operators). Please do not add more operators if not necessary, it can increase the repository size for workflow templates. We recommend editing just a description in an operator. Push to your branch on your own GH repository. Then open a PR. This corresponds with the setup of how contributors work against the community repositories.
 
 #### Prow test
 Every PR triggers a Prow test no matter if it is K8S or OCP. This is a standard setup only for `community-operators-pipeline` pipeline. Production pipelines run Prow only if needed. More information on where to find the Prow debug log is [here](https://redhat-openshift-ecosystem.github.io/community-operators-prod/maintainer-documentation/#the-installation-validated-label-is-missing).
 
 #### Temp index test
 
-When prow fails it can be due to a missing temporary index or temporary bundle. Temp index and the bundle is processed by [Prepare Test Index](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/prepare_test_index.yaml) workflow. Logs are diretly available. If you are not sure to which PR is a workflow run related, check `Build temp index and push` stage. You should see something like `Preparing temp index for PR: 347`.
+When prow fails it can be due to a missing temporary index or temporary bundle. Temp index and the bundle are processed by [Prepare Test Index](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/prepare_test_index.yaml) workflow. Logs are directly available. If you are not sure to which PR is workflow run related, check `Build temp index and push` stage. You should see something like `Preparing temp index for PR: 347`.
 
 ### Release test
 
-When all tests are green, expect `ci/prow/4.8-pipeline-functionality` as mentioned above, we can test release by merging the PR. Then a release can be checked directly [here](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/operator_release.yaml), we expect green result.
+When all tests are green, expect `ci/prow/4.8-pipeline-functionality` as mentioned above, we can test release by merging the PR. Then a release can be checked directly [here](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/operator_release.yaml), we expect a green result.
+
+### Create a PR against the production branch
+Now you are in the phase to create PRs from dev to production for both playbooks and framework:
+
+Open and merge `community-operators-pipeline:ci/dev` to `community-operators-pipeline:ci/latest`. Do not apply it by `Upgrade` procedure next steps are completed to the state that a new playbook image is out.
+
+Open a PR from `operator-test-playbooks:upstream-community-dev` to `operator-test-playbooks:upstream-community`.
+
+### Wait until an image is produced automatically in case of playbook changes
+
+After it is merged, just wait until [`Build playbook image`](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml) pipeline has finished.
+
+### Upgrade production repositories when workflow templates were changed
+
+Now, it is time to apply workflows by running `CI Upgrade` on [production OCP](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml) and [k8s production](https://github.com/k8s-operatorhub/community-operators/actions/workflows/upgrade.yaml).
+
+Failure is not bad if workflows should stay as it is, it just means nothing was changed. If there should be changes, investigate why no change is present.
+
