@@ -42,7 +42,28 @@ The `latest` and `dev` tag values are used in the project as stated in the confi
 - The `latest` tag is produced automatically by pushing changes into [https://github.com/redhat-openshift-ecosystem/operator-test-playbooks](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks){:target="\_blank"} in `upstream-community` branch.
 - The `dev` tag is produced by manually triggering Github Action [Build playbook image](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml){:target="\_blank"} and choosing a branch that starts with `upstream-community-*`. More info in the script [here](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh){:target="\_blank"}. The developer should choose a name starting with `upstream-community-*` for the branch before doing development.
 
-### Ansible playbook example
+
+## Operator tools versions and upgrade
+
+The tools like `operator-sdk`, `opm` and others that are used in the pipeline process are installed via Ansible Playbooks. These tools are automatically installed in [quay.io/operator_testing/operator-test-playbooks](https://quay.io/repository/operator_testing/operator-test-playbooks){:target="\_blank"} image or installed on-fly via `ansible-playbook` command. The tool versions are configured at the main [local.yaml](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/local.yml#L37){:target="\_blank"}. The relevant part is shown below and it is self-explanatory:
+
+```
+kind_version: v0.12.0
+kind_kube_version: v1.21.1
+operator_sdk_version: v1.25.2
+operator_courier_version: 2.1.11
+olm_version: 0.20.0
+opm_version: v1.26.2
+k8s_community_bundle_validator_version: v0.1.0
+oc_version: 4.3.5
+go_version: 1.13.7
+jq_version: 1.6
+yq_version: 2.2.1
+umoci_version: v0.4.5
+iib_version: v6.3.0
+```
+
+## Ansible playbook example
 
 Ansible playbook parameters are controlled by [opp.sh](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh){:target="\_blank"} script via `ExecParameters()`. The following example shows how `operator_info` is created by [Operator release](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/operator_release.yaml#L230){:target="\_blank"} pipeline
 
@@ -74,6 +95,7 @@ upstream/local.yml \
 |`-e strict_cluster_version_labels=true` | flat that cluster version is checked |
 |`-e production_registry_namespace=quay.io/community-operators-pipeline` | registry/namepace used for bundles already published to be combined for index |
 
-### Switch K8S and OCP
+## Switch K8S and OCP
 
 One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in [Upgrade](/project/maintain/#github-action-ci-upgrade){:target="\_blank"} workflow. This is heavily used in `development` or `staging` projects by testing both scenarios before putting it in production. 
+
