@@ -1,12 +1,25 @@
-# Project maintain
+# Maintainance
 
-## TODO
+## Labels
 
-- admin action labels: allow-longer, allow ci
-- standard automatic labels
-- How to upgrade
+The operator project is using various labels to handle different situations. Here is the list of them and their meaning
 
-## Project upgrade
+| Name | Description |
+|------|--------|
+|`allow/operator-version-overwrite`| Operator version will be overritten (only cosmetics changes)|
+|`allow/serious-changes-to-existing`|User is overwiting field in csv that are not allowed by default via previous label. Maintainer can allow these changes to be applied also.|
+|`allow/operator-recreate`| Operator will be recreated (deleted/created). It happens when mutiple versions are modified of operator|
+|`allow/ci-changes`| When there are changes outside of `operators` directory maintainer can set this label to skip failing|
+|`allow/longer-deployment`| It sets longer time for operator installation timeout|
+|`authorized-changes`| The changes are autorized. User can have this automatically when author is in reviever list in the `ci.yaml` file(needs for automerge)|
+|`dco-failed`| DCO failed. Commits were not signedoff|
+|`package-validated`| Package is validated (needs for automerge)|
+|`installation-validated`| Installation is validated (needs for automerge)|
+|`installation-skipped`| Installation is skipped. Some operators requested not to test installation |
+|`needs-rebase`|User should rebase to latest `main` branch|
+|`new-operator`|Label if operator is new. In other words if there is only one version of operator|
+
+## Upgrade
 ![PR](../images/project-upgrade-action.png)
 
 ### GitHub Action - CI Upgrade
