@@ -99,3 +99,17 @@ Now, it is time to apply workflows by running `CI Upgrade` on [production OCP](h
 
 Failure is not bad if workflows should stay as it is, it just means nothing was changed. If there should be changes, investigate why no change is present.
 
+## How to add a feature with an automatic comment to a PR
+In some cases, it is very useful to notify a contributor directly to a PR thread. We are using `github.issues.createComment` action. It is used many times, one example bellow:
+
+``` yaml
+with:
+  github-token: ${{secrets.GITHUB_TOKEN}}
+  script: |
+    github.issues.createComment({
+      issue_number: context.issue.number,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#reviewers).'
+    })
+```
