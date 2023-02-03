@@ -37,7 +37,7 @@ The `ci/latest` and `ci/dev` branches can be used in both production and develop
 
 ### Ansible playbook images
 
-The `latest` and `dev` tag values are used in the project as stated in the configuration file of the project shown in [Producion operator repositories](/framework/overview/#producion-operator-repositories){:target="\_blank"} in `pipline.image` key.
+The `latest` and `dev` tag values are used in the project as stated in the configuration file of the project shown in [Production operator repositories](/framework/overview/#producion-operator-repositories){:target="\_blank"} in `pipline.image` key.
 
 - The `latest` tag is produced automatically by pushing changes into [https://github.com/redhat-openshift-ecosystem/operator-test-playbooks](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks){:target="\_blank"} in `upstream-community` branch.
 - The `dev` tag is produced by manually triggering Github Action [Build playbook image](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml){:target="\_blank"} and choosing a branch that starts with `upstream-community-*`. More info in the script [here](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh){:target="\_blank"}. The developer should choose a name starting with `upstream-community-*` for the branch before doing development.
