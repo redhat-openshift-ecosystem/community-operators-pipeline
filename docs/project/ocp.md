@@ -1,11 +1,48 @@
-# OCP
-
-## TODO
-- ui max k8s
-- latest
-- where are bundles
+# Red Hat OpenShift Container Platform (OCP)
 
 The following part is related to Openshift only.
+
+## Production bundle and catalog locations
+
+| Type | Image | Description |
+| ----------------- | ------------ |------------ |
+| Bundles | [quay.io/openshift-community-operators/<strong>OPERATOR_NAME</strong>:v<strong>OPERATOR_VERSION</strong>](https://quay.io/organization/openshift-community-operators ){:target="\_blank"} | Example: [quay.io/openshift-community-operators/etcd:v0.9.4](https://quay.io/repository/openshift-community-operators/etcd?tab=tags){:target="\_blank"} |
+| Temporary index (tags) | [quay.io/openshift-community-operators/catalog_tmp:v<strong>OCP_VERSION</strong>](https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags){:target="\_blank"} | Index contains packages with version same as bundle tag name. <br> Example for ocp v4.11: [quay.io/openshift-community-operators/catalog_tmp:v4.11](https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags){:target="\_blank"} |
+| Temporary index (shas) | [quay.io/openshift-community-operators/catalog_tmp:v<strong>OCP_VERSION</strong>s](https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags){:target="\_blank"}  | Index contains packages with version as bundle sha (used for production). <br>Example for ocp v4.11: [quay.io/openshift-community-operators/catalog_tmp:v4.11](https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags){:target="\_blank"}|
+| Pre-Production index | [quay.io/openshift-community-operators/catalog:v<strong>OCP_VERSION</strong>](https://quay.io/repository/openshift-community-operators/catalog?tab=tags){:target="\_blank"} | Multiarch production index image used in OCP cluster. <br>Example for ocp v4.11: [quay.io/openshift-community-operators/catalog:v4.11](https://quay.io/repository/openshift-community-operators/catalog?tab=tags){:target="\_blank"}|
+| Production index | [quay.io/openshift-community-operators/catalog:v<strong>OCP_VERSION</strong>](https://quay.io/repository/openshift-community-operators/catalog?tab=tags){:target="\_blank"} | Multiarch production index image used in OCP cluster. <br>Example for ocp v4.11: [quay.io/openshift-community-operators/catalog:v4.11](https://quay.io/repository/openshift-community-operators/catalog?tab=tags){:target="\_blank"}|
+
+
+
+## OCP max OpenShift version
+In the bundle format, one can set OCP version range by adding `com.redhat.openshift.versions: "v4.8-v4.11"` to `metadata/annotations.yaml` file (see below). 
+
+```
+annotations:
+  # Core bundle annotations.
+  operators.operatorframework.io.bundle.mediatype.v1: registry+v1
+...
+...
+  com.redhat.openshift.versions: "v4.8-v4.11"
+```
+
+For package manifest format it is not possible, but there is an option to set the maximum ocp version via csv in `metadata.annotations` key. One can add the following `olm.properties:` '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'`(see below). 
+```
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    # Setting olm.maxOpenShiftVersion automatically
+    # This property was added via an automatic process since it was possible to identify that this distribution uses API(s),
+    # which will be removed in the k8s version 1.22 and OpenShift version OCP 4.9. Then, it will prevent OCP users to
+    # upgrade their cluster to 4.9 before they have installed in their current clusters a version of your operator that
+    # is compatible with it. Please, ensure that your project is no longer using these API(s) and that you start to
+    # distribute solutions which is compatible with Openshift 4.9.
+    # For further information, check the README of this repository.
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
+...
+```
+
 
 ## How OCP installation is tested
 Prow is an external OpenShift release tooling framework that is used as an installation test in the community pipeline.
