@@ -532,15 +532,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#todo" class="md-nav__link">
-    TODO
+  <a href="#overview" class="md-nav__link">
+    Overview
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#production-bundle-and-catalog-locations" class="md-nav__link">
+    Production bundle and catalog locations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kind-cluster-and-kubernetes-version" class="md-nav__link">
+    Kind cluster and Kubernetes version
   </a>
   
 </li>
@@ -602,15 +609,42 @@
 
 
 <h1 id="project-maintain">Project maintain</h1>
-<h2 id="todo">TODO</h2>
-<ul>
-<li>ui max k8s</li>
-<li>latest</li>
-<li>where are bundles</li>
-<li>which cluster is used for the installation test</li>
-<li>kind kubernetes version</li>
-</ul>
 <h2 id="overview">Overview</h2>
+<p>The pipeline tests are using <a href="https://kind.sigs.k8s.io/" target="_blank">kind</a> cluster to test operator installation with local container registry setup.</p>
+<h2 id="production-bundle-and-catalog-locations">Production bundle and catalog locations</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Image</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bundles</td>
+<td><a href="https://quay.io/organization/operatorhubio" target="_blank">quay.io/operatorhubio/<strong>OPERATOR_NAME</strong>:v<strong>OPERATOR_VERSION</strong></a></td>
+<td>Example: <a href="https://quay.io/repository/operatorhubio/etcd?tab=tags" target="_blank">quay.io/operatorhubio/etcd:v0.9.4</a></td>
+</tr>
+<tr>
+<td>Temporary index (tags)</td>
+<td><a href="https://quay.io/repository/operatorhubio/catalog_tmp?tab=tags" target="_blank">quay.io/operatorhubio/catalog_tmp:latest</a></td>
+<td>Index contains packages with version same as bundle tag name</td>
+</tr>
+<tr>
+<td>Temporary index (shas)</td>
+<td><a href="https://quay.io/repository/operatorhubio/catalog_tmp?tab=tags" target="_blank">quay.io/operatorhubio/catalog_tmp:latests</a></td>
+<td>Index contains packages with version as bundle sha (used for production)</td>
+</tr>
+<tr>
+<td>Production index</td>
+<td><a href="https://quay.io/repository/operatorhubio/catalog?tab=tags" target="_blank">quay.io/operatorhubio/catalog:latest</a></td>
+<td>Multiarch production index image used in <code>operatorhubio-catalog</code> seen by OLM</td>
+</tr>
+</tbody>
+</table>
+<h2 id="kind-cluster-and-kubernetes-version">Kind cluster and Kubernetes version</h2>
+<p>By default, the latest k8s version supported by kind is used until the user doesn't limit it via <code>operatorhub.io/ui-metadata-max-k8s-version</code> defined in <code>metadata.annotations</code> in the CSV file. In case the following value is set <code>operatorhub.io/ui-metadata-max-k8s-version: "1.21"</code> then the kind cluster will use Kubernetes latest 1.21 version that kind supports. One can list available Kubernetes versions in <a href="https://github.com/kubernetes-sigs/kind/releases" target="_blank">kind project release section</a></p>
 
 
 

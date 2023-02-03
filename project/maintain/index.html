@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#project-maintain" class="md-skip">
+        <a href="#maintainance" class="md-skip">
           Skip to content
         </a>
       
@@ -518,18 +518,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#todo" class="md-nav__link">
-    TODO
+  <a href="#labels" class="md-nav__link">
+    Labels
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-upgrade" class="md-nav__link">
-    Project upgrade
+  <a href="#upgrade" class="md-nav__link">
+    Upgrade
   </a>
   
-    <nav class="md-nav" aria-label="Project upgrade">
+    <nav class="md-nav" aria-label="Upgrade">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -614,14 +614,68 @@
   </a>
 
 
-<h1 id="project-maintain">Project maintain</h1>
-<h2 id="todo">TODO</h2>
-<ul>
-<li>admin action labels: allow-longer, allow ci</li>
-<li>standard automatic labels</li>
-<li>How to upgrade</li>
-</ul>
-<h2 id="project-upgrade">Project upgrade</h2>
+<h1 id="maintainance">Maintainance</h1>
+<h2 id="labels">Labels</h2>
+<p>The operator project is using various labels to handle different situations. Here is the list of them and their meaning</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allow/operator-version-overwrite</code></td>
+<td>Operator version will be overritten (only cosmetics changes)</td>
+</tr>
+<tr>
+<td><code>allow/serious-changes-to-existing</code></td>
+<td>User is overwiting field in csv that are not allowed by default via previous label. Maintainer can allow these changes to be applied also.</td>
+</tr>
+<tr>
+<td><code>allow/operator-recreate</code></td>
+<td>Operator will be recreated (deleted/created). It happens when mutiple versions are modified of operator</td>
+</tr>
+<tr>
+<td><code>allow/ci-changes</code></td>
+<td>When there are changes outside of <code>operators</code> directory maintainer can set this label to skip failing</td>
+</tr>
+<tr>
+<td><code>allow/longer-deployment</code></td>
+<td>It sets longer time for operator installation timeout</td>
+</tr>
+<tr>
+<td><code>authorized-changes</code></td>
+<td>The changes are autorized. User can have this automatically when author is in reviever list in the <code>ci.yaml</code> file(needs for automerge)</td>
+</tr>
+<tr>
+<td><code>dco-failed</code></td>
+<td>DCO failed. Commits were not signedoff</td>
+</tr>
+<tr>
+<td><code>package-validated</code></td>
+<td>Package is validated (needs for automerge)</td>
+</tr>
+<tr>
+<td><code>installation-validated</code></td>
+<td>Installation is validated (needs for automerge)</td>
+</tr>
+<tr>
+<td><code>installation-skipped</code></td>
+<td>Installation is skipped. Some operators requested not to test installation</td>
+</tr>
+<tr>
+<td><code>needs-rebase</code></td>
+<td>User should rebase to latest <code>main</code> branch</td>
+</tr>
+<tr>
+<td><code>new-operator</code></td>
+<td>Label if operator is new. In other words if there is only one version of operator</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upgrade">Upgrade</h2>
 <p><img alt="PR" src="../../images/project-upgrade-action.png" /></p>
 <h3 id="github-action-ci-upgrade">GitHub Action - CI Upgrade</h3>
 <p>On every workflow template and config change, one has to run an upgrade to apply changes for each project.</p>

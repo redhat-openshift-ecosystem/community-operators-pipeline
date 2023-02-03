@@ -398,22 +398,29 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operator-tools-versions-and-upgrade" class="md-nav__link">
+    Operator tools versions and upgrade
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ansible-playbook-example" class="md-nav__link">
     Ansible playbook example
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#switch-k8s-and-ocp" class="md-nav__link">
     Switch K8S and OCP
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -690,12 +697,28 @@
 <h3 id="github-action-workflows-and-scripts">GitHub action workflows and scripts</h3>
 <p>The <code>ci/latest</code> and <code>ci/dev</code> branches can be used in both production and development projects by specifying the branch name in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow</p>
 <h3 id="ansible-playbook-images">Ansible playbook images</h3>
-<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="/framework/overview/#producion-operator-repositories" target="_blank">Producion operator repositories</a> in <code>pipline.image</code> key.</p>
+<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="/framework/overview/#producion-operator-repositories" target="_blank">Production operator repositories</a> in <code>pipline.image</code> key.</p>
 <ul>
 <li>The <code>latest</code> tag is produced automatically by pushing changes into <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks" target="_blank">https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</a> in <code>upstream-community</code> branch.</li>
 <li>The <code>dev</code> tag is produced by manually triggering Github Action <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml" target="_blank">Build playbook image</a> and choosing a branch that starts with <code>upstream-community-*</code>. More info in the script <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh" target="_blank">here</a>. The developer should choose a name starting with <code>upstream-community-*</code> for the branch before doing development.</li>
 </ul>
-<h3 id="ansible-playbook-example">Ansible playbook example</h3>
+<h2 id="operator-tools-versions-and-upgrade">Operator tools versions and upgrade</h2>
+<p>The tools like <code>operator-sdk</code>, <code>opm</code> and others that are used in the pipeline process are installed via Ansible Playbooks. These tools are automatically installed in <a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks</a> image or installed on-fly via <code>ansible-playbook</code> command. The tool versions are configured at the main <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/local.yml#L37" target="_blank">local.yaml</a>. The relevant part is shown below and it is self-explanatory:</p>
+<div class="highlight"><pre><span></span><code>kind_version: v0.12.0
+kind_kube_version: v1.21.1
+operator_sdk_version: v1.25.2
+operator_courier_version: 2.1.11
+olm_version: 0.20.0
+opm_version: v1.26.2
+k8s_community_bundle_validator_version: v0.1.0
+oc_version: 4.3.5
+go_version: 1.13.7
+jq_version: 1.6
+yq_version: 2.2.1
+umoci_version: v0.4.5
+iib_version: v6.3.0
+</code></pre></div>
+<h2 id="ansible-playbook-example">Ansible playbook example</h2>
 <p>Ansible playbook parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script via <code>ExecParameters()</code>. The following example shows how <code>operator_info</code> is created by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/operator_release.yaml#L230" target="_blank">Operator release</a> pipeline</p>
 <div class="highlight"><pre><span></span><code>ansible-playbook -i localhost, -e ansible_connection=local \
 upstream/local.yml \
@@ -763,7 +786,7 @@ upstream/local.yml \
 </tr>
 </tbody>
 </table>
-<h3 id="switch-k8s-and-ocp">Switch K8S and OCP</h3>
+<h2 id="switch-k8s-and-ocp">Switch K8S and OCP</h2>
 <p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
 
 

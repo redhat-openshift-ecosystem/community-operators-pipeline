@@ -21,7 +21,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#ocp">
+<a class="md-skip" href="#red-hat-openshift-container-platform-ocp">
           Skip to content
         </a>
 </div>
@@ -250,8 +250,13 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#todo">
-    TODO
+<a class="md-nav__link" href="#production-bundle-and-catalog-locations">
+    Production bundle and catalog locations
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ocp-max-openshift-version">
+    OCP max OpenShift version
   </a>
 </li>
 <li class="md-nav__item">
@@ -356,14 +361,69 @@
 <a class="md-content__button md-icon" href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/edit/master/docs/project/ocp.md" title="Edit this page">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"></path></svg>
 </a>
-<h1 id="ocp">OCP</h1>
-<h2 id="todo">TODO</h2>
-<ul>
-<li>ui max k8s</li>
-<li>latest</li>
-<li>where are bundles</li>
-</ul>
+<h1 id="red-hat-openshift-container-platform-ocp">Red Hat OpenShift Container Platform (OCP)</h1>
 <p>The following part is related to Openshift only.</p>
+<h2 id="production-bundle-and-catalog-locations">Production bundle and catalog locations</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Image</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bundles</td>
+<td><a href="https://quay.io/organization/openshift-community-operators" target="_blank">quay.io/openshift-community-operators/<strong>OPERATOR_NAME</strong>:v<strong>OPERATOR_VERSION</strong></a></td>
+<td>Example: <a href="https://quay.io/repository/openshift-community-operators/etcd?tab=tags" target="_blank">quay.io/openshift-community-operators/etcd:v0.9.4</a></td>
+</tr>
+<tr>
+<td>Temporary index (tags)</td>
+<td><a href="https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog_tmp:v<strong>OCP_VERSION</strong></a></td>
+<td>Index contains packages with version same as bundle tag name. <br/> Example for ocp v4.11: <a href="https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog_tmp:v4.11</a></td>
+</tr>
+<tr>
+<td>Temporary index (shas)</td>
+<td><a href="https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog_tmp:v<strong>OCP_VERSION</strong>s</a></td>
+<td>Index contains packages with version as bundle sha (used for production). <br/>Example for ocp v4.11: <a href="https://quay.io/repository/openshift-community-operators/catalog_tmp?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog_tmp:v4.11</a></td>
+</tr>
+<tr>
+<td>Pre-Production index</td>
+<td><a href="https://quay.io/repository/openshift-community-operators/catalog?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog:v<strong>OCP_VERSION</strong></a></td>
+<td>Multiarch production index image used in OCP cluster. <br/>Example for ocp v4.11: <a href="https://quay.io/repository/openshift-community-operators/catalog?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog:v4.11</a></td>
+</tr>
+<tr>
+<td>Production index</td>
+<td><a href="https://quay.io/repository/openshift-community-operators/catalog?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog:v<strong>OCP_VERSION</strong></a></td>
+<td>Multiarch production index image used in OCP cluster. <br/>Example for ocp v4.11: <a href="https://quay.io/repository/openshift-community-operators/catalog?tab=tags" target="_blank">quay.io/openshift-community-operators/catalog:v4.11</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="ocp-max-openshift-version">OCP max OpenShift version</h2>
+<p>In the bundle format, one can set OCP version range by adding <code>com.redhat.openshift.versions: "v4.8-v4.11"</code> to <code>metadata/annotations.yaml</code> file (see below). </p>
+<div class="highlight"><pre><span></span><code>annotations:
+  # Core bundle annotations.
+  operators.operatorframework.io.bundle.mediatype.v1: registry+v1
+...
+...
+  com.redhat.openshift.versions: "v4.8-v4.11"
+</code></pre></div>
+<p>For package manifest format it is not possible, but there is an option to set the maximum ocp version via csv in <code>metadata.annotations</code> key. One can add the following <code>olm.properties:</code> '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'`(see below). 
+<div class="highlight"><pre><span></span><code>apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    # Setting olm.maxOpenShiftVersion automatically
+    # This property was added via an automatic process since it was possible to identify that this distribution uses API(s),
+    # which will be removed in the k8s version 1.22 and OpenShift version OCP 4.9. Then, it will prevent OCP users to
+    # upgrade their cluster to 4.9 before they have installed in their current clusters a version of your operator that
+    # is compatible with it. Please, ensure that your project is no longer using these API(s) and that you start to
+    # distribute solutions which is compatible with Openshift 4.9.
+    # For further information, check the README of this repository.
+    olm.properties: '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'
+...
+</code></pre></div></p>
 <h2 id="how-ocp-installation-is-tested">How OCP installation is tested</h2>
 <p>Prow is an external OpenShift release tooling framework that is used as an installation test in the community pipeline.</p>
 <h3 id="how-to-edit-prow-building-block-configuration">How to edit prow building block configuration</h3>
