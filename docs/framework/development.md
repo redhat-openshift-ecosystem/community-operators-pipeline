@@ -6,9 +6,9 @@ Three main components are used in each pipeline
 
 - [GitHub action workflows](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/latest/ci/templates/workflow){:target="\_blank"}
 - Driver scripts
-  - [opp-env.sh](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh){:target="\_blank"}
-  - [opp.sh](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh){:target="\_blank"}
-  - [helper scripts](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/){:target="\_blank"}
+    - [opp-env.sh](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh){:target="\_blank"}
+    - [opp.sh](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh){:target="\_blank"}
+    - [helper scripts](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/){:target="\_blank"}
 - [Ansible playbooks](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community/upstream){:target="\_blank"} from `upstream-community` branch `upstream` directory
 
 ## Process
