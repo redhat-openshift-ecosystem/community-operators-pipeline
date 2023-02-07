@@ -37,10 +37,10 @@ jobs:
               body: '/hold'
             })
             
-      - name: Sleep for 5 seconds
+      - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '5s'
+          time: '10s'
 
       - name: Doing hold cancel
         uses: actions/github-script@v3
