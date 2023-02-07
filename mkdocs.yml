@@ -8,13 +8,16 @@ nav:
       - "Development": framework/development.md
   - "Project": 
       - "Overview": project/overview.md
-      - "Deploy":
+      - "Configure":
         - "Initialize": project/init.md
-        - "Developent": project/develop.md
+        - "Config": project/config.md
+        - "Setup": project/setup.md
       - "Maintainance": 
         - "Common": project/maintain.md
         - "Kubernetes": project/k8s.md
         - "Openshift (OCP)": project/ocp.md
+      - "Developent":
+        - "How to": project/develop.md
 
 extra:
   version: 0.1

@@ -1,16 +1,6 @@
 # Development
 
-## TODO
-
-- Explain workflow of playbooks and Github Action workflows step by step
-- How to fix bug or develop feature
-- How to test developemnt changes
-- QA
-  - How to add comment in PR
-  - How to fix error in test or release
-  - I want to add label to PR where to change
-
-## How to develop a new feature or fix a bug
+## Develop a new feature or fix a bug
 1. Initialize an own branch from dev branch
 1. Develop a feature or bugfix itself
 1. Open a PR against dev branch.
@@ -99,9 +89,9 @@ Now, it is time to apply workflows by running `CI Upgrade` on [production OCP](h
 
 Failure is not bad if workflows should stay as it is, it just means nothing was changed. If there should be changes, investigate why no change is present.
 
-## How to add a feature with an automatic comment to a PR
+## Add a feature with an automatic comment to a PR
 In some cases, it is very useful to notify a contributor directly to a PR thread. We are using `github.issues.createComment` action. It is used many times, one example bellow:
-
+{% raw %} 
 ``` yaml
 with:
   github-token: ${{secrets.GITHUB_TOKEN}}
@@ -113,3 +103,4 @@ with:
       body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#reviewers).'
     })
 ```
+{% endraw %} 

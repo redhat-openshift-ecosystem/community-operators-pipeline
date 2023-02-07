@@ -1,15 +1,12 @@
 # Project Overview
+The goal of the project is to test, release and deploy an operator to index so it is easily installable.
 
-## TODO
-Something about the GitHub action structure we use
-Maybe some mermaid graph
-- List of Workflows needed for project admin
-  - Upgrade CI
-  - Operator test
-  - Operator release
-  - Operator release manual
-  - More info about all GitHub action points to the framework
+The process is displayed below.
 
-## Upgrade CI
+```mermaid
 
-## Project structure
+graph TD
+id1(Operator locally) --> id2(PR to project) --> id3(Operator test) --> id4(Operator release to index)--> id5(Install operator on cluster)
+
+```
+Let's get started with [Project initialize](/project/init).
