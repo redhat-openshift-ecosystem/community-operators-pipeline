@@ -35,6 +35,11 @@ jobs:
               repo: context.repo.repo,
               body: '/hold'
             })
+            
+      - name: Sleep for 5 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '5s'
 
       - name: Doing hold cancel
         uses: actions/github-script@v3
