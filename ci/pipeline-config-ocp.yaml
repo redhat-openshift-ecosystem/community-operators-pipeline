@@ -19,7 +19,7 @@ production:
       alias: quay.io/community-operators-pipeline/catalog
       endpoint: https://community-signing-pipeline-dev.apps.pipelines-stage.0ce8.p1.openshiftapps.com
   mirror:
-    enabled: 1
+    enabled: 0
     multiarch: 
       base: registry.redhat.io/openshift4/ose-operator-registry
       base_tags:
