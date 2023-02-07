@@ -234,6 +234,8 @@ spec:
     * **Dashboard** - Installs the CockroachDB user interface to administer your cluster. Easily expose it via an Ingress rule.
     Review all of the [confiuguration options](https://github.com/helm/charts/tree/master/stable/cockroachdb#configuration) to best run your database instance. The example configuration is derived from the chart's [`values.yaml`](https://github.com/helm/charts/blob/master/stable/cockroachdb/values.yaml).
     ## Using the cluster
+
+    
     The resulting cluster endpoint can be consumed from a `Service` that follows the pattern: `<StatefulSet-name>-public`. For example to connect using the command line client, use something like the following to obtain the name of the service:
     ```
     kubectl get service -l chart=cockroachdb-3.0.7
