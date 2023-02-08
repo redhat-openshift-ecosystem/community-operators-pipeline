@@ -13,7 +13,7 @@
     
     
       
-        <title>Developent - Community operators pipeline admin</title>
+        <title>How to - Community operators pipeline admin</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#macro-rendering-error" class="md-skip">
+        <a href="#development" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Developent
+              How to
             
           </span>
         </div>
@@ -389,29 +389,27 @@
               
   
   
-    
-  
   
     
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
       
       
       
       
         <label class="md-nav__link" for="__nav_3_2">
-          Deploy
+          Configure
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Deploy" data-md-level="2">
+      <nav class="md-nav" aria-label="Configure" data-md-level="2">
         <label class="md-nav__title" for="__nav_3_2">
           <span class="md-nav__icon md-icon"></span>
-          Deploy
+          Configure
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -433,21 +431,25 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Developent
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
       </a>
-      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
+        Setup
+      </a>
     </li>
   
 
@@ -537,6 +539,167 @@
 
             
           
+            
+              
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4">
+          Developent
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developent" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Developent
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#develop-a-new-feature-or-fix-a-bug" class="md-nav__link">
+    Develop a new feature or fix a bug
+  </a>
+  
+    <nav class="md-nav" aria-label="Develop a new feature or fix a bug">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#starting-branch" class="md-nav__link">
+    Starting branch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pr-to-dev-branch" class="md-nav__link">
+    PR to dev branch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-build-trigger" class="md-nav__link">
+    Image build trigger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-a-playbook-funkcionality" class="md-nav__link">
+    Test a playbook funkcionality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#release-test" class="md-nav__link">
+    Release test
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-pr-against-the-production-branch" class="md-nav__link">
+    Create a PR against the production branch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wait-until-an-image-is-produced-automatically-in-case-of-playbook-changes" class="md-nav__link">
+    Wait until an image is produced automatically in case of playbook changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-production-repositories-when-workflow-templates-were-changed" class="md-nav__link">
+    Upgrade production repositories when workflow templates were changed
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-a-feature-with-an-automatic-comment-to-a-pr" class="md-nav__link">
+    Add a feature with an automatic comment to a PR
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -563,19 +726,78 @@
   </a>
 
 
-<h1 id="macro-rendering-error"><em>Macro Rendering Error</em></h1>
-<p><strong>UndefinedError</strong>: 'secrets' is undefined</p>
-<div class="highlight"><pre><span></span><code>Traceback (most recent call last):
-  File &quot;/usr/local/lib/python3.10/site-packages/mkdocs_macros/plugin.py&quot;, line 480, in render
-    return md_template.render(**page_variables)
-  File &quot;/usr/local/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 1301, in render
-    self.environment.handle_exception()
-  File &quot;/usr/local/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 936, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File &quot;&lt;template&gt;&quot;, line 107, in top-level template code
-  File &quot;/usr/local/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 485, in getattr
-    return getattr(obj, attribute)
-jinja2.exceptions.UndefinedError: &#39;secrets&#39; is undefined
+<h1 id="development">Development</h1>
+<h2 id="develop-a-new-feature-or-fix-a-bug">Develop a new feature or fix a bug</h2>
+<ol>
+<li>Initialize an own branch from dev branch</li>
+<li>Develop a feature or bugfix itself</li>
+<li>Open a PR against dev branch.</li>
+<li>Trigger an image build when playbooks were edited or upgrade testing environment when workflows were edited</li>
+<li>Test the playbook functionality</li>
+<li>Create a PR against the production branch</li>
+<li>Wait until an image is produced automatically in case of playbook changes</li>
+<li>Upgrade production repositories when workflow templates were changed</li>
+</ol>
+<p>We will provide more details about some steps below:</p>
+<h3 id="starting-branch">Starting branch</h3>
+<h4 id="playbook-case">Playbook case</h4>
+<p>To develop a new feature, a developer has to start from <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community-dev"><code>upstream-community-dev</code></a> branch in playbooks by creating their own branch. </p>
+<p>Make sure that the development branch <code>upstream-community-dev</code> is synchronized with production one <code>upstream-community</code>.</p>
+<h4 id="workflow-case">Workflow case</h4>
+<p>The development branch which is your base branch is <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/dev"><code>ci/dev</code></a>. Please make sure that the development branch <code>ci/dev</code> is synchronized with the production branch <code>ci/latest</code>.</p>
+<div class="admonition error">
+<p class="admonition-title">Never edit production workflows directly, which are located in <code>.github/workflows</code> directory. Your changes will be lost during the next pipeline upgrade - during the next feature implementation.</p>
+</div>
+<h3 id="pr-to-dev-branch">PR to dev branch</h3>
+<h4 id="playbook-case_1">Playbook case</h4>
+<p>When a feature/bug fix is ready, please open a PR against <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community-dev"><code>upstream-community-dev</code></a> branch.</p>
+<p>There aren't any valid unit tests, just obsolete ones. You can ignore failure there. The only valid test is linting, which should pass.</p>
+<h4 id="workflow-case_1">Workflow case</h4>
+<p>Open a PR against <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/dev"><code>ci/dev</code></a> branch.</p>
+<h3 id="image-build-trigger">Image build trigger</h3>
+<h4 id="playbook-case_2">Playbook case</h4>
+<p>To build an image from just edited playbooks, trigger it by GH action called <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml"><code>Build playbook image</code></a></p>
+<p>Click <code>Run workflow</code> on the top right and select a branch. In this case <code>upstream-community-dev</code>.</p>
+<p>The functionality allows triggering image build from the feature branch also, however, the naming convention should be like <code>upstream-community-dev-[something]</code>.</p>
+<p>In both cases (<code>upstream-community-dev-[something]</code> and <code>upstream-community-dev</code>) your action will produce <code>quay.io/operator_testing/operator-test-playbooks:dev</code> image.</p>
+<h4 id="workflow-case-repo-upgrade">Workflow case - repo upgrade</h4>
+<p>No need to build any image. To populate edited workflow templates to the testing project, please execute <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml">Upgrade GH action</a>. Set branches which you want to test. The standard setup is <code>ci-dev</code> and <code>upstream-community-dev</code>.</p>
+<h3 id="test-a-playbook-funkcionality">Test a playbook funkcionality</h3>
+<p>To test a currently implemented feature,  one or more test cases need to be set. 
+ The only test which is expected to fail is <code>ci/prow/4.8-pipeline-functionality</code>. There is a space for improvement to make the test work as a quality gate for Prow job workflow file changes.</p>
+<p>Back to tests, we should focus on. We will test the following parts of the test suite:
+- Basic PR tests
+- Temp index test
+- Prow test
+- Release test</p>
+<h4 id="basic-pr-tests">Basic PR tests</h4>
+<p>To execute all basic PR tests, please edit a description in an operator in the <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/main/operators">test pipeline environment</a>. Please do not add more operators if not necessary, it can increase the repository size for workflow templates. We recommend editing just a description in an operator. Push to your branch on your own GH repository. Then open a PR. This corresponds with the setup of how contributors work against the community repositories.</p>
+<h4 id="prow-test">Prow test</h4>
+<p>Every PR triggers a Prow test no matter if it is K8S or OCP. This is a standard setup only for <code>community-operators-pipeline</code> pipeline. Production pipelines run Prow only if needed. More information on where to find the Prow debug log is <a href="https://redhat-openshift-ecosystem.github.io/community-operators-prod/maintainer-documentation/#the-installation-validated-label-is-missing">here</a>.</p>
+<h4 id="temp-index-test">Temp index test</h4>
+<p>When prow fails it can be due to a missing temporary index or temporary bundle. Temp index and the bundle are processed by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/prepare_test_index.yaml">Prepare Test Index</a> workflow. Logs are directly available. If you are not sure to which PR is workflow run related, check <code>Build temp index and push</code> stage. You should see something like <code>Preparing temp index for PR: 347</code>.</p>
+<h3 id="release-test">Release test</h3>
+<p>When all tests are green, expect <code>ci/prow/4.8-pipeline-functionality</code> as mentioned above, we can test release by merging the PR. Then a release can be checked directly <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/operator_release.yaml">here</a>, we expect a green result.</p>
+<h3 id="create-a-pr-against-the-production-branch">Create a PR against the production branch</h3>
+<p>Now you are in the phase to create PRs from dev to production for both playbooks and framework:</p>
+<p>Open and merge <code>community-operators-pipeline:ci/dev</code> to <code>community-operators-pipeline:ci/latest</code>. Do not apply it by <code>Upgrade</code> procedure next steps are completed to the state that a new playbook image is out.</p>
+<p>Open a PR from <code>operator-test-playbooks:upstream-community-dev</code> to <code>operator-test-playbooks:upstream-community</code>.</p>
+<h3 id="wait-until-an-image-is-produced-automatically-in-case-of-playbook-changes">Wait until an image is produced automatically in case of playbook changes</h3>
+<p>After it is merged, just wait until <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml"><code>Build playbook image</code></a> pipeline has finished.</p>
+<h3 id="upgrade-production-repositories-when-workflow-templates-were-changed">Upgrade production repositories when workflow templates were changed</h3>
+<p>Now, it is time to apply workflows by running <code>CI Upgrade</code> on <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml">production OCP</a> and <a href="https://github.com/k8s-operatorhub/community-operators/actions/workflows/upgrade.yaml">k8s production</a>.</p>
+<p>Failure is not bad if workflows should stay as it is, it just means nothing was changed. If there should be changes, investigate why no change is present.</p>
+<h2 id="add-a-feature-with-an-automatic-comment-to-a-pr">Add a feature with an automatic comment to a PR</h2>
+<p>In some cases, it is very useful to notify a contributor directly to a PR thread. We are using <code>github.issues.createComment</code> action. It is used many times, one example bellow:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{secrets.GITHUB_TOKEN}}</span><span class="w"></span>
+<span class="w">  </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">    </span><span class="no">github.issues.createComment({</span><span class="w"></span>
+<span class="w">      </span><span class="no">issue_number: context.issue.number,</span><span class="w"></span>
+<span class="w">      </span><span class="no">owner: context.repo.owner,</span><span class="w"></span>
+<span class="w">      </span><span class="no">repo: context.repo.repo,</span><span class="w"></span>
+<span class="w">      </span><span class="no">body: &#39;Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#reviewers).&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="no">})</span><span class="w"></span>
 </code></pre></div>
 
 
@@ -597,7 +819,7 @@ jinja2.exceptions.UndefinedError: &#39;secrets&#39; is undefined
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../init/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Initialize" rel="prev">
+        <a href="../ocp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Openshift (OCP)" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -606,26 +828,11 @@ jinja2.exceptions.UndefinedError: &#39;secrets&#39; is undefined
               <span class="md-footer__direction">
                 Previous
               </span>
-              Initialize
+              Openshift (OCP)
             </div>
           </div>
         </a>
       
-      
-        
-        <a href="../maintain/" class="md-footer__link md-footer__link--next" aria-label="Next: Common" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Common
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
