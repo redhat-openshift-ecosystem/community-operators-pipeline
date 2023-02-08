@@ -6,6 +6,7 @@ nav:
   - "Framework":
       - "Overview": framework/overview.md
       - "Development": framework/development.md
+      - "How to document": framework/how-to-document.md
   - "Project": 
       - "Overview": project/overview.md
       - "Configure":
