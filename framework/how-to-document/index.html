@@ -13,7 +13,7 @@
     
     
       
-        <title>Development - Community operators pipeline admin</title>
+        <title>How to document - Community operators pipeline admin</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#development" class="md-skip">
+        <a href="#how-to-document" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Development
+              How to document
             
           </span>
         </div>
@@ -327,6 +327,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        Development
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -339,12 +353,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Development
+          How to document
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Development
+        How to document
       </a>
       
         
@@ -370,56 +384,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#process" class="md-nav__link">
-    Process
+  <a href="#documentation-location" class="md-nav__link">
+    Documentation location
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#production-vs-development" class="md-nav__link">
-    Production vs. Development
-  </a>
-  
-    <nav class="md-nav" aria-label="Production vs. Development">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#github-action-workflows-and-scripts" class="md-nav__link">
-    GitHub action workflows and scripts
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ansible-playbook-images" class="md-nav__link">
-    Ansible playbook images
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#operator-tools-versions-and-upgrade" class="md-nav__link">
-    Operator tools versions and upgrade
+  <a href="#where-to-edit-a-documentation" class="md-nav__link">
+    Where to edit a documentation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ansible-playbook-example" class="md-nav__link">
-    Ansible playbook example
+  <a href="#how-to-publish-a-documentation" class="md-nav__link">
+    How to publish a documentation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#switch-k8s-and-ocp" class="md-nav__link">
-    Switch K8S and OCP
+  <a href="#mkdocs-image" class="md-nav__link">
+    Mkdocs image
   </a>
   
 </li>
@@ -428,20 +415,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how-to-document/" class="md-nav__link">
-        How to document
-      </a>
     </li>
   
 
@@ -718,155 +691,38 @@
                 
                   
 
-  <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/edit/master/docs/framework/development.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/edit/master/docs/framework/how-to-document.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="development">Development</h1>
+<h1 id="how-to-document">How to document</h1>
 <h2 id="overview">Overview</h2>
-<p>Three main components are used in each pipeline</p>
+<p>Documentation is published as <code>mkdocs</code> which is an extension to the markdown format.</p>
+<h2 id="documentation-location">Documentation location</h2>
+<p>Public-facing documentation is located at </p>
 <ul>
-<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/ci/latest/ci/templates/workflow" target="_blank">GitHub action workflows</a></li>
-<li>Driver scripts<ul>
-<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh" target="_blank">opp-env.sh</a></li>
-<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a></li>
-<li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/" target="_blank">helper scripts</a></li>
+<li><a href="https://redhat-openshift-ecosystem.github.io/community-operators-prod/">https://redhat-openshift-ecosystem.github.io/community-operators-prod/</a></li>
+<li><a href="https://k8s-operatorhub.github.io/community-operators/">https://k8s-operatorhub.github.io/community-operators/</a></li>
+<li><a href="https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/">https://redhat-openshift-ecosystem.github.io/community-operators-pipeline/</a></li>
 </ul>
-</li>
-<li><a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/tree/upstream-community/upstream" target="_blank">Ansible playbooks</a> from <code>upstream-community</code> branch <code>upstream</code> directory</li>
-</ul>
-<h2 id="process">Process</h2>
-<ol>
-<li>GitHub action workflows are stored as ansible templates and during the <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> process</li>
-<li>Workflows are resolved using <a href="/framework/overview/#producion-operator-repositories">config files</a> and applied to the running project.</li>
-<li>The testing and release pipelines are triggered by these workflows and followed by running <code>Ansible playbook</code> with various parameters.</li>
-<li>These parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script
-   and the most relevant part is <code>function ExecParameters()</code>.</li>
-<li>These parameters are passed to Ansible Playbook <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/local.yml" target="_blank">local.yaml</a></li>
-<li>The playbook is executed inside the container produced by <a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:latest</a> image.</li>
-</ol>
-<h2 id="production-vs-development">Production vs. Development</h2>
-<p>The <a href="/framework/overview/#codebase-and-development" target="_blank">Codebase and development</a> table shows various branches used for <code>production</code> and <code>development</code>. Let's summarize it in the table bellow</p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>GitHub action workflows and scripts</th>
-<th>Ansible playbooks</th>
-<th>Ansible playbook image</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Production</td>
-<td><code>ci/latest</code></td>
-<td><code>upstream-community</code></td>
-<td><a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:latest</a></td>
-</tr>
-<tr>
-<td><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline" target="_blank">Development or staging</a></td>
-<td><code>ci/dev</code></td>
-<td><code>upstream-community-dev</code></td>
-<td><a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:dev</a></td>
-</tr>
-</tbody>
-</table>
-<h3 id="github-action-workflows-and-scripts">GitHub action workflows and scripts</h3>
-<p>The <code>ci/latest</code> and <code>ci/dev</code> branches can be used in both production and development projects by specifying the branch name in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow</p>
-<h3 id="ansible-playbook-images">Ansible playbook images</h3>
-<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="/framework/overview/#producion-operator-repositories" target="_blank">Production operator repositories</a> in <code>pipline.image</code> key.</p>
+<h2 id="where-to-edit-a-documentation">Where to edit a documentation</h2>
+<p>User and maintainer documentation is at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/documentation">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/documentation</a></p>
+<p>Admin documentation is located at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/documentation-admin">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/tree/documentation-admin</a></p>
+<h2 id="how-to-publish-a-documentation">How to publish a documentation</h2>
+<p>No need to publish documentation manually. It is automatically rendered overnight. If there is some urgent case and you need to publish documentation, please restart a <code>Documentation</code> workflow</p>
 <ul>
-<li>The <code>latest</code> tag is produced automatically by pushing changes into <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks" target="_blank">https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</a> in <code>upstream-community</code> branch.</li>
-<li>The <code>dev</code> tag is produced by manually triggering Github Action <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml" target="_blank">Build playbook image</a> and choosing a branch that starts with <code>upstream-community-*</code>. More info in the script <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh" target="_blank">here</a>. The developer should choose a name starting with <code>upstream-community-*</code> for the branch before doing development.</li>
+<li>OCP documentation workflow <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/documentation.yaml">https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/documentation.yaml</a></li>
+<li>K8S documentation workflow is at <a href="https://github.com/k8s-operatorhub/community-operators/actions/workflows/documentation.yaml">https://github.com/k8s-operatorhub/community-operators/actions/workflows/documentation.yaml</a></li>
 </ul>
-<h2 id="operator-tools-versions-and-upgrade">Operator tools versions and upgrade</h2>
-<p>The tools like <code>operator-sdk</code>, <code>opm</code> and others that are used in the pipeline process are installed via Ansible Playbooks. These tools are automatically installed in <a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks</a> image or installed on-fly via <code>ansible-playbook</code> command. The tool versions are configured at the main <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/local.yml#L37" target="_blank">local.yaml</a>. The relevant part is shown below and it is self-explanatory:</p>
-<div class="highlight"><pre><span></span><code>kind_version: v0.12.0
-kind_kube_version: v1.21.1
-operator_sdk_version: v1.25.2
-operator_courier_version: 2.1.11
-olm_version: 0.20.0
-opm_version: v1.26.2
-k8s_community_bundle_validator_version: v0.1.0
-oc_version: 4.3.5
-go_version: 1.13.7
-jq_version: 1.6
-yq_version: 2.2.1
-umoci_version: v0.4.5
-iib_version: v6.3.0
-</code></pre></div>
-<h2 id="ansible-playbook-example">Ansible playbook example</h2>
-<p>Ansible playbook parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script via <code>ExecParameters()</code>. The following example shows how <code>operator_info</code> is created by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/operator_release.yaml#L230" target="_blank">Operator release</a> pipeline</p>
-<div class="highlight"><pre><span></span><code>ansible-playbook -i localhost, -e ansible_connection=local \
-upstream/local.yml \
---tags reset_tools,operator_info \
--e run_upstream=true \
--e run_prepare_catalog_repo_upstream=true \
--e catalog_repo=https://github.com/redhat-openshift-ecosystem/community-operators-pipeline -e catalog_repo_branch=main \
--e operator_base_dir=/tmp/community-operators-for-catalog/operators \
--e operators=auqa,cockroachdb \
--e cluster_type=ocp \
--e strict_cluster_version_labels=true \
--e production_registry_namespace=quay.io/community-operators-pipeline 
-</code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>ansible-playbook -i localhost, -e ansible_connection=local</code></td>
-<td>ansible command used in local run</td>
-</tr>
-<tr>
-<td><code>upstream/local.yml</code></td>
-<td>path to main playbook <code>local.yaml</code> in <code>upstream</code> dicrectory</td>
-</tr>
-<tr>
-<td><code>--tags reset_tools,operator_info</code></td>
-<td><code>reset_tools</code> tag to install tools and <code>operator_info</code> to produce file contains info about operators</td>
-</tr>
-<tr>
-<td><code>-e run_upstream=true</code></td>
-<td>flag that upstream version is used</td>
-</tr>
-<tr>
-<td><code>-e run_prepare_catalog_repo_upstream=true</code></td>
-<td>flag that project and branch (see row bellow ) will be clonned to <code>/tmp/community-operators-for-catalog</code></td>
-</tr>
-<tr>
-<td><code>-e catalog_repo=... -e catalog_repo_branch=...</code></td>
-<td>repo and branch that operators are stored</td>
-</tr>
-<tr>
-<td><code>-e operator_base_dir=/tmp/community-operators-for-catalog/operators</code></td>
-<td>path where operators are taken</td>
-</tr>
-<tr>
-<td><code>-e operators=auqa,cockroachdb</code></td>
-<td>list of operators to be processed</td>
-</tr>
-<tr>
-<td><code>-e cluster_type=ocp</code></td>
-<td>cluster type to be used (<code>k8s</code> or <code>ocp</code>)</td>
-</tr>
-<tr>
-<td><code>-e strict_cluster_version_labels=true</code></td>
-<td>flat that cluster version is checked</td>
-</tr>
-<tr>
-<td><code>-e production_registry_namespace=quay.io/community-operators-pipeline</code></td>
-<td>registry/namepace used for bundles already published to be combined for index</td>
-</tr>
-</tbody>
-</table>
-<h2 id="switch-k8s-and-ocp">Switch K8S and OCP</h2>
-<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
+<p>Or for admin documentation use <code>Documentation admin</code> workflow at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/documentation.yaml">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/documentation.yaml</a></p>
+<p>By restarting the last workflow you immediately release an actual documentation version</p>
+<h2 id="mkdocs-image">Mkdocs image</h2>
+<p>The image for <code>mkdocs</code> is located at <a href="quay.io/operator_testing/community-operators-mkdocs:latest">quay.io/operator_testing/community-operators-mkdocs:latest</a>.
+No need to build an image manually, but for a complete picture it is good to know that a corresponding Dockerfile is located at <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/documentation/Dockerfile.mkdoc">https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/documentation/Dockerfile.mkdoc</a></p>
+<p>To build the image the following command can be executed:</p>
+<p><code>podman build -f Dockerfile.mkdoc -t quay.io/operator_testing/community-operators-mkdocs:latest .</code></p>
 
 
 
@@ -887,7 +743,7 @@ upstream/local.yml \
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../overview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
+        <a href="../development/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Development" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -896,20 +752,20 @@ upstream/local.yml \
               <span class="md-footer__direction">
                 Previous
               </span>
-              Overview
+              Development
             </div>
           </div>
         </a>
       
       
         
-        <a href="../how-to-document/" class="md-footer__link md-footer__link--next" aria-label="Next: How to document" rel="next">
+        <a href="../../project/overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              How to document
+              Overview
             </div>
           </div>
           <div class="md-footer__button md-icon">
