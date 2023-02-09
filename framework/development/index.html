@@ -739,8 +739,8 @@
 </ul>
 <h2 id="process">Process</h2>
 <ol>
-<li>GitHub action workflows are stored as ansible templates and during the <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> process</li>
-<li>Workflows are resolved using <a href="/framework/overview/#producion-operator-repositories">config files</a> and applied to the running project.</li>
+<li>GitHub action workflows are stored as ansible templates and during the <a href="../../project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> process</li>
+<li>Workflows are resolved using <a href="../overview/#producion-operator-repositories">config files</a> and applied to the running project.</li>
 <li>The testing and release pipelines are triggered by these workflows and followed by running <code>Ansible playbook</code> with various parameters.</li>
 <li>These parameters are controlled by <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp.sh" target="_blank">opp.sh</a> script
    and the most relevant part is <code>function ExecParameters()</code>.</li>
@@ -748,7 +748,7 @@
 <li>The playbook is executed inside the container produced by <a href="https://quay.io/repository/operator_testing/operator-test-playbooks" target="_blank">quay.io/operator_testing/operator-test-playbooks:latest</a> image.</li>
 </ol>
 <h2 id="production-vs-development">Production vs. Development</h2>
-<p>The <a href="/framework/overview/#codebase-and-development" target="_blank">Codebase and development</a> table shows various branches used for <code>production</code> and <code>development</code>. Let's summarize it in the table bellow</p>
+<p>The <a href="../overview/#codebase-and-development" target="_blank">Codebase and development</a> table shows various branches used for <code>production</code> and <code>development</code>. Let's summarize it in the table bellow</p>
 <table>
 <thead>
 <tr>
@@ -774,9 +774,9 @@
 </tbody>
 </table>
 <h3 id="github-action-workflows-and-scripts">GitHub action workflows and scripts</h3>
-<p>The <code>ci/latest</code> and <code>ci/dev</code> branches can be used in both production and development projects by specifying the branch name in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow</p>
+<p>The <code>ci/latest</code> and <code>ci/dev</code> branches can be used in both production and development projects by specifying the branch name in <a href="..//project/maintain#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow</p>
 <h3 id="ansible-playbook-images">Ansible playbook images</h3>
-<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="/framework/overview/#producion-operator-repositories" target="_blank">Production operator repositories</a> in <code>pipline.image</code> key.</p>
+<p>The <code>latest</code> and <code>dev</code> tag values are used in the project as stated in the configuration file of the project shown in <a href="../overview/#producion-operator-repositories" target="_blank">Production operator repositories</a> in <code>pipline.image</code> key.</p>
 <ul>
 <li>The <code>latest</code> tag is produced automatically by pushing changes into <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks" target="_blank">https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</a> in <code>upstream-community</code> branch.</li>
 <li>The <code>dev</code> tag is produced by manually triggering Github Action <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/actions/workflows/playbook_image.yml" target="_blank">Build playbook image</a> and choosing a branch that starts with <code>upstream-community-*</code>. More info in the script <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/playbook_version.sh" target="_blank">here</a>. The developer should choose a name starting with <code>upstream-community-*</code> for the branch before doing development.</li>
@@ -866,7 +866,7 @@ upstream/local.yml \
 </tbody>
 </table>
 <h2 id="switch-k8s-and-ocp">Switch K8S and OCP</h2>
-<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in <a href="/project/maintain/#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
+<p>One can switch between Kubernetes (k8s) and Openshift (ocp) setup by setting the value in <a href="../project/maintain#github-action-ci-upgrade" target="_blank">Upgrade</a> workflow. This is heavily used in <code>development</code> or <code>staging</code> projects by testing both scenarios before putting it in production. </p>
 
 
 
