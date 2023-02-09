@@ -26,7 +26,7 @@ The table is explaining
 !!! note
     On newly created projects one should copy the file ([upgrade.yaml](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/main/.github/workflows/upgrade.yaml)) to `.github/workflows/upgrade.yaml` and push it into `main` branch so `CI Upgrade` workflow is enabled in the `Actions` tab in the GitHub project.
 
-After the directory and configurations are in place one can generate all workflows by running [Upgrade Action](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml) from the configured project. More details one can find [here](/project/maintain/#project-upgrade)
+After the directory and configurations are in place one can generate all workflows by running [Upgrade Action](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/actions/workflows/upgrade.yaml) from the configured project. More details one can find [here](../project/maintain.md#project-upgrade)
 
 One can verify `Upgrade CI` GitHub Action. See screenshot below
 

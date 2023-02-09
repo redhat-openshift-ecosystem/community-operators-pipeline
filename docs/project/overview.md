@@ -9,4 +9,4 @@ graph TD
 id1(Operator locally) --> id2(PR to project) --> id3(Operator test) --> id4(Operator release to index)--> id5(Install operator on cluster)
 
 ```
-Let's get started with [Project initialize](/project/init).
+Let's get started with [Project initialize](../project/init.md).
