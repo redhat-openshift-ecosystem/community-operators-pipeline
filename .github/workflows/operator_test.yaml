@@ -412,7 +412,7 @@ jobs:
 
       - name: "Setting package-validated label"
         if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
