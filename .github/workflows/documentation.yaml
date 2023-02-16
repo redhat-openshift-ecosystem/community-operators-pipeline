@@ -21,7 +21,7 @@ jobs:
     - name: Generate docs
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        NPR: ${{ github.event.inputs.number-of-prs || 5000 }}
+        NPR: ${{ github.event.inputs.number-of-prs || 500 }}
       run: |
         OPP_THIS_REPO_SED="https://github.com/$OPP_THIS_REPO"
         OPP_THIS_REPO_SED=${OPP_THIS_REPO_SED//\//\\/}
