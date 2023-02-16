@@ -32,7 +32,7 @@ jobs:
           script: |
             if (context.payload.client_payload.remove_labels != undefined) {
               for (const label of context.payload.client_payload.remove_labels) {
-                github.issues.removeLabel({
+                github.rest.issues.removeLabel({
                   issue_number: context.payload.client_payload.source_pr,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -48,7 +48,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             if (context.payload.client_payload.add_labels != undefined) {
-              github.issues.addLabels({
+              github.rest.issues.addLabels({
                 issue_number: context.payload.client_payload.source_pr,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -61,7 +61,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const labels = await github.issues.listLabelsOnIssue({
+            const labels = await github.rest.issues.listLabelsOnIssue({
               issue_number: context.payload.client_payload.source_pr,
               owner: context.repo.owner,
               repo: context.repo.repo
@@ -88,7 +88,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addLabels({
+            github.rest.issues.addLabels({
               issue_number: context.payload.client_payload.source_pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -100,7 +100,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const labels = await github.issues.listLabelsOnIssue({
+            const labels = await github.rest.issues.listLabelsOnIssue({
               issue_number: context.payload.client_payload.source_pr,
               owner: context.repo.owner,
               repo: context.repo.repo
@@ -114,7 +114,7 @@ jobs:
         with:
           github-token: ${{ secrets.FRAMEWORK_MERGE }}
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.payload.client_payload.source_pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
