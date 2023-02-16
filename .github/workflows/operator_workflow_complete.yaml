@@ -48,7 +48,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: | 
-            const labels = await github.issues.listLabelsOnIssue({
+            const labels = await github.rest.issues.listLabelsOnIssue({
               issue_number: ${{ steps.pr-number.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo
@@ -76,7 +76,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: | 
-            const labels = await github.issues.listLabelsOnIssue({
+            const labels = await github.rest.issues.listLabelsOnIssue({
               issue_number: ${{ needs.pr.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo
@@ -89,7 +89,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addLabels({
+            github.rest.issues.addLabels({
               issue_number: ${{ needs.pr.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -103,7 +103,7 @@ jobs:
         with:
           github-token: ${{ secrets.FRAMEWORK_MERGE }}
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: ${{ needs.pr.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -122,7 +122,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.removeLabel({
+            github.rest.issues.removeLabel({
               issue_number: ${{ needs.pr.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -135,7 +135,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.removeLabel({
+            github.rest.issues.removeLabel({
               issue_number: ${{ needs.pr.outputs.pr }},
               owner: context.repo.owner,
               repo: context.repo.repo,
