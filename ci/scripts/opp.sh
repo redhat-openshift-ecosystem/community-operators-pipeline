@@ -613,7 +613,7 @@ fi
 
 OPP_CONTAINER_OPT="$OPP_CONTAINER_OPT -e ANSIBLE_CONFIG=/playbooks/upstream/ansible.cfg"
 OPP_CONTAINER_OPT="$OPP_CONTAINER_OPT -e GODEBUG=$GODEBUG"
-echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
+echo "opp_uncomplete_operators=$OPP_UNCOMPLETE_OPERATORS" >> $GITHUB_OUTPUT
 OPP_SKIP=0
 IIB_INSTALLED=0
 for t in $TESTS;do
@@ -688,7 +688,7 @@ for t in $TESTS;do
             echo "[$t1] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
             OPP_MY_VER=${t1/orange_/}
             OPP_MY_VER=${OPP_MY_VER//./_}
-            [[ $t1 == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "::set-output name=opp_uncomplete_operators_${OPP_MY_VER}::$OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            [[ $t1 == orange_* ]] && [ -n "$OPP_UNCOMPLETE_OPERATORS_CURRENT" ] && echo "opp_uncomplete_operators_${OPP_MY_VER}=$OPP_UNCOMPLETE_OPERATORS_CURRENT" >> $GITHUB_OUTPUT
             [[ $OPP_INDEX_CHECK_ONLY -eq 1 ]] && { set +e && continue; }
         fi
     fi
@@ -701,7 +701,7 @@ done
 
 [ -n "$OPP_UNCOMPLETE_OPERATORS" ] && OPP_UNCOMPLETE_OPERATORS=$(echo $OPP_UNCOMPLETE_OPERATORS | tr ' ' '\n' | sort | uniq | tr '\n' ' '| xargs)
 echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
-echo "::set-output name=opp_uncomplete_operators::$OPP_UNCOMPLETE_OPERATORS"
+echo "opp_uncomplete_operators=$OPP_UNCOMPLETE_OPERATORS" >> $GITHUB_OUTPUT
 
 
 echo "Done"
