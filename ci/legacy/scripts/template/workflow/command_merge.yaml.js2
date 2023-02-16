@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         id: labels
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
           permission-level: write
 
       - name: Merge message when not able to merge and inform user about authorized_changes
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: |
           steps.command.outputs.command-name == 'merge' &&
           steps.command.outputs.command-arguments == 'possible' &&
@@ -59,7 +59,7 @@ jobs:
             })
 
       - name: Message when automerge is disabled
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: |
           steps.command.outputs.command-name == 'merge' &&
           steps.command.outputs.command-arguments == 'possible' &&

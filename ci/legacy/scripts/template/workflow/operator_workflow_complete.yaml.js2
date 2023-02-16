@@ -17,7 +17,7 @@ jobs:
     steps:
 
       - name: 'Download artifact'
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@v6.1.0
         with:
           script: |
             var artifacts = await github.actions.listWorkflowRunArtifacts({
@@ -43,7 +43,7 @@ jobs:
           PR=$(cat ./NR)
           echo "pr=${PR}" >> $GITHUB_OUTPUT
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         id: pr-labels
         continue-on-error: true
         with:
@@ -71,7 +71,7 @@ jobs:
     needs: [pr]
     steps:
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         id: pr-labels
         continue-on-error: true
         with:
@@ -85,7 +85,7 @@ jobs:
             return labels.data
 
       - name: "Setting package-validated label"
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -100,7 +100,7 @@ jobs:
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
       - name: "Set installation-validated"
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -111,7 +111,7 @@ jobs:
               repo: context.repo.repo,
               labels: ['installation-validated']
             })
-      - uses: actions/github-script@v3
+      - uses: actions/github-script@v6
         if: |
           (!contains(fromJson(steps.pr-labels.outputs.result).*.name, 'do-not-merge/work-in-progress')) &&
           (!contains(fromJson(steps.pr-labels.outputs.result).*.name, 'do-not-merge/hold'))
@@ -135,7 +135,7 @@ jobs:
     steps:
       - name: "Removing package-validated label"
         if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -148,7 +148,7 @@ jobs:
             })
       - name: "Removing installation-validated label"
         if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}

@@ -63,7 +63,7 @@ jobs:
           bash <(curl -sL $OPP_SCRIPT_ENV_OPRT_URL)
 
       - name: "Setting authorized-changes label"
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         continue-on-error: true
         if: steps.op-traffic-light.outputs.opp_authorized_changes == '1'
         with:
@@ -86,7 +86,7 @@ jobs:
       #     allow-repeats: false
 
       # - name: "Setting authorized-changes label"
-      #   uses: actions/github-script@v3
+      #   uses: actions/github-script@v6
       #   if: steps.op-traffic-light.outputs.opp_authorized_changes == '1'
       #   with:
       #     github-token: ${{secrets.GITHUB_TOKEN}}
@@ -99,7 +99,7 @@ jobs:
       #       })
 
       # - name: Try to automerge
-      #   uses: actions/github-script@v3
+      #   uses: actions/github-script@v6
       #   continue-on-error: true
       #   with:
       #     github-token: ${{ secrets.FRAMEWORK_MERGE }}

@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Info"
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -26,7 +26,7 @@ jobs:
             console.log(context.payload.client_payload.add_labels)
         continue-on-error: true
       - name: "Remove labels"
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -41,7 +41,7 @@ jobs:
         continue-on-error: true
 
       - name: "Add labels"
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -52,7 +52,7 @@ jobs:
               labels: context.payload.client_payload.add_labels
             })
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         id: labels
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +66,7 @@ jobs:
             return labels.data
 
       - name: Add installation final label
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         if: |
           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.6')) &&
           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-failed-4.7')) &&
@@ -85,7 +85,7 @@ jobs:
               labels: [ 'installation-validated' ]
             })
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         id: labels2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -98,7 +98,7 @@ jobs:
             console.log(labels.data)
             return labels.data
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         if: |
           (contains(fromJSON(steps.labels2.outputs.result).*.name, 'installation-validated'))
         with:
