@@ -87,5 +87,6 @@ $RECYCLE.BIN/
 
 # mkdoc
 site
-results.json
-*.pdf
+./results.json
+./*.pdf
+./*.png

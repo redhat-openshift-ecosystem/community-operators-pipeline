@@ -43,6 +43,7 @@ ROOT.gROOT.SetBatch()
 
 ROOT.gStyle.SetTimeOffset(0)
 nWeeks = 52  # weeks in history
+nWeeks = 20  # weeks in history
 resolution = nWeeks
 nHours = 5*24  # max hours in pr merging time
 tdFormat = "%Y-%m-%d"
@@ -62,6 +63,7 @@ timeVsPrTimeVsInteraction.GetYaxis().SetTimeDisplay(1)
 timeVsPrTimeVsInteraction.GetYaxis().SetTimeFormat(tdFormat)
 timeVsPrTimeVsInteraction.GetYaxis().SetTitle(dateTitle)
 timeVsPrTimeVsInteraction.GetZaxis().SetTitle("interaction")
+timeVsPrTimeVsInteraction.SetNdivisions(-5)
 
 for d in data:
     if not d['author'] in admins:
@@ -108,6 +110,7 @@ for i in [0, 1, 2]:
     nPrOverTime.GetXaxis().SetTimeDisplay(1)
     nPrOverTime.GetXaxis().SetTimeFormat(tdFormat)
     nPrOverTime.GetYaxis().SetTitle("Count")
+    nPrOverTime.SetNdivisions(-5)
     cNPrOverTime_hs.Add(nPrOverTime)
     c.cd()
     nPrOverTime.Draw("HIST TEXT0")
@@ -124,6 +127,7 @@ for i in [0, 1, 2]:
     avgTimePrOverTime_profile.GetXaxis().SetTimeDisplay(1)
     avgTimePrOverTime_profile.GetXaxis().SetTimeFormat(tdFormat)
     avgTimePrOverTime_profile.GetYaxis().SetTitle("hours")
+    avgTimePrOverTime_profile.SetNdivisions(-5)
     c.cd()
     avgTimePrOverTime_profile.Draw("HIST TEXT0")
     export_images(name="avgTimePrOverTime"+str(i), canvas=c)
@@ -139,10 +143,12 @@ cNPrOverTime.SetGrid()
 ROOT.gStyle.SetPaintTextFormat("4.0f")
 base = "Number of PR merged over time"
 cNPrOverTime_hs.SetTitle(base+" (sum)")
+
 cNPrOverTime_hs.Draw("HIST TEXT0")
 cNPrOverTime_hs.GetXaxis().SetTimeDisplay(1)
 cNPrOverTime_hs.GetXaxis().SetTimeFormat(tdFormat)
 cNPrOverTime_hs.GetYaxis().SetTitle("Count")
+cNPrOverTime_hs.GetXaxis().SetNdivisions(-5)
 cNPrOverTime.BuildLegend(0.1, 0.7, 0.48, 0.9)
 export_images("nPrOverTime_stack", cNPrOverTime)
 cNPrOverTime_hs.SetTitle(base+" (beside)")
@@ -164,6 +170,7 @@ cAvgTimePrOverTime_hs.Draw("HIST TEXT0")
 cAvgTimePrOverTime_hs.GetXaxis().SetTimeDisplay(1)
 cAvgTimePrOverTime_hs.GetXaxis().SetTimeFormat(tdFormat)
 cAvgTimePrOverTime_hs.GetYaxis().SetTitle("hours")
+cAvgTimePrOverTime_hs.GetXaxis().SetNdivisions(-5)
 cAvgTimePrOverTime.BuildLegend(0.1, 0.7, 0.48, 0.9)
 export_images("avgTimePrOverTime_stack", cAvgTimePrOverTime)
 cAvgTimePrOverTime_hs.SetTitle(base+" (beside)")
@@ -177,6 +184,7 @@ export_images("avgTimePrOverTime_nostack", cAvgTimePrOverTime)
 
 c.cd()
 timeVsPrTimeVsInteraction.GetZaxis().SetRange(-1, -1)
+# timeVsPrTimeVsInteraction.SetNdivisions(-5)
 timeVsPrTimeVsInteraction.Draw("LEGO2")
 export_images("timeVsPrTimeVsInteraction", c)
 
