@@ -291,8 +291,8 @@ jobs:
           TARGET_INDEX_RAW=${{ github.event.inputs.index }}
           TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
           TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
-          echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
-          echo "::set-output name=opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE::${{ github.event.inputs.list_of_operators }}"
+          echo "opp_uncomplete_operators=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT 
+          echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -346,7 +346,7 @@ jobs:
           path: "/tmp/operator-test/operators"
       - shell: bash
         run: |
-          [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
+          [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "opp_uncomplete_operators=" >> $GITHUB_OUTPUT         
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
@@ -632,8 +632,8 @@ jobs:
           TARGET_INDEX_RAW=${{ github.event.inputs.index }}
           TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
           TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
-          echo "::set-output name=opp_uncomplete_operators::${{ github.event.inputs.list_of_operators }}"
-          echo "::set-output name=opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE::${{ github.event.inputs.list_of_operators }}"
+          echo "opp_uncomplete_operators=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
+          echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -688,7 +688,7 @@ jobs:
           path: "/tmp/operator-test/operators"
       - shell: bash
         run: |
-          [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "::set-output name=opp_uncomplete_operators::"          
+          [ -f /tmp/operator-test/op_info.yaml ] && cat /tmp/operator-test/op_info.yaml || echo "opp_uncomplete_operators=" >> $GITHUB_OUTPUT    
     outputs:
       opp_uncomplete_operators: "${{ steps.operators.outputs.opp_uncomplete_operators }}"
 {% endraw %}
@@ -954,8 +954,8 @@ jobs:
           OPERATOR_INDEX="quay.io/${QUAY_REGISTRY}:${OPERATOR_INDEX_TAG}"
           echo $OPERATOR_INDEX_RESOLVED
           echo $OPERATOR_INDEX
-          echo "::set-output name=operator_index_resolved_latest::${OPERATOR_INDEX_RESOLVED}"
-          echo "::set-output name=operator_index_latest::${OPERATOR_INDEX}"
+          echo "operator_index_resolved_latest=${OPERATOR_INDEX_RESOLVED}" >> $GITHUB_OUTPUT
+          echo "operator_index_latest=${OPERATOR_INDEX}" >> $GITHUB_OUTPUT
         env:
           QUAY_REGISTRY: 'redhat/redhat----community-operator-index'
           OPERATOR_INDEX_TAG: "latest"
