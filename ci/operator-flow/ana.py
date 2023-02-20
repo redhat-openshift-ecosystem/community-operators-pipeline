@@ -44,7 +44,10 @@ ROOT.gROOT.SetBatch()
 ROOT.gStyle.SetTimeOffset(0)
 nWeeks = 52  # weeks in history
 nWeeks = 20  # weeks in history
+nWeeks = 2  # weeks in history
+
 resolution = nWeeks
+resolution = 7*nWeeks
 nHours = 5*24  # max hours in pr merging time
 tdFormat = "%Y-%m-%d"
 dateTitle = "Date [YYYY-MM-DD]"
