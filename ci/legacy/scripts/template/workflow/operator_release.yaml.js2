@@ -243,8 +243,8 @@ jobs:
             OPERATOR_INDEX="${OPP_MIRROR_INDEX_REGISTRY}/${OPP_MIRROR_INDEX_ORGANIZATION}/${OPP_MIRROR_INDEX_NAME}:${OPERATOR_INDEX_TAG}"
             echo $OPERATOR_INDEX_RESOLVED
             echo $OPERATOR_INDEX
-            echo "::set-output name=operator_index_resolved::${OPERATOR_INDEX_RESOLVED}"
-            echo "::set-output name=operator_index::${OPERATOR_INDEX}"
+            echo "operator_index_resolved=${OPERATOR_INDEX_RESOLVED}" >> $GITHUB_OUTPUT
+            echo "operator_index=${OPERATOR_INDEX}" >> $GITHUB_OUTPUT
         - name: Initialize sign process
           uses: operator-framework/community-operators@webhook
           env:
@@ -338,8 +338,8 @@ jobs:
           OPERATOR_INDEX="quay.io/${QUAY_REGISTRY}:${OPERATOR_INDEX_TAG}"
           echo $OPERATOR_INDEX_RESOLVED
           echo $OPERATOR_INDEX
-          echo "::set-output name=operator_index_resolved_latest::${OPERATOR_INDEX_RESOLVED}"
-          echo "::set-output name=operator_index_latest::${OPERATOR_INDEX}"
+          echo "perator_index_resolved_latest=${OPERATOR_INDEX_RESOLVED}" >> $GITHUB_OUTPUT
+          echo "operator_index_latest=${OPERATOR_INDEX}" >> $GITHUB_OUTPUT
         env:
           QUAY_REGISTRY: 'redhat/redhat----community-operator-index'
           OPERATOR_INDEX_TAG: "latest"

@@ -71,9 +71,9 @@ echo "OPP_RENAMED_FILES=$OPP_RENAMED_FILES"
 echo "OPP_REMOVED_FILES=$OPP_REMOVED_FILES"
 echo "OPP_LABELS=$OPP_LABELS"
 
-echo "::set-output name=opp_error_code::$OPP_ERROR_CODE"
-echo "::set-output name=opp_recreate::${OPP_RECREATE}"
-echo "::set-output name=opp_auto_packagemanifest_cluster_version_label::$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
+echo "opp_error_code=$OPP_ERROR_CODE" >> $GITHUB_OUTPUT
+echo "opp_recreate=${OPP_RECREATE}" >> $GITHUB_OUTPUT
+echo "opp_auto_packagemanifest_cluster_version_label=$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL" >> $GITHUB_OUTPUT
 
 
 for l in $(echo $OPP_LABELS);do
@@ -85,37 +85,37 @@ for l in $(echo $OPP_LABELS);do
   [[ "$l" = "allow/serious-changes-to-existing" ]] && export OPP_ALLOW_SERIOUS_CHANGES=1
   
 done
-echo "::set-output name=opp_recreate::${OPP_RECREATE}"
+echo "opp_recreate=${OPP_RECREATE}" >> $GITHUB_OUTPUT
 
-[[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..." ; echo "::set-output name=opp_error_code::1"; exit 1; }
+[[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..." ; echo "opp_error_code=1" >> $GITHUB_OUTPUT; exit 1; }
 
 OPP_CHANGES_OPERATOR=
 OPP_CHANGES_OPERATOR_VERSIONS_MODIFIED=
 OPP_CHANGES_OPERATOR_VERSIONS_REMOVED=
 
-echo "::set-output name=opp_set_label_operator_version_overwrite::$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"
-echo "::set-output name=opp_set_label_operator_recreate::$OPP_SET_LABEL_OPERATOR_RECREATE"
-echo "::set-output name=opp_is_modified::$OPP_IS_MODIFIED"
-echo "::set-output name=opp_modified_csvs::$OPP_MODIFIED_CSVS"
-echo "::set-output name=opp_allow_serious_changes::$OPP_ALLOW_SERIOUS_CHANGES"
-echo "::set-output name=opp_is_new_operatror::${OPP_IS_NEW_OPERATOR}"
-echo "::set-output name=opp_pr_title::${OPP_PR_TITLE}"
-echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
-echo "::set-output name=opp_authorized_changes::${OPP_AUTHORIZED_CHANGES}"
-echo "::set-output name=opp_changed_ci_yaml::${OPP_CI_YAML_CHANGED}"
-echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
+echo "opp_set_label_operator_version_overwrite=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE" >> $GITHUB_OUTPUT
+echo "opp_set_label_operator_recreate=$OPP_SET_LABEL_OPERATOR_RECREATE" >> $GITHUB_OUTPUT
+echo "opp_is_modified=$OPP_IS_MODIFIED" >> $GITHUB_OUTPUT
+echo "opp_modified_csvs=$OPP_MODIFIED_CSVS" >> $GITHUB_OUTPUT
+echo "opp_allow_serious_changes=$OPP_ALLOW_SERIOUS_CHANGES" >> $GITHUB_OUTPUT
+echo "opp_is_new_operatror=${OPP_IS_NEW_OPERATOR}" >> $GITHUB_OUTPUT
+echo "opp_pr_title=${OPP_PR_TITLE}" >> $GITHUB_OUTPUT
+echo "opp_update_graph=${OPP_UPDATEGRAPH}" >> $GITHUB_OUTPUT
+echo "opp_authorized_changes=${OPP_AUTHORIZED_CHANGES}" >> $GITHUB_OUTPUT
+echo "opp_changed_ci_yaml=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
+echo "opp_ver_overwrite=${OPP_VER_OVERWRITE}" >> $GITHUB_OUTPUT
 
 
 [ -z $OPP_LABELS ] && [[ $OPP_PROD -eq 1 ]] && OPP_ALLOW_CI_CHANGES=1
 
 if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
-  echo "::set-output name=opp_release_ready::$OPP_ALLOW_FORCE_RELEASE"
+  echo "opp_release_ready=$OPP_ALLOW_FORCE_RELEASE" >> $GITHUB_OUTPUT
   echo "CI changes detected. Continue doing release ..."
   exit 0
 fi
 
 if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 0 ]];then
-  echo "::set-output name=opp_test_ready::0"
+  echo "opp_test_ready=0" >> $GITHUB_OUTPUT
   echo "CI changes detected. No testing ..."
   exit 0
 fi
@@ -164,29 +164,29 @@ if [ -n "$OPP_REMOVED_FILES" ];then
 
     OPP_TEST_READY=0
 
-    # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && { echo "Changes in both 'community-operators' and 'upstream-community-operators' dirs !!! Exiting ..."; echo "::set-output name=opp_error_code::2"; exit 1; }
+    # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && { echo "Changes in both 'community-operators' and 'upstream-community-operators' dirs !!! Exiting ..."; echo "opp_error_code=2" >> $GITHUB_OUTPUT; exit 1; }
 
-    echo "::set-output name=opp_test_ready::${OPP_TEST_READY}"
-    echo "::set-output name=opp_release_ready::${OPP_RELEASE_READY}"
-    echo "::set-output name=opp_production_type::${OPP_PRODUCTION_TYPE}"
-    echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
-    echo "::set-output name=opp_version::${OPP_OPERATOR_VERSION}"
-    echo "::set-output name=opp_changed_ci_yaml::${OPP_CI_YAML_CHANGED}"
-    echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
-    echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
+    echo "opp_test_ready=${OPP_TEST_READY}" >> $GITHUB_OUTPUT
+    echo "opp_release_ready=${OPP_RELEASE_READY}" >> $GITHUB_OUTPUT
+    echo "opp_production_type=${OPP_PRODUCTION_TYPE}" >> $GITHUB_OUTPUT
+    echo "opp_name=${OPP_OPERATOR_NAME}" >> $GITHUB_OUTPUT
+    echo "opp_version=${OPP_OPERATOR_VERSION}" >> $GITHUB_OUTPUT
+    echo "opp_changed_ci_yaml=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
+    echo "opp_ver_overwrite=${OPP_VER_OVERWRITE}" >> $GITHUB_OUTPUT
+    echo "opp_update_graph=${OPP_UPDATEGRAPH}" >> $GITHUB_OUTPUT
     
     echo "Files removed only."
     if [ ! -d ${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME} ];then
       OPP_OP_DELETE=1
       DELETE_APPREG=1
       echo "opp_release_delete_appreg=${DELETE_APPREG}"
-      echo "::set-output name=opp_release_delete_appreg::${DELETE_APPREG}"
+      echo "opp_release_delete_appreg=${DELETE_APPREG}" >> $GITHUB_OUTPUT
       echo "opp_test_ready=${OPP_TEST_READY}"
       echo "opp_release_ready=${OPP_RELEASE_READY}"
       echo "opp_op_delete=$OPP_OP_DELETE"
       echo "opp_ver_overwrite=$OPP_VER_OVERWRITE"
-      echo "::set-output name=opp_op_delete::${OPP_OP_DELETE}"
-      echo "::set-output name=opp_is_modified::$OPP_IS_MODIFIED"
+      echo "opp_op_delete=${OPP_OP_DELETE}" >> $GITHUB_OUTPUT
+      echo "opp_is_modified=$OPP_IS_MODIFIED" >> $GITHUB_OUTPUT
       echo "Directory '${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME}' is removed. This is OK."
 
       exit 0
@@ -257,12 +257,12 @@ echo "OPP_MODIFIED_OTHERS=$OPP_MODIFIED_OTHERS"
 
 # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && [[ $OPP_CI_YAML_CHANGED -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' !!! Skipping test ..."; OPP_TEST_READY=0; }
 
-# [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && { echo "Changes in both 'community-operators' and 'upstream-community-operators' dirs !!! Exiting ..."; echo "::set-output name=opp_error_code::2"; exit 1; }
+# [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && { echo "Changes in both 'community-operators' and 'upstream-community-operators' dirs !!! Exiting ..."; echo "opp_error_code=2" >> $GITHUB_OUTPUT; exit 1; }
 
-[[ $OPP_CHANGES_GITHUB -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in '.github' dir, but 'allow/ci-changes' label is not set !!!"; echo "::set-output name=opp_error_code::3"; OPP_TEST_READY=0; exit 1; }
-[[ $OPP_CHANGES_CI -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in ci, but 'allow/ci-changes' label is not set !!!"; echo "::set-output name=opp_error_code::3"; OPP_TEST_READY=0; exit 1; }
-[[ $OPP_CHANGES_DOCS -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in docs, but 'allow/ci-changes' label is not set !!!"; echo "::set-output name=opp_error_code::3"; OPP_TEST_READY=0; exit 1; }
-# [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 || $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_TEST_READY -eq 0 ]] && { echo "Error: Operator changes detected with ci changes and 'allow/ci-changes' is not set !!! Exiting ..."; echo "::set-output name=opp_error_code::3";  exit 1; }
+[[ $OPP_CHANGES_GITHUB -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in '.github' dir, but 'allow/ci-changes' label is not set !!!"; echo "opp_error_code=3" >> $GITHUB_OUTPUT; OPP_TEST_READY=0; exit 1; }
+[[ $OPP_CHANGES_CI -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in ci, but 'allow/ci-changes' label is not set !!!"; echo "opp_error_code=3" >> $GITHUB_OUTPUT; OPP_TEST_READY=0; exit 1; }
+[[ $OPP_CHANGES_DOCS -eq 1 ]] && [[ $OPP_ALLOW_CI_CHANGES -eq 0 ]] && { echo "Changes in docs, but 'allow/ci-changes' label is not set !!!"; echo "opp_error_code=3" >> $GITHUB_OUTPUT; OPP_TEST_READY=0; exit 1; }
+# [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 || $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_TEST_READY -eq 0 ]] && { echo "Error: Operator changes detected with ci changes and 'allow/ci-changes' is not set !!! Exiting ..."; echo "opp_error_code=3" >> $GITHUB_OUTPUT;  exit 1; }
 # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 && $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_TEST_READY -eq 0 ]] && { echo "Nothing to test"; exit 0; }
 [[ $OPP_TEST_READY -eq 0 ]] && { echo "Nothing to test"; exit 0; }
 
@@ -282,8 +282,8 @@ if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]]
     OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
   fi
 
-  echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
-  echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
+  echo "opp_ci_yaml_only=${OPP_CI_YAML_ONLY}" >> $GITHUB_OUTPUT
+  echo "opp_ci_yaml_changed=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
   echo "Only ci.yaml was changed : ${OPP_ADDED_MODIFIED_FILES}"
 
 elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -eq 1 ]] && [ ! -n "$FILES" ];then
@@ -302,8 +302,8 @@ elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -
   fi
 
   # Act same way as it would be ci.yaml only file change
-  echo "::set-output name=opp_ci_yaml_only::${OPP_CHANGES_PACKAGE_FILE_ONLY}"
-  echo "::set-output name=opp_ci_yaml_changed::${OPP_CHANGES_PACKAGE_FILE}"
+  echo "opp_ci_yaml_only=${OPP_CHANGES_PACKAGE_FILE_ONLY}" >> $GITHUB_OUTPUT
+  echo "opp_ci_yaml_changed=${OPP_CHANGES_PACKAGE_FILE}" >> $GITHUB_OUTPUT
   echo "Only package file was changed : ${OPP_ADDED_MODIFIED_FILES}"
 
 else
@@ -321,7 +321,7 @@ else
   for v in $VERSIONS;do
     TMP_OP_NAME=$(echo $v | cut -d '/' -f 2)
     OPP_OPERATOR_VERSIONS="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS"
-    [ "$OPP_OPERATOR_NAME" = "$TMP_OP_NAME" ] || { echo "Error: Multiple operators are changed !!! Detected:'$OPP_OPERATOR_NAME' and '$TMP_OP_NAME' !!! Exiting ..."; OPP_TEST_READY=0; echo "::set-output name=opp_error_code::5";  exit 1;  }
+    [ "$OPP_OPERATOR_NAME" = "$TMP_OP_NAME" ] || { echo "Error: Multiple operators are changed !!! Detected:'$OPP_OPERATOR_NAME' and '$TMP_OP_NAME' !!! Exiting ..."; OPP_TEST_READY=0; echo "opp_error_code=5" >> $GITHUB_OUTPUT;  exit 1;  }
   done
   # remove trailing space
   OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | sed 's/ *$//g')
@@ -349,7 +349,7 @@ else
 
   echo "Versions Count: CHANGED[$OPP_OPERATOR_VERSIONS] REMOVED[$OPP_OPERATOR_VERSIONS_REMOVED]"
 
-  # [[ $OPRT -eq 1 ]] && [ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && [[ ! $OPP_RECREATE -eq 1 ]] && [ "$OPP_OPERATOR_VERSIONS_REMOVED" != "$OPP_OPERATOR_VERSIONS_ALL_LATEST" ] && { echo "Error: Old versions [$OPP_OPERATOR_VERSIONS_REMOVED] were removed and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::6"; exit 1;  }
+  # [[ $OPRT -eq 1 ]] && [ -n "$OPP_OPERATOR_VERSIONS_REMOVED" ] && [[ ! $OPP_RECREATE -eq 1 ]] && [ "$OPP_OPERATOR_VERSIONS_REMOVED" != "$OPP_OPERATOR_VERSIONS_ALL_LATEST" ] && { echo "Error: Old versions [$OPP_OPERATOR_VERSIONS_REMOVED] were removed and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "opp_error_code=6" >> $GITHUB_OUTPUT; exit 1;  }
   # [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
 
   [[ $OPP_OPERATOR_VERSIONS_COUNT -eq 1 ]] && [[ $OPP_IS_MODIFIED -eq 1 ]] && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=1
@@ -358,17 +358,17 @@ else
   [[ $OPP_OPERATOR_VERSIONS_REMOVED_COUNT -gt 0 ]] && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_RECREATE=1 && OPP_OP_DELETE=1 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0 && OPP_VER_OVERWRITE=0
   [[ $OPP_OPERATOR_VERSIONS_ALL_COUNT -eq 1 ]] && OPP_IS_NEW_OPERATOR=1 && OPP_RECREATE=1 && OPP_SET_LABEL_OPERATOR_RECREATE=1 && OPP_VER_OVERWRITE=0 && OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE=0
 
-  # [[ $OPRT -eq 0 ]] && [[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && [[ ! $OPP_RECREATE -eq 1 ]] && { echo "Error: Multiple versions [$OPP_OPERATOR_VERSIONS] were modified and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "::set-output name=opp_error_code::5"; exit 1;  }
+  # [[ $OPRT -eq 0 ]] && [[ $OPP_OPERATOR_VERSIONS_COUNT -gt 1 ]] && [[ ! $OPP_RECREATE -eq 1 ]] && { echo "Error: Multiple versions [$OPP_OPERATOR_VERSIONS] were modified and 'allow/operator-recreate' is NOT set !!! Please set it first !!! Exiting ..."; echo "opp_error_code=5" >> $GITHUB_OUTPUT; exit 1;  }
 
 
-  [[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..."; echo "::set-output name=opp_error_code::1"; exit 1; }
+  [[ $OPP_VER_OVERWRITE -eq 1 ]] && [[ $OPP_RECREATE -eq 1 ]] && { echo "Labels 'allow/operator-version-overwrite' and 'allow/operator-recreate' is set. Only one label can be set !!! Exiting ..."; echo "opp_error_code=1" >> $GITHUB_OUTPUT; exit 1; }
 
-  # [[ $OPRT -eq 1 ]] && [[ $OPP_CI_YAML_MODIFIED -eq 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/."; echo "::set-output name=opp_error_code::7"; exit 1; }
+  # [[ $OPRT -eq 1 ]] && [[ $OPP_CI_YAML_MODIFIED -eq 1 ]] && [[ $OPP_CI_YAML_ONLY -eq 0 ]] && { echo "We support only a single file modification in case of 'ci.yaml' file. If you want to update it, please make an extra PR with 'ci.yaml' file modification only !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/."; echo "opp_error_code=7" >> $GITHUB_OUTPUT; exit 1; }
 
 fi
 
-echo "::set-output name=opp_production_type::${OPP_PRODUCTION_TYPE}"
-echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
+echo "opp_production_type=${OPP_PRODUCTION_TYPE}" >> $GITHUB_OUTPUT
+echo "opp_name=${OPP_OPERATOR_NAME}" >> $GITHUB_OUTPUT
 
 yq --version || { echo "Command 'yq' could not be found !!!"; exit 1; } 
 
@@ -416,11 +416,11 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   if [[ $OPP_TEST_READY -eq 1 ]];then
     if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then 
       TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers')
-      # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "::set-output name=opp_error_code::4"; exit 1; }
+      # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
       
       if [ "$TEST_REVIEWERS" != "null" ];then
         TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers | length' || echo 0)
-        [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "::set-output name=opp_error_code::4"; exit 1; }
+        [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
       else
         echo "File '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' doesn't contain 'reviewers' array field !!! If one wants to add reviewers (truested-authors) More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/. !!!"
         OPP_ERROR_CODE=10
@@ -472,7 +472,7 @@ echo "OPP_INSTALLATION_SKIP_FOUND=$OPP_INSTALLATION_SKIP_FOUND"
 # exit 1
 
 if [[ $OPP_INSTALLATION_SKIP_FOUND -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
-  echo "::set-output name=opp_release_ready::0"
+  echo "opp_release_ready=0" >> $GITHUB_OUTPUT
   echo "Installation was skipped. No release ..."
   exit 0
 fi
@@ -544,10 +544,10 @@ function detect_k8s_max() {
               fi
             fi
 
-            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_DETECTED"
+            echo "kind_kube_version=$KIND_KUBE_VERSION_DETECTED" >> $GITHUB_OUTPUT
             echo "Exported $KIND_KUBE_VERSION_DETECTED"
     else
-            echo "::set-output name=kind_kube_version::$KIND_KUBE_VERSION_LATEST" # consider KIND_MAX_SUPPORTED instead of latest
+            echo "kind_kube_version=$KIND_KUBE_VERSION_LATEST" >> $GITHUB_OUTPUT # consider KIND_MAX_SUPPORTED instead of latest
             KIND_KUBE_VERSION_DETECTED="$KIND_KUBE_VERSION_LATEST"
             echo "K8S UI version not defined, using from config $KIND_KUBE_VERSION_DETECTED"
     fi
@@ -597,37 +597,31 @@ echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE"
 echo "opp_error_code=$OPP_ERROR_CODE"
 echo "opp_authorized_changes=$OPP_AUTHORIZED_CHANGES"
 
-echo "::set-output name=opp_test_ready::${OPP_TEST_READY}"
-echo "::set-output name=opp_release_ready::${OPP_RELEASE_READY}"
-
-echo "::set-output name=opp_production_type::${OPP_PRODUCTION_TYPE}"
-echo "::set-output name=opp_name::${OPP_OPERATOR_NAME}"
-echo "::set-output name=opp_version::${OPP_OPERATOR_VERSION}"
-echo "::set-output name=opp_versions::${OPP_OPERATOR_VERSIONS}"
-echo "::set-output name=opp_is_new_operatror::${OPP_IS_NEW_OPERATOR}"
-echo "::set-output name=opp_pr_title::${OPP_PR_TITLE}"
-echo "::set-output name=opp_pr_revievers::${OPP_REVIEVERS}"
-
-
-echo "::set-output name=opp_ci_yaml_only::${OPP_CI_YAML_ONLY}"
-echo "::set-output name=opp_ci_yaml_changed::${OPP_CI_YAML_CHANGED}"
-
-echo "::set-output name=opp_op_delete::${OPP_OP_DELETE}"
-echo "::set-output name=opp_ver_overwrite::${OPP_VER_OVERWRITE}"
-echo "::set-output name=opp_recreate::${OPP_RECREATE}"
-echo "::set-output name=opp_installation_skipped::${OPP_INSTALLATION_SKIP_FOUND}"
-
-echo "::set-output name=opp_update_graph::${OPP_UPDATEGRAPH}"
-
-echo "::set-output name=opp_set_label_operator_version_overwrite::$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE"
-echo "::set-output name=opp_set_label_operator_recreate::$OPP_SET_LABEL_OPERATOR_RECREATE"
-echo "::set-output name=opp_is_modified::$OPP_IS_MODIFIED"
-echo "::set-output name=opp_modified_csvs::$OPP_MODIFIED_CSVS"
-echo "::set-output name=opp_modified_others::$OPP_MODIFIED_OTHERS"
-echo "::set-output name=opp_error_code::$OPP_ERROR_CODE"
-echo "::set-output name=opp_authorized_changes::${OPP_AUTHORIZED_CHANGES}"
-echo "::set-output name=opp_dockerfile_changed::$OPP_CHANGES_DOCKERFILE"
-echo "::set-output name=opp_auto_packagemanifest_cluster_version_label::$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
+echo "opp_test_ready=${OPP_TEST_READY}" >> $GITHUB_OUTPUT
+echo "opp_release_ready=${OPP_RELEASE_READY}" >> $GITHUB_OUTPUT
+echo "opp_production_type=${OPP_PRODUCTION_TYPE}" >> $GITHUB_OUTPUT
+echo "opp_name=${OPP_OPERATOR_NAME}" >> $GITHUB_OUTPUT
+echo "opp_version=${OPP_OPERATOR_VERSION}" >> $GITHUB_OUTPUT
+echo "opp_versions=${OPP_OPERATOR_VERSIONS}" >> $GITHUB_OUTPUT
+echo "opp_is_new_operatror=${OPP_IS_NEW_OPERATOR}" >> $GITHUB_OUTPUT
+echo "opp_pr_title=${OPP_PR_TITLE}" >> $GITHUB_OUTPUT
+echo "opp_pr_revievers=${OPP_REVIEVERS}" >> $GITHUB_OUTPUT
+echo "opp_ci_yaml_only=${OPP_CI_YAML_ONLY}" >> $GITHUB_OUTPUT
+echo "opp_ci_yaml_changed=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
+echo "opp_op_delete=${OPP_OP_DELETE}" >> $GITHUB_OUTPUT
+echo "opp_ver_overwrite=${OPP_VER_OVERWRITE}" >> $GITHUB_OUTPUT
+echo "opp_recreate=${OPP_RECREATE}" >> $GITHUB_OUTPUT
+echo "opp_installation_skipped=${OPP_INSTALLATION_SKIP_FOUND}" >> $GITHUB_OUTPUT
+echo "opp_update_graph=${OPP_UPDATEGRAPH}" >> $GITHUB_OUTPUT
+echo "opp_set_label_operator_version_overwrite=$OPP_SET_LABEL_OPERATOR_VERSION_OVERWRITE" >> $GITHUB_OUTPUT
+echo "opp_set_label_operator_recreate=$OPP_SET_LABEL_OPERATOR_RECREATE" >> $GITHUB_OUTPUT
+echo "opp_is_modified=$OPP_IS_MODIFIED" >> $GITHUB_OUTPUT
+echo "opp_modified_csvs=$OPP_MODIFIED_CSVS" >> $GITHUB_OUTPUT
+echo "opp_modified_others=$OPP_MODIFIED_OTHERS" >> $GITHUB_OUTPUT
+echo "opp_error_code=$OPP_ERROR_CODE" >> $GITHUB_OUTPUT
+echo "opp_authorized_changes=${OPP_AUTHORIZED_CHANGES}" >> $GITHUB_OUTPUT
+echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE" >> $GITHUB_OUTPUT
+echo "opp_auto_packagemanifest_cluster_version_label=$OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL" >> $GITHUB_OUTPUT
 
 
 echo "All done"
