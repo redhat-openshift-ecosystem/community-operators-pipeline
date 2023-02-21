@@ -1,7 +1,7 @@
 #!/bin/bash
 NPRS=${1-5000}
 REPO=${2-"redhat-openshift-ecosystem/community-operators-pipeline"}
-ADMINS=${ADMINS-"mvalarh J0zi"}
+ADMINS=${ADMINS-"Allda mporrato mvalarh J0zi"}
 
 SCRIPT_DIR="$(dirname $(readlink -m $0))"
 DOC_DIR="$(dirname $(dirname $(dirname $(readlink -m $0))))"/docs
