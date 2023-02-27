@@ -1012,7 +1012,7 @@ jobs:
 {% if default_config.pipeline.notifications.slack == 1 %}
 {% raw %}
   slack-notification:
-    name: "Slack notification"
+    name: "Monitoring notification"
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% if default_config.operatorhubio.enabled == 1 %}
@@ -1032,7 +1032,7 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Report Status
+      - name: Report Status to a Slack
         uses: ravsamhq/notify-slack-action@master
         with:
           notification_title: 'Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}'
@@ -1043,5 +1043,20 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
         continue-on-error: true
+
+      - name: Google Chat Notification
+        run: |
+          curl --location --request POST '${{ secrets.GCHAT_WEBHOOK }}' \
+          --header 'Content-Type: application/json' \
+          --data-raw '{
+              "cards": [
+                  {
+                      "header": {
+                          "title": 'Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}',
+                          "subtitle": ${{ needs.pr-check.result }}
+                      },
+                  }
+              ]
+          }'
 {% endraw %}
 {% endif %}
