@@ -443,14 +443,16 @@ jobs:
 
       - name: Google Chat Notification
         run: |
+          echo "title: Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}"
+          echo "subtitle: failure"
           curl --location --request POST '${{ secrets.GCHAT_WEBHOOK }}' \
           --header 'Content-Type: application/json' \
           --data-raw '{
               "cards": [
                   {
                       "header": {
-                          "title": 'Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}',
-                          "subtitle": ${{ needs.pr-check.result }}
+                          "title": "Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}|tr -d '\n'",
+                          "subtitle": 'failure'
                       },
                       "sections": [
                           {
