@@ -61,7 +61,7 @@ pipeline:
   reviewers:
     enabled: 0
   notifications:
-    slack: 0
+    slack: 1
 operatorhubio:
   enabled: 0
   registry: quay.io
