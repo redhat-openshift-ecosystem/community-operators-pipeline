@@ -1054,8 +1054,8 @@ jobs:
               "cards": [
                   {
                       "header": {
-                          "title": "Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}|tr -d '\n'",
-                          "subtitle": 'failure'
+                          "title": "Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title | tr -d '\n' }}",
+                          "subtitle": "failure"
                       },
                       "sections": [
                           {
