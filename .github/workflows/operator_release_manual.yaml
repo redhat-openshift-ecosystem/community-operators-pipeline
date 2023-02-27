@@ -110,7 +110,6 @@ jobs:
           OPP_REMOVED_FILES: "${{ steps.files.outputs.removed }}"
           OPP_LABELS: "${{ steps.prinfo.outputs.labels }}"
         run: |
-          exit 1
           if [ -z "${{ github.event.inputs.list_of_operators }}" ]
           then
                 echo "Found an empty input - list_of_operators     [OK]"
@@ -473,8 +472,8 @@ jobs:
               "cards": [
                   {
                       "header": {
-                          "title": "Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title }}|tr -d '\n'",
-                          "subtitle": 'failure'
+                          "title": "Release pipeline failed: ${{ needs.pr-check.outputs.opp_pr_title | tr -d '\n' }}",
+                          "subtitle": "failure"
                       },
                       "sections": [
                           {
