@@ -25,6 +25,9 @@ env:
   OPP_OPERATORS: ${{ github.event.inputs.operators }}
   OPP_ANSIBLE_PULL_REPO: "${{ github.event.inputs.playbook_repo }}"
   OPP_ANSIBLE_PULL_BRANCH: "${{ github.event.inputs.playbook_branch }}"
+  ANSIBLE_FORCE_COLOR: 1
+  ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
+  ANSIBLE_STDOUT_CALLBACK: "yaml"
   OPP_TARGET_BRANCH: "${{ github.event.inputs.target_branch }}"
   OPP_PRODUCTION_TYPE: "ocp"
 
