@@ -44,6 +44,7 @@ jobs:
 
           if [[ $OPP_TARGET_BRANCH != "main" ]];then
             git checkout -b $OPP_TARGET_BRANCH
+            git reset --hard origin main
           fi
 
           ls -al
@@ -70,8 +71,6 @@ jobs:
             git add . || $FAKE_RC
             git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
             git log --oneline -n 10
-            git push origin $OPP_TARGET_BRANCH || $FAKE_RC
-
-
+            git push origin $OPP_TARGET_BRANCH -f || $FAKE_RC
           done
 
