@@ -67,15 +67,10 @@ jobs:
             mv $PWD/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
             rm -rf $PWD/operators/$op
             mv /tmp/operator-test/operators/$op $PWD/operators/$op
-
-
-            git diff
-
             tree $PWD/operators/$op
-
             git add . || $FAKE_RC
             git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
-            git log --oneline
+            git log --oneline -n 10
             git push origin $OPP_TARGET_BRANCH || $FAKE_RC
 
 
