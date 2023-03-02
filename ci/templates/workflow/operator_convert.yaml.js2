@@ -6,7 +6,8 @@ on:
       operators:
         description: 'Operators'     
         required: true
-        default: 'all'
+        #default: 'all'
+        default: 'dell-csi-operator'
       target_branch:
         description: 'Target branch'     
         required: true
@@ -53,6 +54,10 @@ jobs:
           fi
 
           for op in $OPP_OPERATORS;do
+
+            # TODO: Check if it is package manifest already
+
+
             ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
             -e operator_dir=$PWD/operators/$op -e cluster_type=$OPP_PRODUCTION_TYPE -e strict_cluster_version_labels=true -e strict_k8s_bundles=true $ANSIBLE_ARGS
 
