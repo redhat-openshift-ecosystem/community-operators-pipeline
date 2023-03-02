@@ -45,7 +45,7 @@ jobs:
 
           if [[ $OPP_TARGET_BRANCH != "main" ]];then
             git switch -C $OPP_TARGET_BRANCH
-            git reset --hard origin main
+            git reset --hard main
           fi
 
           ls -al
