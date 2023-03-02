@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.FRAMEWORK_MERGE }}
-      - name: Commit files
+      - name: Conversion
         run: |
           FAKE_RC=false
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
@@ -46,15 +46,25 @@ jobs:
             echo "Searching for all operators ..."
             exit 1
           fi
-          
+
           for op in $OPP_OPERATORS;do
             ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
             -e operator_dir=$PWD/operators/$op -e cluster_type=$OPP_PRODUCTION_TYPE -e strict_cluster_version_labels=true -e strict_k8s_bundles=true $ANSIBLE_ARGS
 
 
             echo "Copy bundle to man repo"
-            #git add . || $FAKE_RC
-            #git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
+            mv $PWD/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
+            rm -rf $PWD/operators/$op
+            mv /tmp/operator-test/operators/$op $PWD/operators/$op
+
+
+            git diff
+
+            tree $PWD/operators/$op
+
+            git add . || $FAKE_RC
+            git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
+            git log --oneline
             #git push || $FAKE_RC
 
 
