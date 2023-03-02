@@ -44,7 +44,7 @@ jobs:
           git config --local user.name "framework-automation" || $FAKE_RC
 
           if [[ $OPP_TARGET_BRANCH != "main" ]];then
-            git checkout $$OPP_TARGET_BRANCH || git checkout -b $OPP_TARGET_BRANCH
+            git checkout $OPP_TARGET_BRANCH || git checkout -b $OPP_TARGET_BRANCH
             git reset --hard origin main
           fi
 
