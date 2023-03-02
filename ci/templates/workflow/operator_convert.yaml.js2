@@ -45,7 +45,7 @@ jobs:
           git config --local user.name "framework-automation" || $FAKE_RC
 
           if [[ $OPP_TARGET_BRANCH != "main" ]];then
-            git branch -a | grep $OPP_TARGET_BRANCH
+            git branch -a | grep $OPP_TARGET_BRANCH || true
             git remote -v
             git switch -C $OPP_TARGET_BRANCH origin/$OPP_TARGET_BRANCH
             git reset --hard origin main
