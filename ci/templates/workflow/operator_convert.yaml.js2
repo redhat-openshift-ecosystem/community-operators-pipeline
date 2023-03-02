@@ -7,7 +7,7 @@ on:
         description: 'Operators'     
         required: true
         default: 'all'
-      target-branch:
+      target_branch:
         description: 'Target branch'     
         required: true
         default: 'main'
@@ -23,6 +23,7 @@ env:
   OPP_OPERATORS: ${{ github.event.inputs.operators }}
   OPP_ANSIBLE_PULL_REPO: "${{ github.event.inputs.playbook_repo }}"
   OPP_ANSIBLE_PULL_BRANCH: "${{ github.event.inputs.playbook_branch }}"
+  OPP_TARGET_BRANCH: "${{ github.event.inputs.target_branch }}"
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
 {% raw %}
@@ -40,6 +41,9 @@ jobs:
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
           git config --local user.name "framework-automation" || $FAKE_RC
 
+          if [[ $OPP_TARGET_BRANCH != "main" ]];then
+            git checkout -b $OPP_TARGET_BRANCH
+          fi
 
           ls -al
 
@@ -66,7 +70,7 @@ jobs:
             git add . || $FAKE_RC
             git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
             git log --oneline
-            #git push || $FAKE_RC
+            echo "git push origin $OPP_TARGET_BRANCH || $FAKE_RC"
 
 
           done
