@@ -61,8 +61,9 @@ jobs:
           for op in $OPP_OPERATORS;do
 
             # TODO: Check if it is package manifest already
-            IS_PACKAGEMANIFEST=$(find operators/argocd-operator -name "*package.yaml")
-            [ -z $IS_PACKAGEMANIFEST ] && { echo "Operator '$op' is in bundle format already, skipping ...";continue; }
+            [ ! -d $PROJECT_DIR/operators/$op ] && { echo "Operator '$op' was not found, skipping ...";continue; } || true
+            IS_PACKAGEMANIFEST=$(find $PROJECT_DIR/operators/$op -name "*package.yaml")
+            [ -z $IS_PACKAGEMANIFEST ] && { echo "Operator '$op' is in bundle format already, skipping ...";continue; } || true
 
             cd $PLAYBOOK_DIR
             ansible-playbook -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
