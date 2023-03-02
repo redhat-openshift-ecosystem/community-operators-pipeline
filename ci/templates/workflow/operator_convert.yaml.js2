@@ -40,39 +40,42 @@ jobs:
       - name: Conversion
         run: |
           set -x
+          PROJECT_DIR=$(pwd)
           FAKE_RC=false
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
           git config --local user.name "framework-automation" || $FAKE_RC
+
 
           if [[ $OPP_TARGET_BRANCH != "main" ]];then
             git switch -C $OPP_TARGET_BRANCH
             git reset --hard main
           fi
 
-          ls -al
-
           if [[ $OPP_OPERATORS == "all" ]];then
             echo "Searching for all operators ..."
             exit 1
           fi
+          PLAYBOOK_DIR="/tmp/operator-test-playbooks"
+          git clone $OPP_ANSIBLE_PULL_REPO -b $OPP_ANSIBLE_PULL_BRANCH $PLAYBOOK_DIR
 
           for op in $OPP_OPERATORS;do
 
             # TODO: Check if it is package manifest already
+            IS_PACKAGEMANIFEST=$(find operators/argocd-operator -name "*package.yaml")
+            [ -z $IS_PACKAGEMANIFEST ] && { echo "Operator '$op' is in bundle format already, skipping ...";continue; }
 
+            cd $PLAYBOOK_DIR
+            ansible-playbook -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
+            -e operator_dir=$PROJECT_DIR/operators/$op -e cluster_type=$OPP_PRODUCTION_TYPE -e strict_cluster_version_labels=true -e strict_k8s_bundles=true $ANSIBLE_ARGS
 
-            ansible-pull -U $OPP_ANSIBLE_PULL_REPO -C $OPP_ANSIBLE_PULL_BRANCH -i localhost, -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
-            -e operator_dir=$PWD/operators/$op -e cluster_type=$OPP_PRODUCTION_TYPE -e strict_cluster_version_labels=true -e strict_k8s_bundles=true $ANSIBLE_ARGS
-
-
-            echo "Copy bundle to man repo"
-            mv $PWD/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
-            rm -rf $PWD/operators/$op
-            mv /tmp/operator-test/operators/$op $PWD/operators/$op
-            tree $PWD/operators/$op
+            cd $PROJECT_DIR
+            echo "Moving bundle for '$op' ..."
+            mv $PROJECT_DIR/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
+            rm -rf $PROJECT_DIR/operators/$op
+            mv /tmp/operator-test/operators/$op $PROJECT_DIR/operators/$op
+            cd $PROJECT_DIR
             git add . || $FAKE_RC
             git commit -m "Operator '$op' converted from packagemanifest to bundle format" -a || $FAKE_RC
-            git log --oneline -n 10
             git push origin $OPP_TARGET_BRANCH -f || $FAKE_RC
           done
 
