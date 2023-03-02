@@ -38,6 +38,7 @@ jobs:
           token: ${{ secrets.FRAMEWORK_MERGE }}
       - name: Conversion
         run: |
+          set -x
           FAKE_RC=false
           git config --local user.email "41898282+framework-automation[bot]@users.noreply.github.com" || $FAKE_RC
           git config --local user.name "framework-automation" || $FAKE_RC
