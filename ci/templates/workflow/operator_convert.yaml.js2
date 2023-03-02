@@ -56,6 +56,7 @@ jobs:
 
           if [[ $OPP_OPERATORS == "all" ]];then
             echo "Searching for all operators ..."
+            OPP_OPERATORS=$(find operators/ -name "*package.yaml" | cut -d '/' -f 2 | tr '\n' ' ')
             exit 1
           fi
           PLAYBOOK_DIR="/tmp/operator-test-playbooks"
