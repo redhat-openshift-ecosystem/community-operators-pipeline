@@ -1,4 +1,3 @@
-
 {% raw %}
 name: "Operator Convert"
 on:
@@ -20,21 +19,17 @@ on:
         description: 'Playbook branch'     
         required: true
         default: 'upstream-community'
-      cluster:
-        description: 'Cluster type (k8s, ocp)'
-        required: true
-{% endraw %}
-        default: '{{ default_config.production.type }}'
 {% raw %}
 env:
   OPP_OPERATORS: ${{ github.event.inputs.operators }}
   OPP_ANSIBLE_PULL_REPO: "${{ github.event.inputs.playbook_repo }}"
   OPP_ANSIBLE_PULL_BRANCH: "${{ github.event.inputs.playbook_branch }}"
-  OPP_PRODUCTION_TYPE: "${{ github.event.inputs.cluster }}"
+{% endraw %}
+  OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
 {% raw %}
 
 jobs:
-  upgrade:
+  convert:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -66,7 +61,5 @@ jobs:
 
 
           done
-
-
 
 {% endraw %}
