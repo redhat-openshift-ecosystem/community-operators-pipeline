@@ -60,6 +60,10 @@ jobs:
           PLAYBOOK_DIR="/tmp/operator-test-playbooks"
           git clone $OPP_ANSIBLE_PULL_REPO -b $OPP_ANSIBLE_PULL_BRANCH $PLAYBOOK_DIR
 
+          ANSIBLE_TAGS="reset_tools,operator_info"
+          ANSIBLE_ARGS=
+          [ "$OPP_PRODUCTION_TYPE" ==  "ocp" ] && ANSIBLE_ARGS="-e supported_cluster_versions=v4.8,v4.9,v4.10,v4.11,v4.12"
+
           for op in $OPP_OPERATORS;do
 
             # TODO: Check if it is package manifest already
@@ -68,10 +72,11 @@ jobs:
             [ -z $IS_PACKAGEMANIFEST ] && { echo "Operator '$op' is in bundle format already, skipping ...";continue; } || true
 
             cd $PLAYBOOK_DIR
-            ansible-playbook -i localhost, -e ansible_connection=local -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags reset_tools,operator_info \
+            ansible-playbook -i localhost, -e ansible_connection=local -e run_upstream=true -e run_prepare_catalog_repo_upstream=false -e run_remove_catalog_repo=false upstream/local.yml --tags $ANSIBLE_TAGS \
             -e operator_dir=$PROJECT_DIR/operators/$op -e cluster_type=$OPP_PRODUCTION_TYPE -e strict_cluster_version_labels=true -e strict_k8s_bundles=true -e automatic_cluster_version_label=true \
-            -e oi_index_skip=true -e supported_cluster_versions="v4.6,v4.7,v4.8" $ANSIBLE_ARGS
+            -e oi_index_skip=true $ANSIBLE_ARGS
 
+            ANSIBLE_TAGS="operator_info"
             cd $PROJECT_DIR
             echo "Moving bundle for '$op' ..."
             mv $PROJECT_DIR/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
