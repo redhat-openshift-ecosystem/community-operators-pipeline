@@ -35,7 +35,7 @@ production:
     organization: community-operators-pipeline
     name: catalog
     username:
-      in: '12742415\|community-operators-pipeline24'
+      in: '12742415\|community-operators-pipeline'
       out: framework_automation
   test:
     force_deploy_openshift_version: "4.8"
