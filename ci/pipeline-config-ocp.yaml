@@ -35,8 +35,8 @@ production:
     organization: community-operators-pipeline
     name: catalog
     username:
-      in: mavala
-      out: mavala
+      in: "12742415|community-operators-pipeline"
+      out: framework_automation
   test:
     force_deploy_openshift_version: "4.8"
     installation_skip:
@@ -54,8 +54,6 @@ pipeline:
   assignees:
     - mporrato
     - Allda
-    - J0zi
-    - mvalarh
   automerge:
     enabled: 1
   reviewers:
