@@ -37,7 +37,7 @@ env:
   OPP_ANSIBLE_PULL_REPO: "https://github.com/redhat-openshift-ecosystem/operator-test-playbooks"
   OPP_ANSIBLE_PULL_BRANCH: "upstream-community-dev"
   OPP_MIRROR_INDEX_REGISTRY: "quay.io"
-  OPP_REGISTRY_MIRROR_USER: "mavala"
+  OPP_REGISTRY_MIRROR_USER: "framework_automation"
 
   REGISTRY_MIRROR_PW: ${{ secrets.REGISTRY_MIRROR_PW }}
   ANSIBLE_FORCE_COLOR: 1
