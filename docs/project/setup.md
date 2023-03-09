@@ -13,7 +13,7 @@ The table is explaining
 |`GH_TOKEN`| GitHub action token for `framework-automation` to produce statistics |
 |`IIB_INPUT_REGISTRY_TOKEN`| Token for user `$IIB_INPUT_REGISTRY_USER` to be able to access `registry.redhat.io` |
 |`PREPARE_INDEX_API_TOKEN`| Quay application Token (user: `$oauth`) used for preparing temporary index for prow jobs |
-|`REGISTRY_MIRROR_PW`| Token for user `$REGISTRY_MIRROR_USER` to be able to push to production (mirror) index|
+|`REGISTRY_MIRROR_PW`| Token for user `$OPP_REGISTRY_MIRROR_USER` to be able to push to production (mirror) index|
 |`REGISTRY_RELEASE_API_TOKEN`| Quay application Token (user: `$oauth`) used for pushing to release index |
 |`REPO_GHA_PAT`| GitHub access token (deprecated)|
 |`OHIO_REGISTRY_TOKEN`| Quay application token (user: `$oauth`) to push index image used for `operatorhub.io` web page|
