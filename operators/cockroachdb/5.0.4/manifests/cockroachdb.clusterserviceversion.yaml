@@ -230,7 +230,9 @@ spec:
     NAME                                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)              AGE
     example-9f8ngwzrxbxrulxqmdqfhn51h-cdb          ClusterIP   None             <none>        26257/TCP,8080/TCP   24m
     example-9f8ngwzrxbxrulxqmdqfhn51h-cdb-public   ClusterIP   10.106.249.134   <none>        26257/TCP,8080/TCP   24m
-    
+
+
+
     ```
     Then you can use the CockroachDB command line client to connect to the database cluster:
     ```
