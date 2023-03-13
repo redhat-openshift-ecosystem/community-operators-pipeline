@@ -36,3 +36,19 @@ On every workflow template and config change, one has to run an upgrade to apply
 |`Playbook branch`|Branch (`upstream-community`) in [ansible playbooks](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks) are taken to upgrade|
 |`Cluster type (k8s or ocp)`|Cluster type for repo. Possible options `k8s` or `ocp`|
 |`From index (quay.io/operator_testing/index_empty:latest)`|Optional parameter to initialize or copy index image to nonexisten images|
+
+### GitHub Action - Operator convert
+The goal of `Operator convert` workflow is to convert the package manifest format operator to a bundle. It is done in two steps
+
+1. Convert operators to `target branch`
+1. Make PR from `target branch` to `main`
+
+![PR](../images/operator_convert.png)
+
+
+| Name | Description |
+|------|--------|
+|`List of operators divided by space (aqua dell-csi-operator). Value all is also supported`|List of operators. Option `all` will search for all opeators that are in package manifest format|
+|`Target branch`|Target branch where convertion of operator is pushed. One can make PR to man after process is finished. Note that branch is overwritten automatically by running next workflow if target branch is same.|
+|`Playbook repo`|Playbook repo (`https://github.com/redhat-openshift-ecosystem/operator-test-playbooks`) |
+|`Playbook branch`|Branch (`upstream-community`) in [ansible playbooks](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks)|
