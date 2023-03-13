@@ -400,7 +400,7 @@ function ExecParameters() {
     [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
 
     #k8s kiwi needs it and also OCP orange
-    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=$IIB_INPUT_REGISTRY_USER"
+    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=\"$IIB_INPUT_REGISTRY_USER\""
     [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
 
     # Handle index_check
