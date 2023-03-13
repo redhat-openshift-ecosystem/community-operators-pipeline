@@ -218,7 +218,13 @@ spec:
     ## About this Operator
     This Operator is based on a Helm chart for CockroachDB. It supports the same parameters like the official [CockroachDB Helm Chart](https://github.com/cockroachdb/helm-charts/tree/master/cockroachdb).
 
+
     ## Core capabilities
+
+
+
+
+    
     * **StatefulSet** - Sets up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet
     * **Expand Replicas** - Supports expanding the set of replicas by simply editing your object
     * **Dashboard** - Installs the CockroachDB user interface to administer your cluster. Easily expose it via an Ingress rule.
