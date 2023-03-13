@@ -400,7 +400,7 @@ function ExecParameters() {
     [[ $OPP_PROD -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
 
     #k8s kiwi needs it and also OCP orange
-    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=\'$IIB_INPUT_REGISTRY_USER\'"
+    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=\"$IIB_INPUT_REGISTRY_USER\""
     [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
 
     # Handle index_check
@@ -420,8 +420,8 @@ function ExecParameters() {
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && [[ $OPP_INSTALLATION_SKIP -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e operator_upgrade_testing_disabled=true"
     [[ $1 == orange* ]] && [[ $OPP_PROD -eq 0 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e production_index=$OPP_PRODUCTION_REGISTRY_NAMESPACE/$OPP_RELEASE_INDEX_NAME"
 
-    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=$IIB_INPUT_REGISTRY_USER -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
-    [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_password=\"$IIB_INPUT_REGISTRY_TOKEN\""
+    [ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=\"\\\"$IIB_INPUT_REGISTRY_USER\\\"\" -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
+    [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_password=\"\\\"$IIB_INPUT_REGISTRY_TOKEN\\\"\""
 
     [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e stream_kind=openshift_upstream"
     
