@@ -107,7 +107,7 @@ OPP_EXEC_USER_SECRETS="-e quay_api_token=$REGISTRY_RELEASE_API_TOKEN"
 
 [ -n "$OPP_PRODUCTION_TYPE" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e cluster_type=$OPP_PRODUCTION_TYPE"
 
-[ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=$IIB_INPUT_REGISTRY_USER -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
+[ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e quay_arch_input_user=\"$IIB_INPUT_REGISTRY_USER\" -e quay_arch_input_host=$(echo $OPP_MIRROR_INDEX_MULTIARCH_BASE | cut -d '/' -f 1)"
 [ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e quay_arch_input_password=\"$IIB_INPUT_REGISTRY_TOKEN\""
 
 if [ -f "$OP_INFO_FILE_LOCATION/op_info.yaml" ]; then OPP_EXEC_USER="$OPP_EXEC_USER -e operator_info_file=$OP_INFO_FILE_LOCATION/op_info.yaml"; fi
