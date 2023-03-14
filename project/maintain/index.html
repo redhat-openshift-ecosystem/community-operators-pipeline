@@ -567,6 +567,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#github-action-operator-convert" class="md-nav__link">
+    GitHub Action - Operator convert
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -788,6 +795,39 @@
 <tr>
 <td><code>From index (quay.io/operator_testing/index_empty:latest)</code></td>
 <td>Optional parameter to initialize or copy index image to nonexisten images</td>
+</tr>
+</tbody>
+</table>
+<h3 id="github-action-operator-convert">GitHub Action - Operator convert</h3>
+<p>The goal of <code>Operator convert</code> workflow is to convert the package manifest format operator to a bundle. It is done in two steps</p>
+<ol>
+<li>Convert operators to <code>target branch</code></li>
+<li>Make PR from <code>target branch</code> to <code>main</code></li>
+</ol>
+<p><img alt="PR" src="../../images/operator_convert.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List of operators divided by space (aqua dell-csi-operator). Value all is also supported</code></td>
+<td>List of operators. Option <code>all</code> will search for all opeators that are in package manifest format</td>
+</tr>
+<tr>
+<td><code>Target branch</code></td>
+<td>Target branch where convertion of operator is pushed. One can make PR to man after process is finished. Note that branch is overwritten automatically by running next workflow if target branch is same.</td>
+</tr>
+<tr>
+<td><code>Playbook repo</code></td>
+<td>Playbook repo (<code>https://github.com/redhat-openshift-ecosystem/operator-test-playbooks</code>)</td>
+</tr>
+<tr>
+<td><code>Playbook branch</code></td>
+<td>Branch (<code>upstream-community</code>) in <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks">ansible playbooks</a></td>
 </tr>
 </tbody>
 </table>
