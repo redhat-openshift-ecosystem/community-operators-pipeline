@@ -8,7 +8,7 @@ production:
     organization: community-operators-pipeline
     name: catalog_tmp
     tags:
-      - latest-db
+      - latest
     latest: ""
     signature:
       enabled: 1
