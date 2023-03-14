@@ -39,6 +39,9 @@ env:
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
   OPP_REVIEWERS_ENABLED: {{ default_config.pipeline.reviewers.enabled }}
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: {{ default_config.test.force_deploy_openshift_version | default('4.8') }}
+  {% if default_config.production.type == 'k8s' %}
+  IIB_INSTALL: 0
+  {% endif %}
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 {% raw %}
   IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
