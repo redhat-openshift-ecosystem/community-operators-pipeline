@@ -314,7 +314,7 @@ jobs:
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
-          OPP_IIB_INSTALL: 1
+          OPP_IIB_INSTALL: 0
           #OPP_MIRROR_INDEX_ENABLED: 0
           OPP_FORCE_INDEX_UPDATE: 1
           OPP_SKIP_BUNDLES: 1
