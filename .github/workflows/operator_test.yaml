@@ -38,7 +38,6 @@ env:
   OPP_PRODUCTION_TYPE: "k8s"
   OPP_REVIEWERS_ENABLED: 0
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: 4.8
-  IIB_INSTALL: 0
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 
   IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
@@ -86,7 +85,7 @@ jobs:
         id: op-traffic-light-comment
         if: always() && steps.op-traffic-light-result.outputs.git_rebase_conflict == '1'
         uses: mshick/add-pr-comment@v1
-        with:
+        with:B
           message: |
             Dear @${{ github.event.pull_request.user.login }},
             Your forked procject is not rebased
@@ -345,7 +344,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_MIRROR_INDEX_ENABLED: 1
-          OPP_IIB_INSTALL: 1
+          OPP_IIB_INSTALL: 0
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
