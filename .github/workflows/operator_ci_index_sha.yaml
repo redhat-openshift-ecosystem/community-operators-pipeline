@@ -26,7 +26,7 @@ env:
   OPP_MIRROR_INDEX_REGISTRY: "quay.io"
   OPP_MIRROR_INDEX_ORGANIZATION: "community-operators-pipeline"
   OPP_MIRROR_INDEX_NAME: "catalog"
-  IIB_INPUT_REGISTRY_USER: "12742415|community-operators-pipeline"
+  IIB_INPUT_REGISTRY_USER: "framework_automation"
   OPP_REGISTRY_MIRROR_USER: "framework_automation"
 
   #QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP: ${{ secrets.QUAY_API_TOKEN_OPENSHIFT_COMMUNITY_OP }}

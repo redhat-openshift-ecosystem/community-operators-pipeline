@@ -42,7 +42,7 @@ env:
   OPP_MIRROR_INDEX_MULTIARCH_BASE: "quay.io/operator-framework/opm"
   OPP_MULTIARCH_SUPPORTED_VERSIONS: "latest"
   OPP_MIRROR_INDEX_MULTIARCH_POSTFIX: "s"
-  IIB_INPUT_REGISTRY_USER: "12742415|community-operators-pipeline"
+  IIB_INPUT_REGISTRY_USER: "framework_automation"
   OPP_REGISTRY_MIRROR_USER: "framework_automation"
   OPP_THIS_REPO_BASE: "https://github.com"
   OPP_THIS_REPO: "redhat-openshift-ecosystem/community-operators-pipeline"
