@@ -85,7 +85,7 @@ jobs:
         id: op-traffic-light-comment
         if: always() && steps.op-traffic-light-result.outputs.git_rebase_conflict == '1'
         uses: mshick/add-pr-comment@v1
-        with:B
+        with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
             Your forked procject is not rebased
