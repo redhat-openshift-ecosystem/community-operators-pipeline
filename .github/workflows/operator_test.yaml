@@ -38,8 +38,8 @@ env:
   OPP_PRODUCTION_TYPE: "k8s"
   OPP_REVIEWERS_ENABLED: 0
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: 4.8
-    IIB_INSTALL: 0
-  #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
+  IIB_INSTALL: 0
+#  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 
   IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 
