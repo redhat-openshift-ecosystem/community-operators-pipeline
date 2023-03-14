@@ -25,7 +25,7 @@ production:
     organization: community-operators-pipeline
     name: catalog
     username:
-      in: framework_automation
+      in: 12742415|community-operators-pipeline
       out: framework_automation
   test:
     installation_skip:
