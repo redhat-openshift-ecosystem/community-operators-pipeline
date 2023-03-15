@@ -44,16 +44,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: files
-        uses: jitterbit/get-changed-files@v1
+        uses: masesgroup/retrieve-changed-files@v2
         continue-on-error: true
       - id: prinfo
         uses: actions-ecosystem/action-get-merged-pull-request@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Remove operator from index
         if: needs.pr-check.outputs.op_test_op_delete == '1'
         env:
@@ -132,7 +132,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v3
   #     - name: Operator release
   #       env:
   #         OP_TEST_LABELS: "${{ needs.pr-check.outputs.op_test_labels }}"
@@ -152,7 +152,7 @@ jobs:
         fail-fast: false
       steps:
         - name: Checkout code
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
         - name: Remove operator from index
           if: needs.pr-check.outputs.op_test_op_delete == '1'
           env:
@@ -253,7 +253,7 @@ jobs:
       OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:latest"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Ohio image
         run: |
           echo "ohio_image ${{ needs.pr-check.outputs.op_test_stream }}/sync https://github.com/operator-framework/community-operators master"
@@ -270,7 +270,7 @@ jobs:
       OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:dev"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Prepare variables for the sign process
         id: openshift-vars-latest
         run: |
@@ -311,7 +311,7 @@ jobs:
       OP_TEST_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Push to quay
         run: |
           echo "push_to_quay ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
@@ -327,7 +327,7 @@ jobs:
       REPO_GHA_PAT: ${{ secrets.REPO_GHA_PAT }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Ohio image
         run: |
           echo "scripts/ci/trigger-operatorhubio-ci.sh ${CI_OHIO_BRANCH}"
@@ -342,7 +342,7 @@ jobs:
       CI_OHIO_BRANCH: "master"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Ohio image
         run: |
           echo "scripts/ci/trigger-operatorhubio-ci.sh ${CI_OHIO_BRANCH}"
