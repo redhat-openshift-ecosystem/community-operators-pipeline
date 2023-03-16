@@ -559,6 +559,8 @@ function detect_k8s_max() {
 
 [[ $OPP_PRODUCTION_TYPE == k8s ]] && [[ $OPP_CI_YAML_ONLY == 0 ]] && detect_k8s_max
 
+[[ $OPP_ALLOW_FORCE_RELEASE -eq 1 ]] && OPP_RELEASE_READY=$OPP_ALLOW_FORCE_RELEASE
+
 echo "Latest : $LATEST"
 echo "OPP_OPERATOR_VERSION: $OPP_OPERATOR_VERSION"
 echo "OPP_OPERATOR_VERSIONS : $OPP_OPERATOR_VERSIONS"
@@ -596,8 +598,6 @@ echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE"
 
 echo "opp_error_code=$OPP_ERROR_CODE"
 echo "opp_authorized_changes=$OPP_AUTHORIZED_CHANGES"
-
-[[ $OPP_ALLOW_FORCE_RELEASE -eq 1 ]] && OPP_RELEASE_READY=$OPP_ALLOW_FORCE_RELEASE
 
 
 echo "opp_test_ready=${OPP_TEST_READY}" >> $GITHUB_OUTPUT
