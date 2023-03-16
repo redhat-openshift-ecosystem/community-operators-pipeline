@@ -798,6 +798,9 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">For https://github.com/redhat-openshift-ecosystem/community-operators-pipeline repository, there is a different <code>IIB_INPUT_REGISTRY_TOKEN</code> in k8s upgrade than in ocp upgrade. Change the token during upgrade accordingly. Do <em>not</em> change any token in production, just on the development pipeline.</p>
+</div>
 <h3 id="github-action-operator-convert">GitHub Action - Operator convert</h3>
 <p>The goal of <code>Operator convert</code> workflow is to convert the package manifest format operator to a bundle. It is done in two steps</p>
 <ol>
