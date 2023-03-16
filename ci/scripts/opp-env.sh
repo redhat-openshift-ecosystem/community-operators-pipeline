@@ -597,6 +597,9 @@ echo "opp_dockerfile_changed=$OPP_CHANGES_DOCKERFILE"
 echo "opp_error_code=$OPP_ERROR_CODE"
 echo "opp_authorized_changes=$OPP_AUTHORIZED_CHANGES"
 
+[[ $OPP_ALLOW_FORCE_RELEASE -eq 1 ]] && OPP_RELEASE_READY=$OPP_RELEASE_READY
+
+
 echo "opp_test_ready=${OPP_TEST_READY}" >> $GITHUB_OUTPUT
 echo "opp_release_ready=${OPP_RELEASE_READY}" >> $GITHUB_OUTPUT
 echo "opp_production_type=${OPP_PRODUCTION_TYPE}" >> $GITHUB_OUTPUT
