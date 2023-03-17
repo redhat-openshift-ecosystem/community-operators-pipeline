@@ -78,11 +78,10 @@ jobs:
           echo "git_rebase_conflict_comment=" >> $GITHUB_OUTPUT
           [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict=1" >> $GITHUB_OUTPUT || true
 
-          [ -f /tmp/pr_rebase.txt ] &&  OPP_GIT_REBASE_CONFLICT_FILE=$(cat /tmp/pr_rebase.txt)
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//'%'/'%25'}"
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//$'\n'/'%0A'}"
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//$'\r'/'%0D'}"
-          [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict_comment=$OPP_GIT_REBASE_CONFLICT_FILE" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/pr_rebase.txt ] && OPP_GIT_REBASE_CONFLICT_FILE=$(cat /tmp/pr_rebase.txt)
+          [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict_comment=<<EOF" >> $GITHUB_OUTPUT
+          [ -f /tmp/pr_rebase.txt ] && echo "$OPP_GIT_REBASE_CONFLICT_FILE" >> $GITHUB_OUTPUT
+          [ -f /tmp/pr_rebase.txt ] && echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Operator traffic light (comment)
         id: op-traffic-light-comment
@@ -316,12 +315,6 @@ jobs:
             echo "opp_check_err_bundle_validate=<<EOF" >> $GITHUB_OUTPUT
             echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
-            #echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
-
-            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
-            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
-            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
-            #echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
           fi
 
           OPP_BUNDLE_VALIDATE_INFO_FILE=/tmp/operator_sdk_bundle_validate_info.txt
