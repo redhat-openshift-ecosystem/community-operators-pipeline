@@ -88,6 +88,7 @@ pipeline:
     enabled: 1
   notifications:
     slack: 1
+  package_manifest_disabled: 0
 ```
 
 |Name|Description|Possble options|
@@ -101,6 +102,7 @@ pipeline:
 |`pipeline.automerge`| Flag if automerge is enabled | `enabled` |
 |`pipeline.reviewers`| Flag if reviewers is enabled | `enabled` |
 |`pipeline.notifications`| Flag if notifications is enabled | `slack` |
+|`pipeline.package_manifest_disabled`| Flag if package manifest format is disabled or enabled/supported | `0` or `1` |
 
 ## Operatorhubio
 ```
