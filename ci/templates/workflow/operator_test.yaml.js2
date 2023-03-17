@@ -137,8 +137,24 @@ jobs:
         run: |
           echo "opp_check_err_k8s_bundles=0" >> $GITHUB_OUTPUT
           echo "opp_check_err_k8s_bundles_value=" >> $GITHUB_OUTPUT
+          echo "opp_check_err_package_manifest=" >> $GITHUB_OUTPUT
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "opp_check_err_k8s_bundles=1" >> $GITHUB_OUTPUT || true
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "opp_check_err_k8s_bundles_value=$(cat /tmp/operator-test/op_failed_k8s_bundles.yaml | yq -r '.operators | @csv' | tr -d '"')" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/operator-test/format_failed ] && echo "opp_check_err_package_manifest=1" >> $GITHUB_OUTPUT || true
+
+
+      - name: Operator info (packagemanifest format failed)
+        id: op-info-comment-format
+        if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Dear @${{ github.event.pull_request.user.login }},
+            Your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
@@ -162,7 +178,9 @@ jobs:
         if: always() && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
         run: |
           echo "opp_check_err_cluster_version_autolabel=0" >> $GITHUB_OUTPUT
+          echo "opp_check_err_package_manifest=" >> $GITHUB_OUTPUT
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "opp_check_err_cluster_version_autolabel=1" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/operator-test/format_failed ] && echo "opp_check_err_package_manifest=1" >> $GITHUB_OUTPUT || true
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
