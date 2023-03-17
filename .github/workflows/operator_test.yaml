@@ -33,6 +33,8 @@ env:
   IIB_INPUT_REGISTRY_USER: "12742415|community-operators-pipeline"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
+  # TODO handle config
+  OPP_PACKAGEMANIFEST_DISABLED: 1
   KIND_VERSION: "v0.16.0"
   KIND_KUBE_VERSION_LATEST: "v1.21.1"
   OPP_PRODUCTION_TYPE: "ocp"
@@ -126,7 +128,22 @@ jobs:
         if: always() && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
         run: |
           echo "opp_check_err_cluster_version_autolabel=0" >> $GITHUB_OUTPUT
+          echo "opp_check_err_package_manifest=" >> $GITHUB_OUTPUT
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "opp_check_err_cluster_version_autolabel=1" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/operator-test/format_failed ] && echo "opp_check_err_package_manifest=1" >> $GITHUB_OUTPUT || true
+      
+      - name: Operator info (packagemanifest format failed)
+        id: op-info-comment-format
+        if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Dear @${{ github.event.pull_request.user.login }},
+            Your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
@@ -241,9 +258,9 @@ jobs:
             OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
             echo $OPP_BUNDLE_VALIDATE_FILE_OUTPUT
 
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
+            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
+            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
+            #OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
             echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
           fi
 
