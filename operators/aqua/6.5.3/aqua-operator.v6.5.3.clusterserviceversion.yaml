@@ -316,6 +316,7 @@ spec:
     * Enforcer (aka “agent”)
     * KubeEnforcer
     * Scanner
+    
     * CSP (package that contains the Server, Database, and Gateway)
 
 
