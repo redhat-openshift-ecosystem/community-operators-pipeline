@@ -799,7 +799,7 @@
 </tbody>
 </table>
 <div class="admonition warning">
-<p class="admonition-title">For https://github.com/redhat-openshift-ecosystem/community-operators-pipeline repository, there is a different <code>IIB_INPUT_REGISTRY_TOKEN</code> in k8s upgrade than in ocp upgrade. Change the token during upgrade accordingly. Do <em>not</em> change any token in production, just on the development pipeline.</p>
+<p class="admonition-title">For https://github.com/redhat-openshift-ecosystem/community-operators-pipeline repository, there is a different <code>IIB_INPUT_REGISTRY_TOKEN</code> in k8s upgrade than in ocp upgrade. Change the token during the upgrade accordingly. Do <em>not</em> change any token in production, just on the development pipeline.</p>
 </div>
 <h3 id="github-action-operator-convert">GitHub Action - Operator convert</h3>
 <p>The goal of <code>Operator convert</code> workflow is to convert the package manifest format operator to a bundle. It is done in two steps</p>
@@ -807,6 +807,18 @@
 <li>Convert operators to <code>target branch</code></li>
 <li>Make PR from <code>target branch</code> to <code>main</code></li>
 </ol>
+<div class="admonition warning">
+<p class="admonition-title">One can run multiple operators in one go, but be aware that the conversion process of the operator that has many versions might take a few hours. It is recommended to run more operators with a small number of versions first and then operators with many versions.</p>
+</div>
+<h4 id="disable-package-manifest-format-support">Disable package manifest format support</h4>
+<div class="admonition warning">
+<p class="admonition-title">Since this process can take a long time, it is recommended to convert operators before the deadline (31. June 2023).</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Once the conversion process is finished and all operators are converted, one can disable the package manifest format by setting the configuration <code>pipeline package_manifest_disabled</code> value to <code>1</code> and run <code>CI Upgrade</code> explained above.</p>
+</div>
+<h4 id="package-manifest-format-conversion-workflow">Package manifest format conversion workflow</h4>
+<p>The whole process can be run via the following workflow</p>
 <p><img alt="PR" src="../../images/operator_convert.png" /></p>
 <table>
 <thead>
