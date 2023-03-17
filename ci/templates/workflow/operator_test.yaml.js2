@@ -35,7 +35,7 @@ env:
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   # TODO handle config
-  OPP_PACKAGEMANIFEST_DISABLED: 1
+  OPP_PACKAGEMANIFEST_DISABLED: "{{ default_config.pipeline.package_manifest_disabled || 0 }}"
   KIND_VERSION: "{{ default_config.tools.kind_version }}"
   KIND_KUBE_VERSION_LATEST: "{{ default_config.tools.kind_kube_version }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
