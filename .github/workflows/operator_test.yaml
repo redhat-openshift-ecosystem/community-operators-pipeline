@@ -34,7 +34,7 @@ env:
   OPP_PROD: 0
   OPP_DRY_RUN: 0
   # TODO handle config
-  OPP_PACKAGEMANIFEST_DISABLED: 1
+  OPP_PACKAGEMANIFEST_DISABLED: "0"
   KIND_VERSION: "v0.16.0"
   KIND_KUBE_VERSION_LATEST: "v1.21.1"
   OPP_PRODUCTION_TYPE: "ocp"
@@ -140,7 +140,7 @@ jobs:
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
-            Your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
+            your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
