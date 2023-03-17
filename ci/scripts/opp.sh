@@ -58,6 +58,8 @@ OPP_IIB_INSTALL=${OPP_IIB_INSTALL-0}
 OPP_LOG_DIR=${OPP_LOG_DIR-"/tmp/op-test"}
 OPP_NOCOLOR=${OPP_NOCOLOR-0}
 
+OPP_PACKAGEMANIFEST_DISABLED=${OPP_PACKAGEMANIFEST_DISABLED-0}
+
 OPP_RELEASE_BUNDLE_REGISTRY=${OPP_RELEASE_BUNDLE_REGISTRY-"quay.io"}
 OPP_RELEASE_BUNDLE_ORGANIZATION=${OPP_RELEASE_BUNDLE_ORGANIZATION-"community-operators-pipeline"}
 OPP_RELEASE_INDEX_REGISTRY=${OPP_RELEASE_INDEX_REGISTRY-"quay.io"}
@@ -554,6 +556,8 @@ function ExecParameters() {
 
     # General non prod setup
     [[ $OPP_PROD -ne 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e pull_existing_ignore_list=false"
+
+    [[ $OPP_PACKAGEMANIFEST_DISABLED -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e manifest_format_disabled=true"
 
     # FOR debuging only
     [ -n "$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e remove_base_dir=/tmp/community-operators-for-catalog/operators -e remove_operator_dirs=$OPP_REMOVE_OPERATOR_AFTER_CLONE_PATH"

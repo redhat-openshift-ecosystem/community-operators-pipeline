@@ -34,6 +34,8 @@ env:
   IIB_INPUT_REGISTRY_USER: "{{ default_config.production.mirror.username.in }}"
   OPP_PROD: 0
   OPP_DRY_RUN: 0
+  # TODO handle config
+  OPP_PACKAGEMANIFEST_DISABLED: "{{ default_config.pipeline.package_manifest_disabled | default('0') }}"
   KIND_VERSION: "{{ default_config.tools.kind_version }}"
   KIND_KUBE_VERSION_LATEST: "{{ default_config.tools.kind_kube_version }}"
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
@@ -76,11 +78,10 @@ jobs:
           echo "git_rebase_conflict_comment=" >> $GITHUB_OUTPUT
           [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict=1" >> $GITHUB_OUTPUT || true
 
-          [ -f /tmp/pr_rebase.txt ] &&  OPP_GIT_REBASE_CONFLICT_FILE=$(cat /tmp/pr_rebase.txt)
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//'%'/'%25'}"
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//$'\n'/'%0A'}"
-          OPP_GIT_REBASE_CONFLICT_FILE="${OPP_GIT_REBASE_CONFLICT_FILE//$'\r'/'%0D'}"
-          [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict_comment=$OPP_GIT_REBASE_CONFLICT_FILE" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/pr_rebase.txt ] && OPP_GIT_REBASE_CONFLICT_FILE=$(cat /tmp/pr_rebase.txt)
+          [ -f /tmp/pr_rebase.txt ] && echo "git_rebase_conflict_comment=<<EOF" >> $GITHUB_OUTPUT
+          [ -f /tmp/pr_rebase.txt ] && echo "$OPP_GIT_REBASE_CONFLICT_FILE" >> $GITHUB_OUTPUT
+          [ -f /tmp/pr_rebase.txt ] && echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Operator traffic light (comment)
         id: op-traffic-light-comment
@@ -116,6 +117,7 @@ jobs:
         run: |
           # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
+          [ "$OPP_PACKAGEMANIFEST_DISABLED" = '1' ] && ANSIBLE_ARGS="-e manifest_format_disabled=true" || ANSIBLE_ARGS="$ANSIBLE_ARGS --e manifest_format_disabled=false"
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
@@ -137,8 +139,24 @@ jobs:
         run: |
           echo "opp_check_err_k8s_bundles=0" >> $GITHUB_OUTPUT
           echo "opp_check_err_k8s_bundles_value=" >> $GITHUB_OUTPUT
+          echo "opp_check_err_package_manifest=" >> $GITHUB_OUTPUT
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "opp_check_err_k8s_bundles=1" >> $GITHUB_OUTPUT || true
           [ -f /tmp/operator-test/op_failed_k8s_bundles.yaml ] && echo "opp_check_err_k8s_bundles_value=$(cat /tmp/operator-test/op_failed_k8s_bundles.yaml | yq -r '.operators | @csv' | tr -d '"')" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/operator-test/format_failed ] && echo "opp_check_err_package_manifest=1" >> $GITHUB_OUTPUT || true
+
+
+      - name: Operator info (packagemanifest format failed)
+        id: op-info-comment-format
+        if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Dear @${{ github.event.pull_request.user.login }},
+            your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
@@ -162,7 +180,22 @@ jobs:
         if: always() && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
         run: |
           echo "opp_check_err_cluster_version_autolabel=0" >> $GITHUB_OUTPUT
+          echo "opp_check_err_package_manifest=" >> $GITHUB_OUTPUT
           [ -f /tmp/operator-test/op_auto_labels.yaml ] && echo "opp_check_err_cluster_version_autolabel=1" >> $GITHUB_OUTPUT || true
+          [ -f /tmp/operator-test/format_failed ] && echo "opp_check_err_package_manifest=1" >> $GITHUB_OUTPUT || true
+      
+      - name: Operator info (packagemanifest format failed)
+        id: op-info-comment-format
+        if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Dear @${{ github.event.pull_request.user.login }},
+            your operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
@@ -279,10 +312,9 @@ jobs:
             OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
             echo $OPP_BUNDLE_VALIDATE_FILE_OUTPUT
 
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
-            echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
+            echo "opp_check_err_bundle_validate=<<EOF" >> $GITHUB_OUTPUT
+            echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           fi
 
           OPP_BUNDLE_VALIDATE_INFO_FILE=/tmp/operator_sdk_bundle_validate_info.txt

@@ -556,6 +556,16 @@ function detect_k8s_max() {
 
 }
 
+# Handle case when after removal of operator only ci.yaml will be present
+if [ -n "$OPP_REMOVED_FILES" ];then
+  FILES_IN_OPERATOR_DIR=$(find operators/$OPP_OPERATOR_NAME/ -type f)
+  NUM_FILES_IN_OPERATOR_DIR=$(echo $FILES_IN_OPERATOR_DIR | tr ' ' '\n' | wc -l)
+  if [[ $NUM_FILES_IN_OPERATOR_DIR -eq 1 ]];then
+    CI_YAML_TEST=$(basename $FILES_IN_OPERATOR_DIR)
+    [[ $CI_YAML_TEST == "ci.yaml" ]] && OPP_RELEASE_READY=1
+  fi
+fi
+
 
 [[ $OPP_PRODUCTION_TYPE == k8s ]] && [[ $OPP_CI_YAML_ONLY == 0 ]] && detect_k8s_max
 
