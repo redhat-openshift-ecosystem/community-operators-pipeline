@@ -198,7 +198,7 @@ jobs:
 
           OPP_INDEX_CHECK_ONLY: 1
         run: |
-
+          exit 1
           echo "OPP_LABELS=$OPP_LABELS"
           echo "'$OPERATOR_INDEX_TAG' operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_URL) "$OPERATOR_INDEX_TAG" operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
