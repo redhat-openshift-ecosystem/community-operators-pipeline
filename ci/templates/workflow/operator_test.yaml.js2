@@ -313,7 +313,7 @@ jobs:
             OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
             echo $OPP_BUNDLE_VALIDATE_FILE_OUTPUT
 
-            echo "opp_check_err_bundle_validate<<EOF" >> $GITHUB_OUTPUT
+            echo "opp_check_err_bundle_validate=<<EOF" >> $GITHUB_OUTPUT
             echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
             #echo "opp_check_err_bundle_validate=$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
