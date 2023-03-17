@@ -117,6 +117,7 @@ jobs:
         run: |
           # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
+          [ "$OPP_PACKAGEMANIFEST_DISABLED" = '1' ] && ANSIBLE_ARGS="-e manifest_format_disabled=true" || ANSIBLE_ARGS="--e manifest_format_disabled=false"
 
           ANSIBLE_ARGS="$ANSIBLE_ARGS -e stream_kind=openshift_upstream"
           echo $ANSIBLE_ARGS
