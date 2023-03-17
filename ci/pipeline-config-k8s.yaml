@@ -49,7 +49,7 @@ pipeline:
     enabled: 0
   notifications:
     slack: 0
-  package_manifest_disabled: 0
+  package_manifest_disabled: 1
 operatorhubio:
   enabled: 0
   registry: quay.io
