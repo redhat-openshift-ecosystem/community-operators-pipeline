@@ -491,6 +491,7 @@ OPP_PR_TITLE="$OPP_PR_TITLE $OPP_OPERATOR_NAME"
 
 function detect_k8s_max() {
     echo "Detecting if k8s max version is defined..."
+    echo "LATEST=$LATEST"
     OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$(find $LATEST -name "*clusterserviceversion*")
     echo "OPERATOR_VERSION_PATH_LATEST_CSV_PATH=$OPERATOR_VERSION_PATH_LATEST_CSV_PATH"
     ls $OPERATOR_VERSION_PATH_LATEST_CSV_PATH
