@@ -12,7 +12,7 @@ on:
       tags:
         description: 'List of tags'
         required: true
-        default: 'latest latests'
+        default: 'v4.11 v4.11s'
 
       image_prod_base:
         description: 'Base production image'
@@ -22,7 +22,7 @@ on:
       tags_prod:
         required: false
         default: ''
-        description: 'List of prod tags (eg. latest)'
+        description: 'List of prod tags (eg. v4.11)'
 
       repo:
         description: 'Source repsitory'     
