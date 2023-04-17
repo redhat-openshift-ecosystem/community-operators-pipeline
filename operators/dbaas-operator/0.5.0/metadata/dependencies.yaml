@@ -1,0 +1,7 @@
+# known bundle validation error "ERRO[0000] error validating format in bundle: Bundle validation errors: The CEL field is missing"
+# https://issues.redhat.com/browse/OCPBUGS-9061
+dependencies:
+  - type: olm.package
+    value:
+      packageName: ack-rds-controller
+      version: ">=0.0.27 <=0.1.3"
