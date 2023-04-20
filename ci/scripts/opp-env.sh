@@ -2,7 +2,7 @@
 # OPerator Pipeline (OPP) env script (opp-env.sh)
 
 set -e
-declare -A KIND_SUPPORT_TABLE=(["1.25"]="2" ["1.24"]="6" ["1.23"]="12" ["1.22"]="15" ["1.21"]="14" ["1.20"]="15" ["1.19"]="16" ["1.18"]="20")
+declare -A KIND_SUPPORT_TABLE=(["1.26"]="0" ["1.25"]="2" ["1.24"]="6" ["1.23"]="12" ["1.22"]="15" ["1.21"]="14" ["1.20"]="15" ["1.19"]="16" ["1.18"]="20")
 KIND_MIN_SUPPORTED=1.18
 KIND_MAX_SUPPORTED=1.25 # DO NOT FORGET TO CHANGE WHEN CHANGING ^
 export INPUT_ENV_SCRIPT="/tmp/opp-env-vars"
@@ -79,11 +79,11 @@ echo "opp_auto_packagemanifest_cluster_version_label=$OPP_AUTO_PACKAGEMANIFEST_C
 for l in $(echo $OPP_LABELS);do
   echo "Checking label '$l' ..."
   [[ "$l" = "allow/ci-changes" ]] && export OPP_ALLOW_CI_CHANGES=1
-  [[ "$l" = "allow/force-release" ]] && export OPP_ALLOW_FORCE_RELEASE=1  
+  [[ "$l" = "allow/force-release" ]] && export OPP_ALLOW_FORCE_RELEASE=1
   [[ "$l" = "allow/operator-version-overwrite" ]] && export OPP_VER_OVERWRITE=1
   [[ "$l" = "allow/operator-recreate" ]] && export OPP_OP_DELETE=1 && export OPP_RECREATE=1
   [[ "$l" = "allow/serious-changes-to-existing" ]] && export OPP_ALLOW_SERIOUS_CHANGES=1
-  
+
 done
 echo "opp_recreate=${OPP_RECREATE}" >> $GITHUB_OUTPUT
 
@@ -174,7 +174,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     echo "opp_changed_ci_yaml=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
     echo "opp_ver_overwrite=${OPP_VER_OVERWRITE}" >> $GITHUB_OUTPUT
     echo "opp_update_graph=${OPP_UPDATEGRAPH}" >> $GITHUB_OUTPUT
-    
+
     echo "Files removed only."
     if [ ! -d ${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME} ];then
       OPP_OP_DELETE=1
@@ -195,7 +195,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
       for f in $(find ${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME} -type f);do
         [[ $f == *ci.yaml ]] && continue
         OPP_ADDED_MODIFIED_FILES="$OPP_ADDED_MODIFIED_FILES $f"
-        
+
       done
       echo "Final modified files are :"
       echo "$OPP_ADDED_MODIFIED_FILES"
@@ -241,7 +241,7 @@ echo ""
 
 for sf in ${OPP_MODIFIED_FILES}; do
   echo "modified only: $sf"
-  
+
   [[ $sf == *package.yaml ]] && continue
   [[ $sf == *ci.yaml ]] && OPP_CI_YAML_MODIFIED=1 && continue
   [[ $sf == *Dockerfile* ]] && OPP_CHANGES_DOCKERFILE=1 && continue
@@ -329,7 +329,7 @@ else
 
   OPP_OPERATOR_VERSIONS_REMOVED=
   for v in $REMOVED_VERSIONS;do
-    OPP_OPERATOR_VERSIONS_REMOVED="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"  
+    OPP_OPERATOR_VERSIONS_REMOVED="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"
   done
   # remove trailing space
   OPP_OPERATOR_VERSIONS_REMOVED=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | sed 's/ *$//g')
@@ -370,7 +370,7 @@ fi
 echo "opp_production_type=${OPP_PRODUCTION_TYPE}" >> $GITHUB_OUTPUT
 echo "opp_name=${OPP_OPERATOR_NAME}" >> $GITHUB_OUTPUT
 
-yq --version || { echo "Command 'yq' could not be found !!!"; exit 1; } 
+yq --version || { echo "Command 'yq' could not be found !!!"; exit 1; }
 
 if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   CI_YAML_REMOTE="https://raw.githubusercontent.com/$OPP_THIS_REPO/$OPP_THIS_BRANCH/$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml"
@@ -406,7 +406,7 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
           fi
         done
       done
-    
+
     fi
     echo "OPP_AUTHORIZED_CHANGES=$OPP_AUTHORIZED_CHANGES"
   else
@@ -414,10 +414,10 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   fi
 
   if [[ $OPP_TEST_READY -eq 1 ]];then
-    if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then 
+    if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then
       TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers')
       # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
-      
+
       if [ "$TEST_REVIEWERS" != "null" ];then
         TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers | length' || echo 0)
         [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
@@ -457,7 +457,7 @@ if [[ OPP_INSTALLATION_SKIPED -eq 1 ]];then
     TEST_INSTALLATION_SKIP=$(cat  $CI_CONF_REMOTE_LOCAL | yq '.production.test.installation_skip')
     if [[ $TEST_INSTALLATION_SKIP != null ]];then
       for row in $(echo "${TEST_INSTALLATION_SKIP}" | yq -r '.[]'); do
-        echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME" 
+        echo "TEST_INSTALLATION_SKIP -> row=$row $OPP_OPERATOR_NAME"
         if [[ $OPP_OPERATOR_NAME == $row* ]];then
           OPP_INSTALLATION_SKIP_FOUND=1
           break
@@ -500,7 +500,7 @@ function detect_k8s_max() {
     yq --version
     KIND_KUBE_VERSION_DETECTED_RAW=$(/tmp/yq r "$OPERATOR_VERSION_PATH_LATEST_CSV_PATH" "metadata.annotations.[operatorhub.io/ui-metadata-max-k8s-version]")
     KIND_KUBE_VERSION_DETECTED_CORE=$(echo $KIND_KUBE_VERSION_DETECTED_RAW| cut -f -2 -d'.')
-    
+
     echo "KIND_KUBE_VERSION_DETECTED_RAW=$KIND_KUBE_VERSION_DETECTED_RAW"
     echo "KIND_KUBE_VERSION_DETECTED_CORE=$KIND_KUBE_VERSION_DETECTED_CORE"
 
@@ -539,7 +539,7 @@ function detect_k8s_max() {
               if [ $SEMVER_BIGGER_OUT_OF_RANGE -eq 1 ]; then
                 KIND_KUBE_VERSION_DETECTED="v$KIND_MAX_SUPPORTED.${KIND_SUPPORT_TABLE[$KIND_MAX_SUPPORTED]}"
                 echo "Bigger, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
-              else 
+              else
                 KIND_KUBE_VERSION_DETECTED="v$KIND_KUBE_VERSION_DETECTED_CORE.${KIND_SUPPORT_TABLE[$KIND_KUBE_VERSION_DETECTED_CORE]}"
                 echo "In range, setting KIND_KUBE_VERSION_DETECTED to $KIND_KUBE_VERSION_DETECTED"
               fi
