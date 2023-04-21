@@ -2,7 +2,7 @@
 # OPerator Pipeline (OPP) env script (opp-env.sh)
 
 set -e
-declare -A KIND_SUPPORT_TABLE=(["1.26"]="0" ["1.25"]="2" ["1.24"]="6" ["1.23"]="12" ["1.22"]="15" ["1.21"]="14" ["1.20"]="15" ["1.19"]="16" ["1.18"]="20")
+declare -A KIND_SUPPORT_TABLE=(["1.26"]="3" ["1.25"]="8" ["1.24"]="12" ["1.23"]="17" ["1.22"]="17" ["1.21"]="14")
 KIND_MIN_SUPPORTED=1.18
 KIND_MAX_SUPPORTED=1.25 # DO NOT FORGET TO CHANGE WHEN CHANGING ^
 export INPUT_ENV_SCRIPT="/tmp/opp-env-vars"
