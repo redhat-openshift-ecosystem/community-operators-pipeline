@@ -63,6 +63,6 @@ operatorhubio:
 #  project: operator-test-playbooks
 #  tag: master
 tools:
-  kind_version: v0.14.0
-  kind_kube_version: v1.21.1
-  operator_sdk_version: v1.25.0
+  kind_version: v0.18.0
+  kind_kube_version: v1.26.3
+  operator_sdk_version: v1.8.0
