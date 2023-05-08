@@ -247,8 +247,7 @@ jobs:
         id: op-kiwi-test-err-bundle-validate
         if: always()
         run: |
-          #echo "opp_check_err_bundle_validate=" >> $GITHUB_OUTPUT
-          echo "::set-output name=opp_check_err_bundle_validate::"
+          echo "opp_check_err_bundle_validate=" >> $GITHUB_OUTPUT
           echo "operator_sdk_version=na" >> $GITHUB_OUTPUT
           echo "operator_sdk_args=na" >> $GITHUB_OUTPUT
 
@@ -257,15 +256,9 @@ jobs:
             OPP_BUNDLE_VALIDATE_FILE_OUTPUT=$(cat $OPP_BUNDLE_VALIDATE_FILE)
             echo $OPP_BUNDLE_VALIDATE_FILE_OUTPUT
 
-            #echo "opp_check_err_bundle_validate=<<EOF" >> $GITHUB_OUTPUT
-            #echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
-            #echo "EOF" >> $GITHUB_OUTPUT
-
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//'%'/'%25'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\n'/'%0A'}"
-            OPP_BUNDLE_VALIDATE_FILE_OUTPUT="${OPP_BUNDLE_VALIDATE_FILE_OUTPUT//$'\r'/'%0D'}"
-            echo "::set-output name=opp_check_err_bundle_validate::$OPP_BUNDLE_VALIDATE_FILE_OUTPUT"
-
+            echo "opp_check_err_bundle_validate=<<EOF" >> $GITHUB_OUTPUT
+            echo "$OPP_BUNDLE_VALIDATE_FILE_OUTPUT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           fi
 
           OPP_BUNDLE_VALIDATE_INFO_FILE=/tmp/operator_sdk_bundle_validate_info.txt
@@ -344,6 +337,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
         run: |
           echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -374,6 +368,7 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
+          KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
         run: |
           echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
