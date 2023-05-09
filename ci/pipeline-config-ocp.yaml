@@ -13,7 +13,7 @@ production:
       - v4.10-db
       - v4.11
       - v4.12
-      - v4.13-rc
+      - v4.13
     latest: ""
     signature:
       enabled: 1
@@ -32,6 +32,7 @@ production:
         - v4.10
         - v4.11
         - v4.12
+        - v4.13
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
