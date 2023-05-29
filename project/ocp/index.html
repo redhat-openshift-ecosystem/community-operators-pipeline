@@ -325,6 +325,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#bootstrap-the-new-index">
+    Bootstrap the new index
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#set-maximum-oc-version-available">
     Set maximum oc version available
   </a>
@@ -515,8 +520,14 @@ end
 <li><code>operator_info</code> role <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/operator_info/defaults/main.yml#L25">defaults</a> and to <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L16">k8s2ocp</a> and <a href="https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L31">ocp2k8s</a> converting tables in <code>bundle_validation_filter</code></li>
 <li><a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy-core.sh#L27"><code>OCP2K8S</code></a> and <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5"><code>KIND_SUPPORT_TABLE</code></a> variable in ci/dev and ci/latest consequently</li>
 </ul>
+<p>Also add the new OCP version to <code>bvf_supported_cluster_versions</code>, <code>k8s2ocp</code>, <code>ocp2k8s</code> in https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml .</p>
 <h3 id="enable-pyxis-support-for-a-new-index">Enable Pyxis support for a new index</h3>
 <p>To enable pyxis support for a specific index, clone the <a href="https://issues.redhat.com/browse/CWFHEALTH-1562">issue</a>. And update index number (e.g. <code>v4.13</code>) in the description.</p>
+<h3 id="bootstrap-the-new-index">Bootstrap the new index</h3>
+<p>Create the tag for the new OCP version in the external index by copying the
+previous index:</p>
+<div class="highlight"><pre><span></span><code>skopeo copy --all docker://quay.io/redhat/redhat----community-operator-index:v4.12 docker://quay.io/redhat/redhat----community-operator-index:v4.13
+</code></pre></div>
 <h3 id="set-maximum-oc-version-available">Set maximum <code>oc</code> version available</h3>
 <p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> (e.g. <code>v4.13</code>) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz </p>
 <p>(e.g. https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.13/openshift-client-linux.tar.gz)</p>
