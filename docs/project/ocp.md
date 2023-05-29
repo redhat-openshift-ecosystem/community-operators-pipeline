@@ -118,8 +118,18 @@ Always check and add the current index (e.g. `v{{ ocp_version_example }}`) versi
 - `operator_info` role [defaults](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/operator_info/defaults/main.yml#L25) and to [k8s2ocp](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L16) and [ocp2k8s](https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml#L31) converting tables in `bundle_validation_filter`
 - [`OCP2K8S`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy-core.sh#L27) and [`KIND_SUPPORT_TABLE`](https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/scripts/opp-env.sh#L5) variable in ci/dev and ci/latest consequently
 
+Also add the new OCP version to `bvf_supported_cluster_versions`, `k8s2ocp`, `ocp2k8s` in https://github.com/redhat-openshift-ecosystem/operator-test-playbooks/blob/upstream-community/upstream/roles/bundle_validation_filter/defaults/main.yml .
+
 ### Enable Pyxis support for a new index
 To enable pyxis support for a specific index, clone the [issue](https://issues.redhat.com/browse/CWFHEALTH-1562). And update index number (e.g. `v{{ ocp_version_example }}`) in the description.
+
+### Bootstrap the new index
+Create the tag for the new OCP version in the external index by copying the
+previous index:
+
+```bash
+skopeo copy --all docker://quay.io/redhat/redhat----community-operator-index:v4.12 docker://quay.io/redhat/redhat----community-operator-index:v4.13
+```
 
 ### Set maximum `oc` version available
 Edit `oc_version_max` in playbook defaults only if `4.x` (e.g. `v{{ ocp_version_example }}`) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz 
