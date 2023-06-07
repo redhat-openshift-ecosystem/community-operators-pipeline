@@ -13,7 +13,8 @@ production:
       - v4.10-db
       - v4.11
       - v4.12
-      - v4.13-rc
+      - v4.13
+      - v4.14-rc
     latest: ""
     signature:
       enabled: 1
@@ -32,6 +33,7 @@ production:
         - v4.10
         - v4.11
         - v4.12
+        - v4.13
       postfix: s
     registry: quay.io
     organization: community-operators-pipeline
@@ -76,6 +78,6 @@ operatorhubio:
 #  project: operator-test-playbooks
 #  tag: master
 tools:
-  kind_version: v0.18.0
-  kind_kube_version: v1.26.3
+  kind_version: v0.19.0
+  kind_kube_version: v1.27.1
   operator_sdk_version: v1.8.0
