@@ -24,5 +24,6 @@ jobs:
         cat /etc/os-release
         cat /etc/subuid
         cat /etc/subgid
-        docker --log-level=debug version
-        docker --log-level=debug run -it --rm quay.io/quay/busybox date
+        docker version
+        docker run -it --rm quay.io/quay/busybox date
+        echo done
