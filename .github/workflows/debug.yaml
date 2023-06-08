@@ -1,0 +1,25 @@
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        required: true
+        type: choice
+        options:
+        - ubuntu-latest
+        - ubuntu-22.04
+        - ubuntu-20.04
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        set -x
+        uname -a
+        cat /etc/os-release
+        df -h
+        apt -y update
+        apt -y install podman ca-certificates
+        podman --log-level=debug version
+        podman --log-level=debug run -it --rm quay.io/quay/busybox date
