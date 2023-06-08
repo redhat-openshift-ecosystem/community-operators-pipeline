@@ -14,7 +14,7 @@ on:
 jobs:
   debug:
     runs-on: "${{ github.event.inputs.os }}"
-    container: quay.io/operator_testing/operator-test-playbooks:latest
+    #container: quay.io/operator_testing/operator-test-playbooks:latest
     steps:
     - name: Run debug tests
       run: |
@@ -22,9 +22,11 @@ jobs:
         id
         uname -a
         cat /etc/os-release
-        df -h
+        cat /etc/subuid
+        cat /etc/subgid
         cat /etc/containers/containers.conf
         podman --log-level=debug version
         podman --log-level=debug run -it --rm quay.io/quay/busybox date
         echo -e "\n\n[containers]\npids_limit=0\n" >> /etc/containers/containers.conf
+        podman --log-level=debug version
         podman --log-level=debug run -it --rm quay.io/quay/busybox date
