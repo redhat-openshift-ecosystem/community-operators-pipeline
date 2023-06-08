@@ -26,4 +26,5 @@ jobs:
         cat /etc/subgid
         docker version
         docker run -it --rm quay.io/quay/busybox date
+        sleep 5
         echo done
