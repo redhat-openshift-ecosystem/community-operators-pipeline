@@ -23,7 +23,8 @@ jobs:
         uname -a
         cat /etc/os-release
         df -h
-        apt -y update
-        apt -y install podman ca-certificates
+        cat /etc/containers/containers.conf
         podman --log-level=debug version
+        podman --log-level=debug run -it --rm quay.io/quay/busybox date
+        echo -e "\n\n[containers]\npids_limit=0\n" >> /etc/containers/containers.conf
         podman --log-level=debug run -it --rm quay.io/quay/busybox date
