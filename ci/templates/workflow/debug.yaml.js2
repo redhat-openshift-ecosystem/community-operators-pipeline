@@ -1,0 +1,31 @@
+{% raw %}
+name: Debug
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        required: true
+        type: choice
+        options:
+        - ubuntu-latest
+        - ubuntu-22.04
+        - ubuntu-20.04
+
+jobs:
+  debug:
+    runs-on: "${{ github.event.inputs.os }}"
+    #container: quay.io/operator_testing/operator-test-playbooks:latest
+    steps:
+    - name: Run debug tests
+      run: |
+        set -x
+        id
+        uname -a
+        cat /etc/os-release
+        cat /etc/subuid
+        cat /etc/subgid
+        docker version
+        docker run -it --rm quay.io/quay/busybox date
+        sleep 5
+        echo done
+{% endraw %}
