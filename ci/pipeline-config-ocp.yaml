@@ -8,8 +8,6 @@ production:
     organization: community-operators-pipeline
     name: catalog_tmp
     tags:
-      - v4.8-db
-      - v4.9-db
       - v4.10-db
       - v4.11
       - v4.12
@@ -42,7 +40,7 @@ production:
       in: 12742415|community-operators-pipeline
       out: framework_automation
   test:
-    force_deploy_openshift_version: "4.8"
+    force_deploy_openshift_version: "4.10"
     installation_skip:
       - ack-
 
@@ -80,4 +78,4 @@ operatorhubio:
 tools:
   kind_version: v0.19.0
   kind_kube_version: v1.27.1
-  operator_sdk_version: v1.8.0
+  operator_sdk_version: v1.29.0
