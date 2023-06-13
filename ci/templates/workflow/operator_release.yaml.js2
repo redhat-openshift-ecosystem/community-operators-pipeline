@@ -974,7 +974,7 @@ jobs:
     if: needs.pr-check.outputs.opp_release_ready == '1'
     runs-on: ubuntu-latest
     env:
-      OHIO_INPUT_CATALOG_IMAGE: "quay.io/openshift-community-operators/catalog:v4.8"
+      OHIO_INPUT_CATALOG_IMAGE: "quay.io/openshift-community-operators/catalog:v4.10"
       OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:dev"
     steps:
       - name: Checkout code
