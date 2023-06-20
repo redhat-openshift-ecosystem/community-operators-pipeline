@@ -19,9 +19,9 @@ on:
 
 
       index:
-        description: 'Target indexes (space separated list e.g. v4.10-db v4.11)'
+        description: 'Target index (e.g. v4.10, v4.10-db)'
         required: true
-        default: '4.10-db 4.11 4.12 4.13 4.14'
+        default: 'v4.10-db'
 
       list_of_operators:
         description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
@@ -320,7 +320,7 @@ jobs:
     strategy:
       matrix:
 
-        index-tag: ${{ github.event.inputs.index.split(' ') }}
+        index-tag: ['${{ github.event.inputs.index }}']
 
       fail-fast: false
     steps:
@@ -427,7 +427,7 @@ jobs:
     strategy:
       matrix:
 
-        index-tag: ${{ github.event.inputs.index.split(' ') }}
+        index-tag: ['${{ github.event.inputs.index }}']
 
       fail-fast: false
     steps:
