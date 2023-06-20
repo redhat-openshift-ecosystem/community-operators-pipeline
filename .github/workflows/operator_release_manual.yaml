@@ -21,7 +21,7 @@ on:
       index:
         description: 'Target indexes (space separated list e.g. v4.10-db v4.11)'
         required: true
-        default: ${{ join(default_config.production.index.tags, ' ') }}
+        default: '4.10-db 4.11 4.12 4.13 4.14'
 
       list_of_operators:
         description: 'List of operators to be synced in the index, list has to be devided by spaces (e.g. aqua ripsaw)'
