@@ -30,17 +30,17 @@ on:
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
       index:
-        description: 'Target index (e.g. latest or latest-db)'
+        description: 'Target index (as a JSON list, e.g. ["latest", "latest-db"])'
         required: true
-        default: 'latest'
+        default: '["latest"]'
 {% endraw %}
 {% else %}
 {% raw %}
       index:
-        description: 'Target index (e.g. v4.10, v4.10-db)'
+        description: 'Target index (as a JSON list, e.g. ["v4.10-db", "v4.11"])'
         required: true
-        default: 'v4.10-db'
 {% endraw %}
+        default: '[{% for item in default_config.production.index.tags %}"{{ item }}"{%- if not loop.last %}, {% endif %}{% endfor %}]'
 {% endif %}
 {% raw %}
       list_of_operators:
@@ -221,7 +221,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -311,11 +311,13 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %} 
-          TARGET_INDEX_RAW=${{ github.event.inputs.index }}
-          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
-          TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
+          for index in $(echo '${{ github.event.inputs.index }}' | jq -r .[]); do
+              TARGET_INDEX_RAW=$(echo $index|cut -d '-' -f1)
+              TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_')
+              export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+              echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
+          done
           echo "opp_uncomplete_operators=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT 
-          echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -433,7 +435,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -487,10 +489,11 @@ jobs:
 {% endraw %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-          TARGET_INDEX_RAW=${{ github.event.inputs.index }}
-          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
-          TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
-          export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+          for index in $(echo '${{ github.event.inputs.index }}' | jq -r .[]); do
+              TARGET_INDEX_RAW=$(echo $index|cut -d '-' -f1)
+              TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_')
+              export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+          done
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -518,7 +521,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -561,7 +564,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -652,11 +655,13 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %} 
-          TARGET_INDEX_RAW=${{ github.event.inputs.index }}
-          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
-          TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
+          for index in $(echo '${{ github.event.inputs.index }}' | jq -r .[]); do
+              TARGET_INDEX_RAW=$(echo $index|cut -d '-' -f1)
+              TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_')
+              export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+              echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
+          done
           echo "opp_uncomplete_operators=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
-          echo "opp_uncomplete_operators_$TARGET_INDEX_UNDERLINE=${{ github.event.inputs.list_of_operators }}" >> $GITHUB_OUTPUT
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -777,7 +782,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -838,10 +843,11 @@ jobs:
 {% endraw %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-          TARGET_INDEX_RAW=${{ github.event.inputs.index }}
-          TARGET_INDEX_RAW=$(echo $TARGET_INDEX_RAW|cut -d '-' -f1)
-          TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_') 
-          export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+          for index in $(echo '${{ github.event.inputs.index }}' | jq -r .[]); do
+              TARGET_INDEX_RAW=$(echo $index|cut -d '-' -f1)
+              TARGET_INDEX_UNDERLINE=$(echo $TARGET_INDEX_RAW|tr '.' '_')
+              export OPP_FORCE_OPERATORS_$TARGET_INDEX_UNDERLINE="${{ github.event.inputs.list_of_operators }}"
+          done
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -913,7 +919,7 @@ jobs:
 {% endif %}
 {% if puct_custom_var == 'manual_release' %}
 {% raw %}
-        index-tag: ['${{ github.event.inputs.index }}']
+        index-tag: ${{ fromJson(github.event.inputs.index) }}
 {% endraw %}
 {% endif %}
 {% raw %}
