@@ -31,20 +31,19 @@ echo "==========================================================================
 
 echo "Listing 100 largest packages"
 dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+echo "=== docker system df"
+docker system df
 df -h
+echo "Pruning docker storage"
+docker system prune -af
 echo "Removing large packages"
-sudo apt-get remove --purge -y '^ghc-8.*'
-sudo apt-get remove --purge -y '^dotnet-.*'
-sudo apt-get remove --purge -y '^aspnetcore-runtime-.*'
-sudo apt-get remove --purge -y '^llvm-.*'
-sudo apt-get remove --purge -y '^temurin-.*'
-sudo apt-get remove --purge -y '^r-base-.*'
-sudo apt-get remove --purge -y 'php.*'
-sudo apt-get remove --purge -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel mono-llvm-tools monodoc-manual mono-utils msbuild microsoft-edge-stable
-sudo apt-get autoremove -y
+sudo apt-get purge -y azure-cli google-cloud-sdk hhvm google-chrome-stable \
+    firefox powershell mono-devel mono-llvm-tools monodoc-manual mono-utils \
+    msbuild microsoft-edge-stable '^ghc-8.*' '^dotnet-.*' '^llvm-.*' 'php.*' \
+    '^aspnetcore-runtime-.*' '^temurin-.*' '^r-base-.*' \
+    {cpp,g{cc,++},gfortran}-{9,10,11} libstdc++-{9,10,11}-dev
+sudo apt-get autoremove --purge -y
 sudo apt-get clean
-df -h
 echo "Removing large directories"
-# deleting 15GB
-rm -rf /usr/share/dotnet/
+rm -rf /usr/share/dotnet/ /opt/hostedtoolcache/{CodeQL,go}/ /opt/microsoft/
 df -h
