@@ -346,13 +346,31 @@ jobs:
           OPP_OP_INFO_PARALLEL: {{ default_config.production.op_info.parallel | default(1) }}
           OPP_OP_INFO_PARALLEL_BATCH: {{ default_config.production.op_info.batch_size | default(20) }}
 {% raw %}
+          THIS_OPERATOR: ${{ needs.pr-check.outputs.opp_name }}
           OPP_AUTO_LABEL: 1
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
+          echo "Operators out of sync: ${OPP_FORCE_OPERATORS}"
+          OTHER_OPERATORS=$(echo ${OPP_FORCE_OPERATORS} | tr ' ' '\n' | grep -v "^${THIS_OPERATOR}$" | shuf | head -2 | xargs echo | tr ' ' ',')
+          if [ -n "${OTHER_OPERATORS}" ] ; then
+            OPP_FORCE_OPERATORS="${THIS_OPERATOR},${OTHER_OPERATORS}"
+          else
+            OPP_FORCE_OPERATORS="${THIS_OPERATOR}"
+          fi
+{% endraw %}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
-          echo $OPP_FORCE_OPERATORS
+{% endraw %}
+{% endif %}
+{% raw %}
+          echo "Syncing: ${OPP_FORCE_OPERATORS}"
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
           [ "$OPP_OP_INFO_PARALLEL" = '1' ] && ANSIBLE_ARGS="$ANSIBLE_ARGS -e op_info_parallel=true -e op_info_parallel_batch=$OPP_OP_INFO_PARALLEL_BATCH" || ANSIBLE_ARGS="$ANSIBLE_ARGS -e op_info_parallel=false"
           echo $ANSIBLE_ARGS
@@ -690,13 +708,31 @@ jobs:
           OPP_OP_INFO_PARALLEL: {{ default_config.production.op_info.parallel | default(1) }}
           OPP_OP_INFO_PARALLEL_BATCH: {{ default_config.production.op_info.batch_size | default(20) }}
 {% raw %}
+          THIS_OPERATOR: ${{ needs.pr-check.outputs.opp_name }}
           OPP_AUTO_LABEL: 1
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
         run: |
+{% endraw %}
+{% if puct_custom_var != 'manual_release' %}
+{% raw %}
+          echo "Operators out of sync: ${OPP_FORCE_OPERATORS}"
+          OTHER_OPERATORS=$(echo ${OPP_FORCE_OPERATORS} | tr ' ' '\n' | grep -v "^${THIS_OPERATOR}$" | shuf | head -2 | xargs echo | tr ' ' ',')
+          if [ -n "${OTHER_OPERATORS}" ] ; then
+            OPP_FORCE_OPERATORS="${THIS_OPERATOR},${OTHER_OPERATORS}"
+          else
+            OPP_FORCE_OPERATORS="${THIS_OPERATOR}"
+          fi
+{% endraw %}
+{% endif %}
+{% if puct_custom_var == 'manual_release' %}
+{% raw %}
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
-          echo $OPP_FORCE_OPERATORS
+{% endraw %}
+{% endif %}
+{% raw %}
+          echo "Syncing: ${OPP_FORCE_OPERATORS}"
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
           [ "$OPP_OP_INFO_PARALLEL" = '1' ] && ANSIBLE_ARGS="$ANSIBLE_ARGS -e op_info_parallel=true -e op_info_parallel_batch=$OPP_OP_INFO_PARALLEL_BATCH" || ANSIBLE_ARGS="$ANSIBLE_ARGS -e op_info_parallel=false"
           echo $ANSIBLE_ARGS
