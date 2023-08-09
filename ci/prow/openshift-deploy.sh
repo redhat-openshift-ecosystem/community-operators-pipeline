@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+echo === ENVIRONMENT ========================================================
+env
+echo ========================================================================
 #This scripts is configured in https://github.com/openshift/release/tree/master/ci-operator/config/redhat-openshift-ecosystem/community-operators-prod and executed from ci-operator/jobs
 if [ -z "$1" ]; then echo "Production mode"; else
   if [ $1 = "test-only" ]; then
