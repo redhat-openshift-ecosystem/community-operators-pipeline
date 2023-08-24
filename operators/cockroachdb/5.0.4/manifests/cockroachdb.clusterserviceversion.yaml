@@ -180,7 +180,7 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: Represents a CockroachDB cluster
+    - description: Represents a CockroachDB cluster - foo
       displayName: CockroachDB
       kind: Cockroachdb
       name: cockroachdbs.charts.operatorhub.io
