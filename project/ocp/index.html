@@ -436,7 +436,7 @@
 </tbody>
 </table>
 <h2 id="ocp-max-openshift-version">OCP max OpenShift version</h2>
-<p>In the bundle format, one can set OCP version range by adding <code>com.redhat.openshift.versions: "v4.8-v4.11"</code> to <code>metadata/annotations.yaml</code> file (see below). </p>
+<p>In the bundle format, one can set OCP version range by adding <code>com.redhat.openshift.versions: "v4.8-v4.11"</code> to <code>metadata/annotations.yaml</code> file (see below).</p>
 <div class="highlight"><pre><span></span><code>annotations:
   # Core bundle annotations.
   operators.operatorframework.io.bundle.mediatype.v1: registry+v1
@@ -444,7 +444,7 @@
 ...
   com.redhat.openshift.versions: "v4.8-v4.11"
 </code></pre></div>
-<p>For package manifest format it is not possible, but there is an option to set the maximum ocp version via csv in <code>metadata.annotations</code> key. One can add the following <code>olm.properties:</code> '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'`(see below). 
+<p>For package manifest format it is not possible, but there is an option to set the maximum ocp version via csv in <code>metadata.annotations</code> key. One can add the following <code>olm.properties:</code> '[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]'`(see below).
 <div class="highlight"><pre><span></span><code>apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
@@ -485,7 +485,7 @@ subgraph GH Action job
 prepare_test_index &amp; Quay
 end
 </code></pre>
-<p>Openshift robot triggers cluster setup for every supported OCP version. When the cluster is ready, <code>openshift-deploy.sh</code> is executed. The script calls another script <code>openshift-deploy-core.sh</code> which triggers GH Action <code>prepare_test_index</code>. During the action run, it pushes the index and a bundle to Quay tagged by a commit hash. Once images are pushed, the playbook role <code>deploy_olm_operator_openshift_upstream</code> is triggered which pulls the images and installs the operator. </p>
+<p>Openshift robot triggers cluster setup for every supported OCP version. When the cluster is ready, <code>openshift-deploy.sh</code> is executed. The script calls another script <code>openshift-deploy-core.sh</code> which triggers GH Action <code>prepare_test_index</code>. During the action run, it pushes the index and a bundle to Quay tagged by a commit hash. Once images are pushed, the playbook role <code>deploy_olm_operator_openshift_upstream</code> is triggered which pulls the images and installs the operator.</p>
 <h3 id="where-to-edit-the-main-openshift-script">Where to edit the main openshift script</h3>
 <p>To edit <code>openshift-deploy.sh</code> located in <code>ci/prow</code> of the project, first edit <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/ci/latest/ci/legacy/scripts/ci/openshift-deploy.sh">openshift-deploy.sh</a> located in CI repository. Then upgrade the project running <a href="../overview/#upgrade-ci">Upgrade CI</a>. The same applies for <code>openshift-deploy-core.sh</code>.</p>
 <div class="admonition info">
@@ -513,6 +513,7 @@ end
 <li>OCP and K8S alignment</li>
 <li>Enable breaking API testing if supported by <code>operator-sdk</code></li>
 <li>When all done, bump <a href="https://github.com/redhat-openshift-ecosystem/community-operators-pipeline/blob/documentation-admin/mkdocs.yml#L19"><code>ocp_version_example</code></a> variable so next time examples are up to date :)</li>
+<li>Create new prow job definition for a new ocp version</li>
 </ol>
 <h3 id="add-new-index-mapping">Add new index mapping</h3>
 <p>Always check and add the current index (e.g. <code>v4.13</code>) version to</p>
@@ -529,7 +530,7 @@ previous index:</p>
 <div class="highlight"><pre><span></span><code>skopeo copy --all docker://quay.io/redhat/redhat----community-operator-index:v4.12 docker://quay.io/redhat/redhat----community-operator-index:v4.13
 </code></pre></div>
 <h3 id="set-maximum-oc-version-available">Set maximum <code>oc</code> version available</h3>
-<p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> (e.g. <code>v4.13</code>) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz </p>
+<p>Edit <code>oc_version_max</code> in playbook defaults only if <code>4.x</code> (e.g. <code>v4.13</code>) is available at https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.x/openshift-client-linux.tar.gz</p>
 <p>(e.g. https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.13/openshift-client-linux.tar.gz)</p>
 <h3 id="ocp-and-k8s-alignment">OCP and K8S alignment</h3>
 <p>Despite this documentation being focused on OCP, alignment with k8s is needed on <a href="https://github.com/k8s-operatorhub/community-operators">community-operators <strong>k8s-operatorhub</strong></a> repository.</p>
@@ -547,13 +548,14 @@ previous index:</p>
 <p>This is a recommended way. Much faster and easier to execute. Everything is managed by the automatic workflow called <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/upgrade.yaml"><code>CI Upgrade</code></a>. Fill fields as shown below. The most important field is <code>From index</code>. There should be a path directly to a previous <code>_tmp</code> image. Use path like <code>quay.io/openshift-community-operators/catalog_tmp:v4.12</code> if you would like to release <code>v4.13</code>.</p>
 <p>When the workflow is finished, see the list of operators to fix in the new index. The list is located on the GH workflow output page as <code>Upgrade summary</code>.</p>
 <p><img alt="PR" src="../../images/upgrade_with_index_upgrade.png"/></p>
-<p>The example <code>Upgrade</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547" target="_blank">here</a>. <code>Create local changes</code> step in <code>upgrade</code> job does the whole process. The log is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232">here</a> </p>
+<p>The example <code>Upgrade</code> pipeline is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547" target="_blank">here</a>. <code>Create local changes</code> step in <code>upgrade</code> job does the whole process. The log is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3739655547/jobs/6347120232">here</a></p>
 <p>Then you need to fix operators by running <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Set values as in the example below. The most important field is the <code>List of operators ...</code> - it is a place to put the output from the previous workflow under the <code>Upgrade summary</code>. The list is already space delimited.</p>
+<p>If a manual release fails with a list of operators that are not targeting a new version, re-trigger the job again and include an any operator that targets a new version. This should fix the issue from the previous run.</p>
 <p><img alt="PR" src="../../images/manual_replease_after_index_upgrade.png"/></p>
 <p>The example <code>Manual release</code> pipeline schema is located <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606" target="_blank">here</a> and the example output with steps <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153">here</a>](https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/runs/3740100606/jobs/6349116153){:target="_blank"}.</p>
 <h3 id="how-to-rebuild-an-existing-index-from-scratch">How to rebuild an existing index from scratch</h3>
 <p>There can be cases when differences between an actual and a new index are huge. In this case, it makes sense to fill the new index from scratch. You need only <a href="https://github.com/redhat-openshift-ecosystem/community-operators-prod/actions/workflows/operator_release_manual.yaml"><code>Operator release manual</code></a>. Be ready for a day or more and multiple manual triggers of the same workflow type with a different set of operators.</p>
-<p>This time, a <code>List of operators...</code> is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. The best practice is to use 1/5th of the full operator list divided by a space. </p>
+<p>This time, a <code>List of operators...</code> is a list of all operators in the GitHub repository divided into chunks that can be processed in 6 hours or less each. Hence GH actions limit. The best practice is to use 1/5th of the full operator list divided by a space.</p>
 <p>A release process in this case is long this way so use it as a last resort. It can be partially optimized by running over operators sorted by the number of versions inside a package. It helps the parallel process to finish smaller operators sooner.</p>
 <div class="admonition warning">
 <p class="admonition-title">Do not enable <code>Push final index to production</code> until all operators are processed. Or you can always leave the value <code>0</code> and the next automatic merge will push also your changes to production.</p>
