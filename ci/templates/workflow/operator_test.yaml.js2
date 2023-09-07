@@ -15,6 +15,7 @@ env:
   OPP_SCRIPT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp.sh"
   OPP_SCRIPT_ENV_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-env.sh"
   OPP_SCRIPT_ENV_OPRT_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-oprt.sh"
+  OPP_SCRIPT_CLEANUP_URL: "{{ default_config.pipeline.ci_scripts_dir }}/opp-disk-cleanup-on-startup.sh"
   OPP_IMAGE: "{{ default_config.pipeline.image }}"
   OPP_ANSIBLE_PULL_REPO: "{{ default_config.pipeline.playbooks.repo }}"
   OPP_ANSIBLE_PULL_BRANCH: "{{ default_config.pipeline.playbooks.branch }}"
@@ -286,6 +287,7 @@ jobs:
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
         run: |
+          bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "kiwi operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}" || { RC=$?; echo $RC; true; }
           echo $RC
@@ -399,6 +401,7 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
         run: |
+          bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
@@ -441,6 +444,7 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
         run: |
+          bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) lemon_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
@@ -477,6 +481,7 @@ jobs:
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
         run: |
+          bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
@@ -523,6 +528,7 @@ jobs:
           IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
         run: |
+          bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
           bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
 {% endraw %}
