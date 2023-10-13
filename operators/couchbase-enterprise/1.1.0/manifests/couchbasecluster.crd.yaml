@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   name: couchbaseclusters.couchbase.com
 spec:
+  preserveUnknownFields: false
   additionalPrinterColumns:
   - JSONPath: .metadata.creationTimestamp
     description: |-

@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   name: couchbasebackuprestores.couchbase.com
 spec:
+  preserveUnknownFields: false
   version: v2
   additionalPrinterColumns:
   - JSONPath: .status.capacityUsed

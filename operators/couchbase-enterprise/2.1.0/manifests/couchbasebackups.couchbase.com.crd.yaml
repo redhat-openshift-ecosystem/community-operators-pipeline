@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   name: couchbasebackups.couchbase.com
 spec:
+  preserveUnknownFields: false
   additionalPrinterColumns:
   - JSONPath: .spec.strategy
     name: strategy

@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   name: couchbaseusers.couchbase.com
 spec:
+  preserveUnknownFields: false
   group: couchbase.com
   names:
     kind: CouchbaseUser

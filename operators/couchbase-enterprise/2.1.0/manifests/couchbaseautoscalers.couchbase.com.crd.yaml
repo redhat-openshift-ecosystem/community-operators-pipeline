@@ -6,6 +6,7 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.2.8
   name: couchbaseautoscalers.couchbase.com
 spec:
+  preserveUnknownFields: false
   additionalPrinterColumns:
   - JSONPath: .spec.size
     name: size

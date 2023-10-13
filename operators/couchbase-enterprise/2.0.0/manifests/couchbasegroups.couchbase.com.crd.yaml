@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   name: couchbasegroups.couchbase.com
 spec:
+  preserveUnknownFields: false
   version: v2
   group: couchbase.com
   names:

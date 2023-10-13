@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   name: couchbasebuckets.couchbase.com
 spec:
+  preserveUnknownFields: false
   additionalPrinterColumns:
   - JSONPath: .spec.memoryQuota
     name: memory quota
