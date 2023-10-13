@@ -193,6 +193,7 @@ metadata:
     repository: https://github.com/dmesser/cockroachdb-operator
     support: a-robinson
     certified: "false"
+    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
   name: cockroachdb.v3.0.7
   namespace: placeholder
 spec:
