@@ -31,6 +31,7 @@ metadata:
     description: CockroachDB Operator based on the CockroachDB helm chart
     repository: https://github.com/dmesser/cockroachdb-operator
     support: a-robinson
+    operatorhub.io/ui-metadata-max-k8s-version: "1.21"
   name: cockroachdb.v2.1.11
   namespace: placeholder
 spec:
