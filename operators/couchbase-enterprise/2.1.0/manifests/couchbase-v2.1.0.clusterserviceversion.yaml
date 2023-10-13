@@ -327,7 +327,7 @@ metadata:
     capabilities: "Auto Pilot"
     categories: "Database"
     certified: "true"
-    containerImage: registry.connect.redhat.com/couchbase/operator:2.1.0-1
+    containerImage: registry.hub.docker.com/couchbase/operator:2.1.0
     createdAt: 2020/08/13
     description: The Couchbase Autonomous Operator allows users to easily deploy, manage, and maintain Couchbase deployments
     support: Couchbase, Inc
