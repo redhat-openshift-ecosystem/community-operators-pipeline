@@ -29,11 +29,6 @@ echo "==========================================================================
 echo "Freeing up disk space on CI system"
 echo "=============================================================================="
 
-echo "Listing 100 largest packages"
-dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-echo "=== docker system df"
-docker system df
-df -h
 echo "Pruning docker storage"
 docker system prune -af
 echo "Removing large packages"
@@ -46,4 +41,14 @@ sudo apt-get autoremove --purge -y
 sudo apt-get clean
 echo "Removing large directories"
 rm -rf /usr/share/dotnet/ /opt/hostedtoolcache/{CodeQL,go}/ /opt/microsoft/
+echo "====== disk space report"
 df -h
+echo "=== packages"
+dpkg-query -Wf '${db:Status-Status} ${Installed-Size}\t${Package}\n' | sed -ne 's/^installed //p' | sort -n | tail -n 100
+echo "=== directories"
+sudo find / -mindepth 2 -maxdepth 2 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
+echo "=== directories in /usr/local"
+sudo find /usr/local -mindepth 1 -maxdepth 1 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
+echo "=== docker images"
+docker system df
+echo "====== end disk space report"
