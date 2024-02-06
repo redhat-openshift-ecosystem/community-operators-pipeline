@@ -32,23 +32,28 @@ echo "==========================================================================
 echo "Pruning docker storage"
 docker system prune -af
 echo "Removing large packages"
-sudo apt-get purge -y azure-cli google-cloud-sdk hhvm google-chrome-stable \
+sudo apt-get purge -y azure-cli google-cloud-cli hhvm google-chrome-stable \
     firefox powershell mono-devel mono-llvm-tools monodoc-manual mono-utils \
-    msbuild microsoft-edge-stable '^ghc-8.*' '^dotnet-.*' '^llvm-.*' 'php.*' \
+    msbuild microsoft-edge-stable '^dotnet-.*' '^llvm-.*' 'php.*' \
     '^aspnetcore-runtime-.*' '^temurin-.*' '^r-base-.*' \
-    {cpp,g{cc,++},gfortran}-{9,10,11} libstdc++-{9,10,11}-dev
+    {cpp,g{cc,++},gfortran}-{9,10,11,12} libstdc++-{9,10,11,12}-dev
 sudo apt-get autoremove --purge -y
 sudo apt-get clean
 echo "Removing large directories"
-rm -rf /usr/share/dotnet/ /opt/hostedtoolcache/{CodeQL,go}/ /opt/microsoft/
-echo "====== disk space report"
+sudo rm -rf /usr/share/dotnet/ /opt/hostedtoolcache/{CodeQL,go}/ /opt/microsoft/ \
+    /usr/local/.ghcup /usr/local/julia1.*
 df -h
-echo "=== packages"
-dpkg-query -Wf '${db:Status-Status} ${Installed-Size}\t${Package}\n' | sed -ne 's/^installed //p' | sort -n | tail -n 100
-echo "=== directories"
-sudo find / -mindepth 2 -maxdepth 2 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
-echo "=== directories in /usr/local"
-sudo find /usr/local -mindepth 1 -maxdepth 1 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
-echo "=== docker images"
-docker system df
-echo "====== end disk space report"
+FREE_GBS="$(df -PBG / | awk '$NF=="/"{print $4}' | tr -dc 0-9)"
+if [ "$FREE_GBS" -lt "36" ] ; then
+    echo "WARNING: RUNNING LOW ON DISK SPACE"
+    echo "====== disk space report"
+    echo "=== packages"
+    dpkg-query -Wf '${db:Status-Status} ${Installed-Size}\t${Package}\n' | sed -ne 's/^installed //p' | sort -n | tail -n 100
+    echo "=== directories"
+    sudo find / -mindepth 2 -maxdepth 2 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
+    echo "=== directories in /usr/local"
+    sudo find /usr/local -mindepth 1 -maxdepth 1 -xdev -type d | xargs sudo du -ks | sort -n | tail -n 25
+    echo "=== docker images"
+    docker system df
+    echo "====== end disk space report"
+fi
