@@ -22,7 +22,7 @@ on:
       cluster:
         description: 'Cluster type (k8s, ocp)'
         required: true
-        default: 'k8s'
+        default: 'ocp'
 
       index_from:
         description: 'From index (quay.io/operator_testing/index_empty:latest)'     
