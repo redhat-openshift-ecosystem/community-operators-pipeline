@@ -7,7 +7,7 @@ on:
     types: [completed]
 
 env:
-  OPP_PRODUCTION_TYPE: "ocp"
+  OPP_PRODUCTION_TYPE: "k8s"
 
 
 jobs:
@@ -99,6 +99,37 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: ['package-validated']
+            })
+      - uses: actions/github-script@v6
+        if: |
+          (!contains(fromJson(steps.pr-labels.outputs.result).*.name, 'do-not-merge/work-in-progress')) &&
+          (!contains(fromJson(steps.pr-labels.outputs.result).*.name, 'do-not-merge/hold'))
+        continue-on-error: true
+        env:
+          PR: "${{ needs.pr.outputs.pr }}"
+        with:
+          github-token: ${{ secrets.FRAMEWORK_MERGE }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: process.env.PR,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '/merge possible'
+            })
+
+      - name: "Set installation-validated"
+        uses: actions/github-script@v6
+        continue-on-error: true
+        env:
+          PR: "${{ needs.pr.outputs.pr }}"
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: process.env.PR,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['installation-validated']
             })
       - uses: actions/github-script@v6
         if: |
