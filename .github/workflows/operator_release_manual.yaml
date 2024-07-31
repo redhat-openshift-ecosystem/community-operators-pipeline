@@ -63,7 +63,6 @@ env:
   INDEX_PATH_TO_SIGN: "not-defined"
   SIGNATURE_ENDPOINT: "https://not-defined"
   OPP_REVIEWERS_ENABLED: 0
-  TMPDIR: "/mnt/tmp"
 
 
   OPP_ALLOW_FORCE_RELEASE: ${{ github.event.inputs.release }}
@@ -83,11 +82,6 @@ jobs:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
     steps:
-      - name: Set up TMPDIR
-        run: |
-          sudo mkdir "${TMPDIR}"
-          sudo chmod 1777 "${TMPDIR}"
-
       - name: Checkout code
         uses: actions/checkout@v3
       - id: files
@@ -239,7 +233,10 @@ jobs:
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
+          TMPDIR: "/mnt/tmp"
         run: |
+          sudo mkdir -p "${TMPDIR}"
+          sudo chmod 1777 "${TMPDIR}"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
           echo $OPP_FORCE_OPERATORS
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
