@@ -350,7 +350,10 @@ jobs:
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
+          TMPDIR: "/mnt/tmp"
         run: |
+          sudo mkdir -p "${TMPDIR}"
+          sudo chmod 1777 "${TMPDIR}"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
           echo $OPP_FORCE_OPERATORS
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
@@ -695,7 +698,10 @@ jobs:
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
           ANSIBLE_STDOUT_CALLBACK: "yaml"
+          TMPDIR: "/mnt/tmp"
         run: |
+          sudo mkdir -p "${TMPDIR}"
+          sudo chmod 1777 "${TMPDIR}"
           OPP_FORCE_OPERATORS=${OPP_FORCE_OPERATORS// /,}
           echo $OPP_FORCE_OPERATORS
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
@@ -937,7 +943,10 @@ jobs:
         id: index-verify
         env:
           OPP_CONTAINER_TOOL: podman
+          TMPDIR: "/mnt/tmp"
         run: |
+          sudo mkdir -p "${TMPDIR}"
+          sudo chmod 1777 "${TMPDIR}"
           MY_TAG=${{ matrix.index-tag }}
           MY_TAG=$(echo $MY_TAG | cut -d '-' -f 1)
 {% endraw %}
@@ -969,7 +978,11 @@ jobs:
 {% raw %}
     steps:
       - name: Ohio image
+        env:
+          TMPDIR: "/mnt/tmp"
         run: |
+          sudo mkdir -p "${TMPDIR}"
+          sudo chmod 1777 "${TMPDIR}"
           echo "ohio_image operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           bash <(curl -sL $OPP_SCRIPT_URL) ohio_image operators/sync $OPP_THIS_REPO $OPP_THIS_BRANCH

@@ -57,3 +57,9 @@ if [ "$FREE_GBS" -lt "36" ] ; then
     docker system df
     echo "====== end disk space report"
 fi
+
+sudo mkdir -p /mnt/storage
+sudo chown "$(id -u):$(id -g)" /mnt/storage
+sudo mkdir -p ~/.config/containers
+printf '[storage]\ngraphroot = "/mnt/storage"\n' > ~/.config/containers/storage.conf
+podman system reset
