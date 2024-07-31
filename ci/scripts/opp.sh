@@ -42,7 +42,7 @@ OPP_CONTAINER_RUN_EXTRA_ARGS=${OPP_CONTAINER_RUN_EXTRA_ARGS-""}
 OPP_CONTAINER_EXEC_DEFAULT_ARGS=${OPP_CONTAINER_EXEC_DEFAULT_ARGS-""}
 OPP_CONTAINER_EXEC_EXTRA_ARGS=${OPP_CONTAINER_EXEC_EXTRA_ARGS-""}
 OPP_EXEC_BASE=${OPP_EXEC_BASE-"ansible-playbook -i localhost, -e ansible_connection=local upstream/local.yml -e run_upstream=true -e image_protocol='docker://'"}
-OPP_EXEC_EXTRA=${OPP_EXEC_EXTRA-"-e container_tool=podman"}
+OPP_EXEC_EXTRA=${OPP_EXEC_EXTRA-"-e container_tool=podman -e optimize_build_storage=true -e container_tool_extra_params='--storage-driver=overlay --tmpdir=/mnt/tmp --log-level=info'"}
 OPP_RUN_MODE=${OPP_RUN_MODE-"privileged"}
 OPP_LABELS=${OPP_LABELS-""}
 OPP_PROD=${OPP_PROD-0}
