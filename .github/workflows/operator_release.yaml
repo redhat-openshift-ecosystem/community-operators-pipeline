@@ -50,7 +50,7 @@ env:
   INDEX_PATH_TO_SIGN: "not-defined"
   SIGNATURE_ENDPOINT: "https://not-defined"
   OPP_REVIEWERS_ENABLED: 0
-  TMPDIR: "/mnt"
+  TMPDIR: "/mnt/tmp"
 
 
   OPP_ALLOW_FORCE_RELEASE: ${{ github.event.inputs.release }}
@@ -70,6 +70,11 @@ jobs:
     name: "PR-traffic-light"
     runs-on: ubuntu-latest
     steps:
+      - name: Create podman tmp folder
+        run: |
+          mkdir "${TMPDIR}"
+          chmod 1777 "${TMPDIR}"
+
       - name: Checkout code
         uses: actions/checkout@v3
       - id: files
