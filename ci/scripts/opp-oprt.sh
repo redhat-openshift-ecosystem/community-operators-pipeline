@@ -9,7 +9,7 @@ OPP_OPRT_SRC_BRANCH=${OPP_OPRT_SRC_BRANCH-"main"}
 #OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/master/scripts/ci/actions-env"}
 OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"}
 OPP_EXEC_USER=
-export OPRT=1
+OPRT=1
 
 function handleError() {
   OPERATORS_REPO_DIR=/tmp/operators-repo
@@ -54,6 +54,8 @@ OPP_OPRT_SRC_VERSIONS=$(find operators/$OPP_OPERATOR_NAME/ -maxdepth 1 -mindepth
 
 git checkout upstream/$OPP_OPRT_SRC_BRANCH
 OPP_OPRT_TARGET_VERSIONS=$(find operators/$OPP_OPERATOR_NAME/ -maxdepth 1 -mindepth 1 -type d | sort | cut -d '/' -f 3)
+# Unused later
+unset OPP_OPERATOR_NAME
 
 git checkout $BRANCH_NAME #> /dev/null 2>&1
 echo "BRANCH_NAME=$BRANCH_NAME"
@@ -62,17 +64,17 @@ git pull --rebase upstream $OPP_OPRT_SRC_BRANCH || handleError
 echo "Repo rebased over branch OPP_OPRT_SRC_BRANCH - $OPP_OPRT_SRC_BRANCH"
 
 [[ $OPP_MIRROR_INDEX_MULTIARCH_IMAGE != "" ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e mirror_multiarch_image=$OPP_MIRROR_INDEX_MULTIARCH_IMAGE"
-[ -n "$IIB_INPUT_REGISTRY_USER" ] && export OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=$IIB_INPUT_REGISTRY_USER"
-[ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && export OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
-export OPP_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-export OPP_MODIFIED_FILES=$(git diff --diff-filter=M upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-export OPP_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-export OPP_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-export OPP_ADDED_MODIFIED_FILES=$(git diff --diff-filter=AM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
-export OPP_ADDED_MODIFIED_RENAMED_FILES=$(git diff --diff-filter=RAM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+[ -n "$IIB_INPUT_REGISTRY_USER" ] && OPP_EXEC_USER="$OPP_EXEC_USER -e registry_redhat_io_user=$IIB_INPUT_REGISTRY_USER"
+[ -n "$IIB_INPUT_REGISTRY_TOKEN" ] && OPP_EXEC_USER_SECRETS="$OPP_EXEC_USER_SECRETS -e registry_redhat_io_token=$IIB_INPUT_REGISTRY_TOKEN"
+OPP_ADDED_FILES=$(git diff --diff-filter=A upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+OPP_MODIFIED_FILES=$(git diff --diff-filter=M upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+OPP_REMOVED_FILES=$(git diff --diff-filter=D upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+OPP_RENAMED_FILES=$(git diff --diff-filter=R upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+OPP_ADDED_MODIFIED_FILES=$(git diff --diff-filter=AM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
+OPP_ADDED_MODIFIED_RENAMED_FILES=$(git diff --diff-filter=RAM upstream/$OPP_OPRT_SRC_BRANCH --name-only | tr '\r\n' ' ')
 
-export OPP_CURRENT_PROJECT_REPO="$OPP_OPRT_SRC_REPO"
-export OPP_CURRENT_PROJECT_BRANCH="$OPP_OPRT_SRC_BRANCH"
+OPP_CURRENT_PROJECT_REPO="$OPP_OPRT_SRC_REPO"
+OPP_CURRENT_PROJECT_BRANCH="$OPP_OPRT_SRC_BRANCH"
 echo "OPP_ADDED_MODIFIED_RENAMED_FILES=$OPP_ADDED_MODIFIED_RENAMED_FILES"
 echo "OPP_REMOVED_FILES=$OPP_REMOVED_FILES"
 
@@ -80,6 +82,7 @@ OPP_ALL_FILES=$(git diff --diff-filter=DRAM upstream/$OPP_OPRT_SRC_BRANCH --name
 OPP_ALL_SRC_FILES=$(git diff --diff-filter=m upstream/$OPP_OPRT_SRC_BRANCH | grep "rename from" | cut -d ' ' -f3 | grep -v -E "package.yaml|ci.yaml" | cut -d '/' -f 3 | uniq)
 
 OPP_ALL_FILES="$OPP_ALL_FILES $OPP_ALL_SRC_FILES"
+unset OPP_ALL_SRC_FILES
 
 echo "OPP_OPRT_SRC_VERSIONS=$(echo $OPP_OPRT_SRC_VERSIONS | tr '\r\n' ' ')"
 echo "OPP_OPRT_TARGET_VERSIONS=$(echo $OPP_OPRT_TARGET_VERSIONS | tr '\r\n' ' ')"
@@ -91,6 +94,7 @@ echo "$OPP_ALL_FILES"
 diff <(echo "$OPP_OPRT_SRC_VERSIONS") <(echo "$OPP_OPRT_TARGET_VERSIONS") | grep -E "<|>" | cut -d ' ' -f 2
 
 [ -n "$OPP_ALL_FILES" ] && MY_VERS=$(diff <(echo "$OPP_OPRT_SRC_VERSIONS") <(echo "$OPP_OPRT_TARGET_VERSIONS") | grep -E "<|>" | cut -d ' ' -f 2 | grep -v -E "$OPP_ALL_FILES" || true)
+unset OPP_ALL_FILES
 echo "MY_VERS=$MY_VERS"
 if [ -n "$MY_VERS" ];then
   echo "MY_VERS=$(echo $MY_VERS | tr '\r\n' ' ')"
@@ -98,9 +102,7 @@ if [ -n "$MY_VERS" ];then
   [ -n "$MY_VERS_CHECK" ] && { echo "Error: Source repo '$OPP_OPRT_REPO' branch='$BRANCH_NAME' doesn't contain some changes from upstream repo '$OPP_OPRT_SRC_REPO' branch='$OPP_OPRT_SRC_BRANCH' !!! Please rebase first ..."; handleError; }
   # [ -n "$MY_VERS_CHECK" ] && { echo "Error: Source repo '$OPP_OPRT_REPO' branch='$BRANCH_NAME' doesn't contain some changes from upstream repo '$OPP_OPRT_SRC_REPO' branch='$OPP_OPRT_SRC_BRANCH' !!! Please rebase first ..."; }
 fi
-BRANCH_NAME=$(echo $BRANCH_NAME | cut -d '/' -f 2-)
-echo "BRANCH_NAME=$BRANCH_NAME"
-# echo "op_test_repo_branch=$OPP_OPRT_REPO/${BRANCH_NAME}" >> $GITHUB_OUTPUT
+unset BRANCH_NAME
 
 [ -z "$OPP_ADDED_FILES" ] && [ -z "$OPP_MODIFIED_FILES" ] && [ -z "$OPP_REMOVED_FILES" ] && [ -z "$OPP_RENAMED_FILES" ] && [ -z "$OPP_ADDED_MODIFIED_FILES" ] && [ -z "$OPP_ADDED_MODIFIED_RENAMED_FILES" ] && { echo "ERROR: No change detected in PR !!! Contact project maintainers about this error !!!"; exit 1; }
 
@@ -108,7 +110,13 @@ echo "OPP_THIS_PR=$OPP_THIS_PR"
 if [ -n "$OPP_THIS_PR" ];then
   curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$OPP_THIS_REPO/pulls/$OPP_THIS_PR/reviews > /tmp/approved_list.json
   cat /tmp/approved_list.json
-  export OPP_APPROVED_LIST=$(cat /tmp/approved_list.json | jq -r '[.[-1] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user' | tr '\n' ' ')
+  OPP_APPROVED_LIST=$(cat /tmp/approved_list.json | jq -r '[.[-1] | {user: .user.login, state: .state}] | map(select(.state == "APPROVED")) | .[].user' | tr '\n' ' ')
 fi
 echo "OPP_APPROVED_LIST=$OPP_APPROVED_LIST"
-bash <(curl -sL $OPP_SCRIPT_ENV_URL)
+
+# According to https://linux.die.net/man/2/execve,
+# env vars take up Bash's buffers which can lead
+# to error "Argument list too long".
+# Without exporting large variables and using source,
+# this can be mitigated
+source <(curl -sL $OPP_SCRIPT_ENV_URL)
