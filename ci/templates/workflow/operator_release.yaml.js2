@@ -287,7 +287,7 @@ jobs:
     needs: [pr-check, remove-{{ default_config.production.type }} ]
 {% raw %}
     if: needs.pr-check.outputs.opp_release_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: List of missing operators
         id: operators
@@ -516,7 +516,7 @@ jobs:
     needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
 {% endraw %}
@@ -635,7 +635,7 @@ jobs:
     needs: [pr-check, remove-{{ default_config.production.type }} ]
 {% raw %}
     if: needs.pr-check.outputs.opp_release_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: List of missing operators
         id: operators
@@ -918,7 +918,7 @@ jobs:
     needs: [ pr-check, operators-{{ default_config.production.type }}, bundles-{{ default_config.production.type }}, release-{{ default_config.production.type }}]
     if: needs.pr-check.outputs.opp_release_ready == '1' && needs.operators-{{ default_config.production.type }}.outputs.opp_uncomplete_operators != ''
 {% raw %}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
 {% endraw %}
