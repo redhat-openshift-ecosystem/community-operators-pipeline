@@ -41,7 +41,6 @@ pipeline:
     repo: https://github.com/redhat-openshift-ecosystem/operator-test-playbooks
     branch: "upstream-community-dev"
   assignees:
-    - mporrato
     - Allda
   automerge:
     enabled: 1
@@ -63,6 +62,6 @@ operatorhubio:
 #  project: operator-test-playbooks
 #  tag: master
 tools:
-  kind_version: v0.23.0
-  kind_kube_version: v1.30.0
+  kind_version: v0.30.0
+  kind_kube_version: v1.32.8
   operator_sdk_version: v1.36.0
