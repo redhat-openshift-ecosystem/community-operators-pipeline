@@ -65,6 +65,17 @@ OPP_MODIFIED_CSVS=
 OPP_UPDATEGRAPH=1
 OPP_CI_YAML_UNSUPPORTED_FIELDS="addAssignees useAssigneeGroups assigneeGroups skipKeywords"
 
+validate_name() {
+  local value="$1" label="$2"
+  if [[ -z "$value" ]]; then
+    return 0
+  fi
+  if [[ ! "$value" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    echo "Error: Invalid $label: '$value' — contains disallowed characters" >&2
+    exit 1
+  fi
+}
+
 echo "OPP_ADDED_MODIFIED_FILES=$OPP_ADDED_MODIFIED_FILES"
 echo "OPP_MODIFIED_FILES=$OPP_MODIFIED_FILES"
 echo "OPP_RENAMED_FILES=$OPP_RENAMED_FILES"
@@ -106,7 +117,7 @@ echo "opp_changed_ci_yaml=${OPP_CI_YAML_CHANGED}" >> $GITHUB_OUTPUT
 echo "opp_ver_overwrite=${OPP_VER_OVERWRITE}" >> $GITHUB_OUTPUT
 
 
-[ -z $OPP_LABELS ] && [[ $OPP_PROD -eq 1 ]] && OPP_ALLOW_CI_CHANGES=1
+[ -z "$OPP_LABELS" ] && [[ $OPP_PROD -eq 1 ]] && OPP_ALLOW_CI_CHANGES=1
 
 if [[ $OPP_ALLOW_CI_CHANGES -eq 1 ]] && [[ $OPP_PROD -eq 1 ]];then
   echo "opp_release_ready=$OPP_ALLOW_FORCE_RELEASE" >> $GITHUB_OUTPUT
@@ -142,7 +153,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     [[ $sf == *ci.yaml ]] && { OPP_CI_YAML_CHANGED=1; continue; }
     # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' !!! Exiting ..."; OPP_RELEASE_READY=0; }
 
-    FILES="$FILES $(echo $sf | cut -d '/' -f 1-3)"
+    FILES="$FILES $(echo "$sf" | cut -d '/' -f 1-3)"
     # Check if outdside of "community-operators" and "upstream-community-operators"
   done
 
@@ -157,10 +168,12 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && OPP_OPERATORS_DIR="community-operators"
     # [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 1 ]] && OPP_OPERATORS_DIR="upstream-community-operators"
 
-    VERSIONS=$(echo -e "${FILES// /\\n}" | uniq | sort -r)
-    LATEST="$(echo -e $VERSIONS | cut -d ' ' -f 1)"
-    OPP_OPERATOR_NAME=$(echo $LATEST | cut -d '/' -f 2)
-    OPP_OPERATOR_VERSION=$(echo $LATEST | cut -d '/' -f 3)
+    VERSIONS=$(printf '%s\n' $FILES | uniq | sort -r)
+    LATEST="$(echo "$VERSIONS" | head -n 1)"
+    OPP_OPERATOR_NAME=$(echo "$LATEST" | cut -d '/' -f 2)
+    OPP_OPERATOR_VERSION=$(echo "$LATEST" | cut -d '/' -f 3)
+    validate_name "$OPP_OPERATOR_NAME" "operator name"
+    validate_name "$OPP_OPERATOR_VERSION" "operator version"
 
     OPP_TEST_READY=0
 
@@ -176,7 +189,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     echo "opp_update_graph=${OPP_UPDATEGRAPH}" >> $GITHUB_OUTPUT
 
     echo "Files removed only."
-    if [ ! -d ${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME} ];then
+    if [ ! -d "${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME}" ];then
       OPP_OP_DELETE=1
       DELETE_APPREG=1
       echo "opp_release_delete_appreg=${DELETE_APPREG}"
@@ -192,7 +205,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
       exit 0
     else
       echo "Directory '${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME}' is NOT removed. Searching for remaining versions"
-      for f in $(find ${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME} -type f);do
+      for f in $(find "${OPP_OPERATORS_DIR}/${OPP_OPERATOR_NAME}" -type f);do
         [[ $f == *ci.yaml ]] && continue
         OPP_ADDED_MODIFIED_FILES="$OPP_ADDED_MODIFIED_FILES $f"
 
@@ -203,7 +216,7 @@ if [ -n "$OPP_REMOVED_FILES" ];then
     fi
 
   else
-    REMOVED_VERSIONS=$(echo -e "${FILES// /\\n}" | uniq | sort -r)
+    REMOVED_VERSIONS=$(printf '%s\n' $FILES | uniq | sort -r)
     FILES=
   fi
 fi
@@ -230,8 +243,8 @@ for sf in ${OPP_ADDED_MODIFIED_FILES}; do
 
   # [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 0 ]] && [[ $OPP_CHANGES_STREAM_UPSTREAM -eq 0 ]] && { echo "No changes 'community-operators' or 'upstream-community-operators' Skipping test ..."; OPP_TEST_READY=0; }
 
-  OPERATOR_PATH=$(echo $sf | cut -d '/' -f 1-3)
-  [ -f $OPERATOR_PATH ] && { echo "Operator path '$OPERATOR_PATH' is file and it should be directory !!!"; exit 1; }
+  OPERATOR_PATH=$(echo "$sf" | cut -d '/' -f 1-3)
+  [ -f "$OPERATOR_PATH" ] && { echo "Operator path '$OPERATOR_PATH' is file and it should be directory !!!"; exit 1; }
   FILES="$FILES $OPERATOR_PATH"
 
   # Check if outdside of "community-operators" and "upstream-community-operators"
@@ -272,14 +285,16 @@ echo "OPP_MODIFIED_OTHERS=$OPP_MODIFIED_OTHERS"
 if [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CI_YAML_CHANGED -eq 1 ]] && [ ! -n "$FILES" ];then
   OPP_CI_YAML_ONLY=1
   OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
+  validate_name "$OPP_OPERATOR_NAME" "operator name"
   if [[ $OPP_CI_YAML_ONLY -eq 1 ]];then
     if [[ $OPP_PROD -ge 1 ]];then
       OPP_OPERATOR_VERSION="sync"
     else
-      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+      OPP_OPERATOR_VERSION="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
     fi
-    OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
-    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+    validate_name "$OPP_OPERATOR_VERSION" "operator version"
+    OPP_OPERATOR_VERSIONS_ALL="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
   fi
 
   echo "opp_ci_yaml_only=${OPP_CI_YAML_ONLY}" >> $GITHUB_OUTPUT
@@ -291,14 +306,16 @@ elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -
   OPP_RELEASE_READY=1
   OPP_OP_DELETE=1
   OPP_OPERATOR_NAME=$(echo ${OPP_ADDED_MODIFIED_FILES} | cut -d '/' -f 2)
+  validate_name "$OPP_OPERATOR_NAME" "operator name"
   if [[ $OPP_CHANGES_PACKAGE_FILE_ONLY -eq 1 ]];then
     if [[ $OPP_PROD -ge 1 ]];then
       OPP_OPERATOR_VERSION="sync"
     else
-      OPP_OPERATOR_VERSION="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+      OPP_OPERATOR_VERSION="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
     fi
-    OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
-    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+    validate_name "$OPP_OPERATOR_VERSION" "operator version"
+    OPP_OPERATOR_VERSIONS_ALL="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+    OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
   fi
 
   # Act same way as it would be ci.yaml only file change
@@ -309,27 +326,29 @@ elif [[ $OPP_CHANGES_IN_OPERATORS_DIR -eq 1 ]] && [[ $OPP_CHANGES_PACKAGE_FILE -
 else
   echo "FILES: $FILES"
 
-  VERSIONS=$(echo -e "${FILES// /\\n}" | uniq | sort -r)
+  VERSIONS=$(printf '%s\n' $FILES | uniq | sort -r)
 
-  LATEST="$(echo -e $VERSIONS | cut -d ' ' -f 1)"
-  OPP_OPERATOR_NAME=$(echo $LATEST | cut -d '/' -f 2)
-  OPP_OPERATOR_VERSION=$(echo $LATEST | cut -d '/' -f 3)
-  OPP_OPERATOR_VERSIONS_ALL="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
-  OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
+  LATEST="$(echo "$VERSIONS" | head -n 1)"
+  OPP_OPERATOR_NAME=$(echo "$LATEST" | cut -d '/' -f 2)
+  OPP_OPERATOR_VERSION=$(echo "$LATEST" | cut -d '/' -f 3)
+  validate_name "$OPP_OPERATOR_NAME" "operator name"
+  validate_name "$OPP_OPERATOR_VERSION" "operator version"
+  OPP_OPERATOR_VERSIONS_ALL="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | cut -d '/' -f 3 | tr '\n' ' ')"
+  OPP_OPERATOR_VERSIONS_ALL_LATEST="$(find "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME" -type f -name "*.clusterserviceversion.yaml" | sort --version-sort | tail -n 1 | cut -d '/' -f 3)"
 
   OPP_OPERATOR_VERSIONS=
   for v in $VERSIONS;do
-    TMP_OP_NAME=$(echo $v | cut -d '/' -f 2)
-    OPP_OPERATOR_VERSIONS="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS"
+    TMP_OP_NAME=$(echo "$v" | cut -d '/' -f 2)
+    OPP_OPERATOR_VERSIONS="$(echo "$v" | cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS"
     [ "$OPP_OPERATOR_NAME" = "$TMP_OP_NAME" ] || { echo "Error: Multiple operators are changed !!! Detected:'$OPP_OPERATOR_NAME' and '$TMP_OP_NAME' !!! Exiting ..."; OPP_TEST_READY=0; echo "opp_error_code=5" >> $GITHUB_OUTPUT;  exit 1;  }
   done
   # remove trailing space
-  OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | sed 's/ *$//g')
-  OPP_OPERATOR_VERSIONS=$(echo $OPP_OPERATOR_VERSIONS | tr ' ' '\n' | uniq |  tr '\n' ' ' | sed 's/ *$//')
+  OPP_OPERATOR_VERSIONS=$(echo "$OPP_OPERATOR_VERSIONS" | sed 's/ *$//g')
+  OPP_OPERATOR_VERSIONS=$(echo "$OPP_OPERATOR_VERSIONS" | tr ' ' '\n' | uniq |  tr '\n' ' ' | sed 's/ *$//')
 
   OPP_OPERATOR_VERSIONS_REMOVED=
   for v in $REMOVED_VERSIONS;do
-    OPP_OPERATOR_VERSIONS_REMOVED="$(echo $v| cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"
+    OPP_OPERATOR_VERSIONS_REMOVED="$(echo "$v" | cut -d '/' -f 3) $OPP_OPERATOR_VERSIONS_REMOVED"
   done
   # remove trailing space
   OPP_OPERATOR_VERSIONS_REMOVED=$(echo $OPP_OPERATOR_VERSIONS_REMOVED | sed 's/ *$//g')
@@ -414,19 +433,19 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   fi
 
   if [[ $OPP_TEST_READY -eq 1 ]];then
-    if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then
-      TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers')
+    if [ -f "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml" ];then
+      TEST_REVIEWERS=$(yq '.reviewers' "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml")
       # [ "$TEST_REVIEWERS" == "null" ] &&  { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field with one reviewer set as minimum !!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
 
       if [ "$TEST_REVIEWERS" != "null" ];then
-        TEST_REVIEWERS=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.reviewers | length' || echo 0)
+        TEST_REVIEWERS=$(yq '.reviewers | length' "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml" || echo 0)
         [[ $TEST_REVIEWERS -eq 0 ]] && { echo "We require that file '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' contains 'reviewers' array field and it has at least one reviewer set!!! More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/ !!!"; echo "opp_error_code=4" >> $GITHUB_OUTPUT; exit 1; }
       else
         echo "File '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' doesn't contain 'reviewers' array field !!! If one wants to add reviewers (truested-authors) More info : $OPP_CURRENT_PROJECT_DOC/operator-ci-yaml/. !!!"
         OPP_ERROR_CODE=10
       fi
-      TEST_UPDATE_GRAPH=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq '.updateGraph')
-      [ $TEST_UPDATE_GRAPH == "null" ] && OPP_UPDATEGRAPH=0
+      TEST_UPDATE_GRAPH=$(yq '.updateGraph' "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml")
+      [ "$TEST_UPDATE_GRAPH" == "null" ] && OPP_UPDATEGRAPH=0
       echo "OPP_UPDATEGRAPH=$OPP_UPDATEGRAPH"
 
     else
@@ -436,9 +455,9 @@ if [[ OPP_REVIEWERS_ENABLED -eq 1 ]];then
   fi
 fi
 
-if [ -f $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml ];then
+if [ -f "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml" ];then
   echo "File '$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml' exitst"
-  PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=$(cat $OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml | yq -r '.packagemanifestClusterVersionLabel')
+  PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=$(yq -r '.packagemanifestClusterVersionLabel' "$OPP_OPERATORS_DIR/$OPP_OPERATOR_NAME/ci.yaml")
   echo "packagemanifestClusterVersionLabel : $PACKAGEMANIFEST_CLUSTER_VERSION_LABEL"
   [ "$PACKAGEMANIFEST_CLUSTER_VERSION_LABEL" == "auto" ] && OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL=1
 fi
@@ -558,10 +577,10 @@ function detect_k8s_max() {
 
 # Handle case when after removal of operator only ci.yaml will be present
 if [ -n "$OPP_REMOVED_FILES" ];then
-  FILES_IN_OPERATOR_DIR=$(find operators/$OPP_OPERATOR_NAME/ -type f)
-  NUM_FILES_IN_OPERATOR_DIR=$(echo $FILES_IN_OPERATOR_DIR | tr ' ' '\n' | wc -l)
+  FILES_IN_OPERATOR_DIR=$(find "operators/$OPP_OPERATOR_NAME/" -type f)
+  NUM_FILES_IN_OPERATOR_DIR=$(echo "$FILES_IN_OPERATOR_DIR" | tr ' ' '\n' | wc -l)
   if [[ $NUM_FILES_IN_OPERATOR_DIR -eq 1 ]];then
-    CI_YAML_TEST=$(basename $FILES_IN_OPERATOR_DIR)
+    CI_YAML_TEST=$(basename "$FILES_IN_OPERATOR_DIR")
     [[ $CI_YAML_TEST == "ci.yaml" ]] && OPP_RELEASE_READY=1
   fi
 fi

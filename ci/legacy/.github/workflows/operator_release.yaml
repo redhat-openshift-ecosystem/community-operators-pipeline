@@ -96,19 +96,23 @@ jobs:
         if: needs.pr-check.outputs.op_test_op_delete == '1'
         env:
           OP_TEST_LABELS: "${{ needs.pr-check.outputs.op_test_labels }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
           echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-          echo "op_delete ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/dummy https://github.com/operator-framework/community-operators master"
-          scripts/ci/op-test op_delete "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/dummy https://github.com/operator-framework/community-operators master"
+          echo "op_delete ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/dummy https://github.com/operator-framework/community-operators master"
+          scripts/ci/op-test op_delete "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/dummy https://github.com/operator-framework/community-operators master"
       - name: Index recreate only (Only ci.yaml was changed)
         if: needs.pr-check.outputs.op_test_ci_yaml_only == '1'
         env:
           OP_TEST_LABELS: "${{ needs.pr-check.outputs.op_test_labels }}"
           OP_TEST_CI_YAML_ONLY: 1
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
           echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/sync https://github.com/operator-framework/community-operators master"
-          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/sync https://github.com/operator-framework/community-operators master"
+          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/sync https://github.com/operator-framework/community-operators master"
+          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/sync https://github.com/operator-framework/community-operators master"
       - name: Operator release (sync)
         if: needs.pr-check.outputs.op_test_ci_yaml_only == '0' && needs.pr-check.outputs.op_test_ver_overwrite == '0'
         env:
@@ -121,10 +125,12 @@ jobs:
         if: needs.pr-check.outputs.op_test_ci_yaml_only == '0' && needs.pr-check.outputs.op_test_ver_overwrite == '1'
         env:
           OP_TEST_LABELS: "${{ needs.pr-check.outputs.op_test_labels }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
           echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
-          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
+          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
+          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
   # release-openshift_latest:
   #   name: "Release / o7t latest"
   #   needs: pr-check
@@ -158,10 +164,12 @@ jobs:
           env:
             OP_TEST_LABELS: "${{ needs.pr-check.outputs.op_test_labels }}"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
           run: |
             echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-            echo "op_delete_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/dummy https://github.com/operator-framework/community-operators master"
-            scripts/ci/op-test op_delete_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/dummy https://github.com/operator-framework/community-operators master"
+            echo "op_delete_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/dummy https://github.com/operator-framework/community-operators master"
+            scripts/ci/op-test op_delete_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/dummy https://github.com/operator-framework/community-operators master"
         - name: Index recreate only (Only ci.yaml was changed)
           if: needs.pr-check.outputs.op_test_ci_yaml_only == '1'
           env:
@@ -171,10 +179,12 @@ jobs:
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OP_TEST_MIRROR_IMAGE_POSTFIX: "s"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
           run: |
             echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/sync https://github.com/operator-framework/community-operators master"
-            scripts/ci/op-test orange_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/sync https://github.com/operator-framework/community-operators master"
+            echo "orange_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/sync https://github.com/operator-framework/community-operators master"
+            scripts/ci/op-test orange_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/sync https://github.com/operator-framework/community-operators master"
         - name: Operator release (sync)
           if: needs.pr-check.outputs.op_test_ci_yaml_only == '0' && needs.pr-check.outputs.op_test_ver_overwrite == '0'
           env:
@@ -195,10 +205,12 @@ jobs:
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OP_TEST_MIRROR_IMAGE_POSTFIX: "s"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
           run: |
             echo "OP_TEST_LABELS=$OP_TEST_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
-            scripts/ci/op-test orange_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
+            echo "orange_${OPERATOR_INDEX_TAG} ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
+            scripts/ci/op-test orange_${OPERATOR_INDEX_TAG} "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
         - name: Prepare variables for the sign process
           id: openshift-vars
           run: |
@@ -309,13 +321,15 @@ jobs:
     env:
       DELETE_APPREG: "${{ needs.pr-check.outputs.op_release_delete_appreg }}"
       OP_TEST_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
+      OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+      OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Push to quay
         run: |
-          echo "push_to_quay ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
-          scripts/ci/op-test push_to_quay "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }} https://github.com/operator-framework/community-operators master"
+          echo "push_to_quay ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
+          scripts/ci/op-test push_to_quay "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION https://github.com/operator-framework/community-operators master"
 
   ohio-page-k8s:
     name: "Release / operatorhub.io"

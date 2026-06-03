@@ -301,6 +301,8 @@ jobs:
         uses: actions/github-script@v6
         continue-on-error: true
         if: always() && steps.op-traffic-light.outputs.op_test_pr_title != ''
+        env:
+          OPP_PR_TITLE: "${{ steps.op-traffic-light.outputs.op_test_pr_title }}"
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -308,7 +310,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "${{ steps.op-traffic-light.outputs.op_test_pr_title }}"
+              title: process.env.OPP_PR_TITLE
             })
 
       - name: Handle new operator
@@ -484,12 +486,15 @@ jobs:
       #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
       #     allow-repeats: true
       - name: Info
+        env:
+          OPP_NAME: "${{ steps.op-traffic-light.outputs.op_test_name }}"
+          OPP_VERSION: "${{ steps.op-traffic-light.outputs.op_test_version }}"
         run: |
           echo "steps.op-traffic-light.outputs.op_test_ready: ${{ steps.op-traffic-light.outputs.op_test_ready }}"
           echo "steps.op-traffic-light.outputs.op_release_ready: ${{ steps.op-traffic-light.outputs.op_release_ready }}"
           echo "steps.op-traffic-light.outputs.op_test_stream: ${{ steps.op-traffic-light.outputs.op_test_stream }}"
-          echo "steps.op-traffic-light.outputs.op_test_name: ${{ steps.op-traffic-light.outputs.op_test_name }}"
-          echo "steps.op-traffic-light.outputs.op_test_version: ${{ steps.op-traffic-light.outputs.op_test_version }}"
+          echo "steps.op-traffic-light.outputs.op_test_name: $OPP_NAME"
+          echo "steps.op-traffic-light.outputs.op_test_version: $OPP_VERSION"
           echo "steps.op-traffic-light.outputs.op_test_ci_yaml_only: ${{ steps.op-traffic-light.outputs.op_test_ci_yaml_only }}"
     outputs:
       op_test_ready: "${{ steps.op-traffic-light.outputs.op_test_ready }}"
