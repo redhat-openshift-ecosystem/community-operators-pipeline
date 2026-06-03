@@ -80,9 +80,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "kiwi operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "kiwi operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) kiwi "operators/$OPP_NAME/$OPP_VERSION"
 {% endraw %}
 {% if default_config.production.type == 'k8s' %}
 {% raw %}
@@ -97,9 +99,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "lemon operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon "operators/$OPP_NAME/$OPP_VERSION"
 {% endraw %}
 {% else %}
 {% raw %}
@@ -114,9 +118,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "lemon_v4.6 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.6 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon_v4.6 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.6 "operators/$OPP_NAME/$OPP_VERSION"
 
   test-lemon-openshift_4_7:
     name: "lemon / Deploy from scratch (v4.7)"
@@ -129,9 +135,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "lemon_v4.7 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.7 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon_v4.7 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.7 "operators/$OPP_NAME/$OPP_VERSION"
 
   test-lemon-openshift_4_8:
     name: "lemon / Deploy from scratch (v4.8)"
@@ -144,9 +152,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "lemon_v4.8 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.8 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "lemon_v4.8 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) lemon_v4.8 "operators/$OPP_NAME/$OPP_VERSION"
 {% endraw %}
 {% endif %}
 {% raw %}
@@ -165,9 +175,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange "operators/$OPP_NAME/$OPP_VERSION"
 {% endraw %}
 {% else %}
 {% raw %}
@@ -182,9 +194,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "orange_v4.6 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.6 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange_v4.6 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.6 "operators/$OPP_NAME/$OPP_VERSION"
 
   test-orange-openshift_4_7:
     name: "orange / Deploy o7t v4.7"
@@ -197,9 +211,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "orange_v4.7 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.7 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange_v4.7 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.7 "operators/$OPP_NAME/$OPP_VERSION"
 
   test-orange-openshift_4_8:
     name: "orange / Deploy o7t v4.8"
@@ -212,9 +228,11 @@ jobs:
       - name: Operator test
         env:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
-          echo "orange_v4.8 operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.8 "operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
+          echo "orange_v4.8 operators/$OPP_NAME/$OPP_VERSION"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange_v4.8 "operators/$OPP_NAME/$OPP_VERSION"
 {% endraw %}
 {% endif %}
 {% raw %}          

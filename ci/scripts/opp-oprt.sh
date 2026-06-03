@@ -47,6 +47,10 @@ git checkout $BRANCH_NAME #> /dev/null 2>&1
 git log --oneline | head
 
 OPP_OPERATOR_NAME=$(git diff --diff-filter=DRAM HEAD^1 --name-only | cut -d '/' -f 2 | head -n 1)
+if [[ -n "$OPP_OPERATOR_NAME" ]] && [[ ! "$OPP_OPERATOR_NAME" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+  echo "Error: Invalid operator name: '$OPP_OPERATOR_NAME' — contains disallowed characters" >&2
+  exit 1
+fi
 echo "OPP_OPERATOR_NAME=$OPP_OPERATOR_NAME"
 
 OPP_OPRT_SRC_VERSIONS=$(find operators/$OPP_OPERATOR_NAME/ -maxdepth 1 -mindepth 1 -type d | sort | cut -d '/' -f 3)

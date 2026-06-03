@@ -119,19 +119,23 @@ jobs:
         if: needs.pr-check.outputs.opp_op_delete == '1'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          echo "op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "op_delete operators/$OPP_NAME/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) op_delete operators/$OPP_NAME/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
       - name: Index recreate only (Only ci.yaml was changed)
         if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
           OPP_CI_YAML_ONLY: 1
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "orange operators/$OPP_NAME/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/$OPP_NAME/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
       - name: Operator release (sync)
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
         env:
@@ -144,10 +148,12 @@ jobs:
         if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '1'
         env:
           OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
         run: |
           echo "OPP_LABELS=$OPP_LABELS"
-          echo "orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "orange operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) orange operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH
 {% endraw %}
 {% else %}
 {% raw %}
@@ -186,10 +192,12 @@ jobs:
           env:
             OPP_LABELS: "${{ needs.pr-check.outputs.opp_labels }}"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
-            echo "op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
+            echo "op_delete_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) op_delete_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/dummy $OPP_THIS_REPO $OPP_THIS_BRANCH
         - name: Index recreate only (Only ci.yaml was changed)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
           env:
@@ -199,10 +207,12 @@ jobs:
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OPP_MIRROR_IMAGE_POSTFIX: "s"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
+            echo "orange_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/sync $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/sync $OPP_THIS_REPO $OPP_THIS_BRANCH
         - name: Operator release (sync)
           if: needs.pr-check.outputs.opp_ci_yaml_only == '0' && needs.pr-check.outputs.opp_ver_overwrite == '0'
           env:
@@ -223,10 +233,12 @@ jobs:
             IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
             # OPP_MIRROR_IMAGE_POSTFIX: "s"
             OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+            OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
+            OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
           run: |
             echo "OPP_LABELS=$OPP_LABELS"
-            echo "orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+            echo "orange_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH"
+            bash <(curl -sL $OPP_SCRIPT_URL) orange_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH
 {% endraw %}
 {% if default_config.production.index.signature == 1 %}
 {% raw %}
@@ -265,13 +277,14 @@ jobs:
     env:
       DELETE_APPREG: "${{ needs.pr-check.outputs.opp_release_delete_appreg }}"
       OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
+      OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Push to quay
         run: |
-          echo "push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH"
-          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }} $OPP_THIS_REPO $OPP_THIS_BRANCH
+          echo "push_to_quay operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH"
+          bash <(curl -sL $OPP_SCRIPT_URL) push_to_quay operators/$OPP_NAME/$OPP_VERSION $OPP_THIS_REPO $OPP_THIS_BRANCH
 
   release-sha-openshift:
       name: "Release sha / o7t"

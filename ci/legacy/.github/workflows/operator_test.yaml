@@ -74,9 +74,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "kiwi ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test kiwi "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "kiwi ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test kiwi "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-lemon:
     name: "lemon / Deploy from scratch"
@@ -89,9 +91,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "lemon ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test lemon "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "lemon ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test lemon "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-lemon-openshift_4_6:
     name: "lemon / Deploy from scratch (v4.6)"
@@ -104,9 +108,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "lemon_v4.6 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test lemon_v4.6 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "lemon_v4.6 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test lemon_v4.6 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-lemon-openshift_4_7:
     name: "lemon / Deploy from scratch (v4.7)"
@@ -119,9 +125,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "lemon_v4.7 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test lemon_v4.7 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "lemon_v4.7 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test lemon_v4.7 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-lemon-openshift_4_8:
     name: "lemon / Deploy from scratch (v4.8)"
@@ -134,9 +142,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "lemon_v4.8 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test lemon_v4.8 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "lemon_v4.8 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test lemon_v4.8 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-orange-latest:
     name: "orange / Deploy k8s latest"
@@ -149,9 +159,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "orange ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test orange "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-orange-openshift_4_6:
     name: "orange / Deploy o7t v4.6"
@@ -164,9 +176,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "orange_v4.6 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test orange_v4.6 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "orange_v4.6 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test orange_v4.6 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-orange-openshift_4_7:
     name: "orange / Deploy o7t v4.7"
@@ -179,9 +193,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "orange_v4.7 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test orange_v4.7 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "orange_v4.7 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test orange_v4.7 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
 
   test-orange-openshift_4_8:
     name: "orange / Deploy o7t v4.8"
@@ -194,9 +210,11 @@ jobs:
       - name: Operator test
         env:
           OP_TEST_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+          OPP_NAME: "${{ needs.pr-check.outputs.op_test_name }}"
+          OPP_VERSION: "${{ needs.pr-check.outputs.op_test_version }}"
         run: |
-          echo "orange_v4.8 ${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
-          scripts/ci/op-test orange_v4.8 "${{ needs.pr-check.outputs.op_test_stream }}/${{ needs.pr-check.outputs.op_test_name }}/${{ needs.pr-check.outputs.op_test_version }}"
+          echo "orange_v4.8 ${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
+          scripts/ci/op-test orange_v4.8 "${{ needs.pr-check.outputs.op_test_stream }}/$OPP_NAME/$OPP_VERSION"
   test-dco:
     name: "DCO test (commits signoff)"
     needs: pr-check
