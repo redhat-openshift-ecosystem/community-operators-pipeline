@@ -44,7 +44,6 @@ env:
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: {{ default_config.test.force_deploy_openshift_version | default('4.10') }}
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 {% raw %}
-  IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 
 jobs:
   pr-check:
@@ -253,11 +252,12 @@ jobs:
       opp_auto_packagemanifest_cluster_version_label: "${{ steps.op-traffic-light.outputs.opp_auto_packagemanifest_cluster_version_label }}"
       opp_installation_skipped: "${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
       kind_kube_version: "${{ steps.op-traffic-light.outputs.kind_kube_version }}"
+      opp_authorized_changes: "${{ steps.op-traffic-light.outputs.opp_authorized_changes }}"
 
   test-kiwi:
     name: "kiwi / Full operator test"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' ) && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' ) && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -286,6 +286,7 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
+          IIB_INPUT_REGISTRY_TOKEN: "${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}"
         run: |
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "kiwi operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -381,7 +382,7 @@ jobs:
   test-lemon:
     name: "lemon / Deploy from scratch"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -400,6 +401,7 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
+          IIB_INPUT_REGISTRY_TOKEN: "${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}"
         run: |
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -410,7 +412,7 @@ jobs:
   test-lemon-openshift:
     name: "lemon / Deploy from scratch"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -443,6 +445,7 @@ jobs:
           OPP_LABELS: "${{ join(github.event.pull_request.labels.*.name, ' ') }}"
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
+          IIB_INPUT_REGISTRY_TOKEN: "${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}"
         run: |
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "lemon_${OPERATOR_INDEX_TAG} operators/${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}"
@@ -457,7 +460,7 @@ jobs:
   test-orange-latest:
     name: "orange / Deploy k8s"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -490,7 +493,7 @@ jobs:
   test-orange-openshift:
     name: "orange / Deploy o7t"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
