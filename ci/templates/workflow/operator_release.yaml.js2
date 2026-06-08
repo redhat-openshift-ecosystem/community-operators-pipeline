@@ -115,7 +115,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - id: files
         uses: masesgroup/retrieve-changed-files@v2
         continue-on-error: true
@@ -1006,7 +1008,9 @@ jobs:
       OHIO_REGISTRY_IMAGE: "quay.io/operator-framework/upstream-community-operators:dev"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - name: Prepare variables for the sign process
         id: openshift-vars-latest
         run: |
