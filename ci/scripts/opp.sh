@@ -74,6 +74,7 @@ OPP_MIRROR_INDEX_IMAGE="$OPP_MIRROR_INDEX_REGISTRY/$OPP_MIRROR_INDEX_ORGANIZATIO
 
 OHIO_INPUT_CATALOG_IMAGE=${OHIO_INPUT_CATALOG_IMAGE-"quay.io/operatorhubio/catalog:latest"}
 OHIO_REGISTRY_IMAGE=${OHIO_REGISTRY_IMAGE-"quay.io/operator-framework/upstream-community-operators:latest"}
+OHIO_REGISTRY_USER=${OHIO_REGISTRY_USER-"operator-framework+community_operator_pipeline"}
 
 IIB_PUSH_IMAGE=${IIB_PUSH_IMAGE-"quay.io/operator_testing/catalog:latest"}
 IIB_INPUT_REGISTRY_USER=${IIB_INPUT_REGISTRY_USER-"jbreza"}
@@ -537,7 +538,7 @@ function ExecParameters() {
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "openshift" ] && OPP_RESET=1 && [[ OPP_DELETE_APPREG -eq 1 ]] && OPP_EXEC_USER="$OPP_EXEC_USER -e delete_appreg='true'"
     [[ $1 == push_to_quay* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && OPP_RESET=0 && OPP_EXEC_USER="" && { echo "Warning: Push to quay is not supported for 'k8s' !!! Skipping ..."; OPP_SKIP=1; }
 
-    [[ $1 == ohio_image* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags app_registry -e bundle_index_image=$OHIO_INPUT_CATALOG_IMAGE -e index_export_parallel=true -e app_registry_image=$OHIO_REGISTRY_IMAGE -e quay_api_token=$OHIO_REGISTRY_TOKEN"
+    [[ $1 == ohio_image* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags app_registry -e bundle_index_image=$OHIO_INPUT_CATALOG_IMAGE -e index_export_parallel=true -e app_registry_image=$OHIO_REGISTRY_IMAGE -e quay_user=$OHIO_REGISTRY_USER -e quay_password=$OHIO_REGISTRY_TOKEN"
 
     [[ $1 == op_delete* ]] && OPP_RESET=0 && OPP_EXEC_USER="$OPP_EXEC_USER --tags remove_operator -e operator_dir=$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR -e operator_info_file= -e bundle_index_sha_posfix=$OPP_MIRROR_INDEX_MULTIARCH_POSTFIX"
     
