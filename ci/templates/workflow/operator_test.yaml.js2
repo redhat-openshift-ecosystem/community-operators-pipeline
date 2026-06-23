@@ -2,7 +2,7 @@ name: Operator test
 
 {% raw %}
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, synchronize, unlabeled]
     branches:
       - master
@@ -484,7 +484,6 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 0
-          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
@@ -535,7 +534,6 @@ jobs:
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 1
-          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
           OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
