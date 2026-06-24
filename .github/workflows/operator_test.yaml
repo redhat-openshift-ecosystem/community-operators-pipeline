@@ -2,7 +2,7 @@ name: Operator test
 
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize, unlabeled]
     branches:
       - master
@@ -117,7 +117,7 @@ jobs:
           OPP_VERSION: "${{ steps.op-traffic-light.outputs.opp_version }}"
           ANSIBLE_FORCE_COLOR: 1
           ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
-          ANSIBLE_STDOUT_CALLBACK: "yaml"
+          ANSIBLE_CALLBACK_RESULT_FORMAT: "yaml"
         run: |
           # OPP_ANSIBLE_PULL_BRANCH="upstream-community-dev"
           [ "$OPP_AUTO_LABEL" = '1' ] && ANSIBLE_ARGS="-e automatic_cluster_version_label=true" || ANSIBLE_ARGS="-e automatic_cluster_version_label=false"
@@ -161,7 +161,7 @@ jobs:
             
             Affected versions : `${{ steps.op-info-result.outputs.opp_check_err_k8s_bundles_value }}`
             
-            More info in 'Kubernetes max version in CSV' section [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#kubernetes-max-version-in-csv).
+            More info in 'Kubernetes max version in CSV' section [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml/#kubernetes-max-version-in-csv).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
@@ -210,12 +210,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: operator_info
           path: "/tmp/operator-test/"
       - name: Download converted operators
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -376,6 +376,7 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 0
+          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
@@ -404,7 +405,7 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: pr
           path: pr/
