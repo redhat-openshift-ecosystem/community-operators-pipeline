@@ -2,7 +2,7 @@ name: Operator test
 
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, synchronize, unlabeled]
     branches:
       - master
@@ -43,7 +43,6 @@ env:
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: 4.10
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 
-  IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 
 jobs:
   pr-check:
@@ -376,7 +375,6 @@ jobs:
           OPP_AUTO_PACKAGEMANIFEST_CLUSTER_VERSION_LABEL: "${{ needs.pr-check.outputs.opp_auto_packagemanifest_cluster_version_label }}"
           OPP_MIRROR_INDEX_ENABLED: 1
           OPP_IIB_INSTALL: 0
-          IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
           OPERATOR_INDEX_TAG: ${{ matrix.index-tag }}
           OPP_INSTALLATION_SKIP: "${{ needs.pr-check.outputs.opp_installation_skipped }}"
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
