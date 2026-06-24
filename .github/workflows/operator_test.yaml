@@ -43,6 +43,7 @@ env:
   OPP_FORCE_DEPLOY_ON_K8S_OPENSHIFT_VERSION: 4.10
 #  ARTEFACT_PATH: "/tmp/operator-test" #hardcoded for now
 
+  IIB_INPUT_REGISTRY_TOKEN: ${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}
 
 jobs:
   pr-check:
@@ -196,25 +197,25 @@ jobs:
       opp_auto_packagemanifest_cluster_version_label: "${{ steps.op-traffic-light.outputs.opp_auto_packagemanifest_cluster_version_label }}"
       opp_installation_skipped: "${{ steps.op-traffic-light.outputs.opp_installation_skipped }}"
       kind_kube_version: "${{ steps.op-traffic-light.outputs.kind_kube_version }}"
-      opp_authorized_changes: "${{ steps.op-traffic-light.outputs.opp_authorized_changes }}"
 
   test-kiwi:
     name: "kiwi / Full operator test"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' ) && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' ) && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v2
         with:
           name: operator_info
           path: "/tmp/operator-test/"
       - name: Download converted operators
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v2
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -232,7 +233,6 @@ jobs:
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
           OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
           OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
-          IIB_INPUT_REGISTRY_TOKEN: "${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}"
         run: |
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "kiwi operators/$OPP_NAME/$OPP_VERSION"
@@ -326,7 +326,7 @@ jobs:
   test-lemon:
     name: "lemon / Deploy from scratch"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1')  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -335,8 +335,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
@@ -346,7 +347,6 @@ jobs:
           KIND_KUBE_VERSION: "${{ needs.pr-check.outputs.kind_kube_version }}"
           OPP_NAME: "${{ needs.pr-check.outputs.opp_name }}"
           OPP_VERSION: "${{ needs.pr-check.outputs.opp_version }}"
-          IIB_INPUT_REGISTRY_TOKEN: "${{ secrets.IIB_INPUT_REGISTRY_TOKEN }}"
         run: |
           bash <(curl -sL $OPP_SCRIPT_CLEANUP_URL)
           echo "lemon_${OPERATOR_INDEX_TAG} operators/$OPP_NAME/$OPP_VERSION"
@@ -357,7 +357,7 @@ jobs:
   test-orange-latest:
     name: "orange / Deploy k8s"
     needs: pr-check
-    if: needs.pr-check.outputs.opp_test_ready == '1' && needs.pr-check.outputs.opp_authorized_changes == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
+    if: needs.pr-check.outputs.opp_test_ready == '1' && (needs.pr-check.outputs.opp_op_delete == '0' || needs.pr-check.outputs.opp_is_new_operatror == '1' || needs.pr-check.outputs.opp_recreate == '1' )  && needs.pr-check.outputs.opp_ci_yaml_only == '0'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -366,8 +366,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Operator test
         env:
@@ -403,14 +404,14 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v2
         with:
           name: pr
           path: pr/
 
       - name: "Setting package-validated label"
         if: needs.pr-check.outputs.opp_ci_yaml_only == '1'
-        uses: actions/github-script@v6
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         continue-on-error: true
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
