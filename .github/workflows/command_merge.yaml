@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - uses: actions/github-script@v6
         id: labels
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,13 +39,14 @@ jobs:
           permission-level: write
 
       - name: Merge message when not able to merge and inform user about authorized_changes
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        uses: actions/github-script@v6
         if: |
           steps.command.outputs.command-name == 'merge' &&
           steps.command.outputs.command-arguments == 'possible' &&
           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'authorized-changes')) &&
           (contains(fromJSON(steps.labels.outputs.result).*.name, 'installation-validated')) &&
           (contains(fromJSON(steps.labels.outputs.result).*.name, 'package-validated')) &&
+          (!contains(fromJSON(steps.labels.outputs.result).*.name, 'new-operator')) &&
           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'do-not-merge/work-in-progress')) &&
           (!contains(fromJSON(steps.labels.outputs.result).*.name, 'do-not-merge/hold'))
         with:
@@ -55,11 +56,11 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${{ env.OPP_THIS_REPO_ORG }}.github.io/${{ env.OPP_THIS_REPO_NAME }}/operator-ci-yaml/#reviewers).'
+              body: 'Current PR can be merged automatically, but there is missing `authorized-changes` label. One can find out more info [here](https://${OPP_THIS_REPO_ORG}.github.io/${OPP_THIS_REPO_NAME}/operator-ci-yaml/#reviewers).'
             })
 
       - name: Message when automerge is disabled
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        uses: actions/github-script@v6
         if: |
           steps.command.outputs.command-name == 'merge' &&
           steps.command.outputs.command-arguments == 'possible' &&
@@ -75,7 +76,7 @@ jobs:
             })
 
       - name: Message when dco-failed is missing
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        uses: actions/github-script@v6
         if: |
           steps.command.outputs.command-name == 'merge' &&
           steps.command.outputs.command-arguments == 'possible' &&
@@ -89,6 +90,7 @@ jobs:
               repo: context.repo.repo,
               body: 'DCO is missing. Please signoff your commits !!!'
             })
+
 
       - name: automerge
         if: steps.command.outputs.command-name == 'merge' && steps.command.outputs.command-arguments == 'possible'

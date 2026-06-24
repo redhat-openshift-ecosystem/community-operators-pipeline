@@ -26,7 +26,7 @@ env:
   OPP_ANSIBLE_PULL_BRANCH: "${{ github.event.inputs.playbook_branch }}"
   ANSIBLE_FORCE_COLOR: 1
   ANSIBLE_DISPLAY_SKIPPED_HOSTS: 0
-  ANSIBLE_CALLBACK_RESULT_FORMAT: "yaml"
+  ANSIBLE_STDOUT_CALLBACK: "yaml"
   OPP_TARGET_BRANCH: "${{ github.event.inputs.target_branch }}"
   OPP_PRODUCTION_TYPE: "k8s"
 
@@ -35,9 +35,8 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: true # Conversion step pushes to the target branch when done and requires the privileged token
           token: ${{ secrets.FRAMEWORK_MERGE }}
       - name: Conversion
         run: |
@@ -79,7 +78,7 @@ jobs:
             ANSIBLE_TAGS="operator_info"
             cd $PROJECT_DIR
             echo "Moving bundle for '$op' ..."
-            [ -e $PROJECT_DIR/operators/$op/ci.yaml ] && mv $PROJECT_DIR/operators/$op/ci.yaml /tmp/operator-test/operators/$op/ || echo "ci.yaml file does not exist, skipping ..." 
+            mv $PROJECT_DIR/operators/$op/ci.yaml /tmp/operator-test/operators/$op/
             rm -rf $PROJECT_DIR/operators/$op
             mv /tmp/operator-test/operators/$op $PROJECT_DIR/operators/$op
             find $PROJECT_DIR/operators/$op -name 'bundle.Dockerfile' -delete
