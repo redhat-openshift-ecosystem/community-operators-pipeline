@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: 'Download artifacts'
+      - name: 'Download artifact'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -24,32 +24,24 @@ jobs:
                repo: context.repo.repo,
                run_id: ${{github.event.workflow_run.id }},
             });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr"
+            })[0];
+            var download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
             var fs = require('fs');
-            for (const name of ['pr', 'pr_check_comments', 'test_comments']) {
-              var match = artifacts.data.artifacts.filter((a) => a.name == name)[0];
-              if (match) {
-                var download = await github.rest.actions.downloadArtifact({
-                   owner: context.repo.owner,
-                   repo: context.repo.repo,
-                   artifact_id: match.id,
-                   archive_format: 'zip',
-                });
-                fs.writeFileSync('${{github.workspace}}/' + name + '.zip', Buffer.from(download.data));
-              }
-            }
-      - run: |
-          unzip -o pr.zip -d pr_data
-          [ -f pr_check_comments.zip ] && unzip -o pr_check_comments.zip -d pr_check_comments || true
-          [ -f test_comments.zip ] && unzip -o test_comments.zip -d test_comments || true
-      - name: 'Read PR metadata'
+            fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
+      - run: unzip -o pr.zip -d pr_data
+      - name: 'Read PR number'
         id: pr-number
         run: |
           PR=$(tr -dc [0-9] <./pr_data/NR)
           [ -z "$PR" ] && echo "Invalid PR number" && exit 1
           echo "pr=${PR}" >> $GITHUB_OUTPUT
-          [ -f ./pr_data/PR_AUTHOR ] && echo "pr_author=$(cat ./pr_data/PR_AUTHOR)" >> $GITHUB_OUTPUT || echo "pr_author=" >> $GITHUB_OUTPUT
-          [ -f ./pr_data/OPP_NAME ] && echo "opp_name=$(cat ./pr_data/OPP_NAME)" >> $GITHUB_OUTPUT || echo "opp_name=" >> $GITHUB_OUTPUT
-          [ -f ./pr_data/OPP_VERSION ] && echo "opp_version=$(cat ./pr_data/OPP_VERSION)" >> $GITHUB_OUTPUT || echo "opp_version=" >> $GITHUB_OUTPUT
           [ -f ./pr_data/CI_YAML_ONLY ] && echo "ci_yaml_only=$(cat ./pr_data/CI_YAML_ONLY)" >> $GITHUB_OUTPUT || echo "ci_yaml_only=0" >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -66,9 +58,6 @@ jobs:
             return labels.data
     outputs:
       pr: "${{ steps.pr-number.outputs.pr }}"
-      pr_author: "${{ steps.pr-number.outputs.pr_author }}"
-      opp_name: "${{ steps.pr-number.outputs.opp_name }}"
-      opp_version: "${{ steps.pr-number.outputs.opp_version }}"
       ci_yaml_only: "${{ steps.pr-number.outputs.ci_yaml_only }}"
 
   post-comments:
@@ -76,151 +65,49 @@ jobs:
     if: always()
     needs: [pr]
     steps:
-      - name: 'Download comment artifacts'
+      - name: 'Download and post PR comments from artifacts'
+        if: needs.pr.outputs.pr != '0'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        continue-on-error: true
+        env:
+          PR: "${{ needs.pr.outputs.pr }}"
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{github.event.workflow_run.id }},
+            const fs = require('fs');
+            const path = require('path');
+            const { execSync } = require('child_process');
+
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner, repo: context.repo.repo,
+              run_id: ${{ github.event.workflow_run.id }},
             });
-            var fs = require('fs');
-            for (const name of ['pr_check_comments', 'test_comments']) {
-              var match = artifacts.data.artifacts.filter((a) => a.name == name)[0];
-              if (match) {
-                var download = await github.rest.actions.downloadArtifact({
-                   owner: context.repo.owner,
-                   repo: context.repo.repo,
-                   artifact_id: match.id,
-                   archive_format: 'zip',
+
+            for (const name of ['pr_comments', 'pr_comments_test']) {
+              const match = artifacts.data.artifacts.find(a => a.name === name);
+              if (!match) continue;
+              const dl = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner, repo: context.repo.repo,
+                artifact_id: match.id, archive_format: 'zip',
+              });
+              fs.writeFileSync(`${name}.zip`, Buffer.from(dl.data));
+              execSync(`unzip -o ${name}.zip -d comments`);
+            }
+
+            const dir = './comments';
+            if (fs.existsSync(dir)) {
+              for (const file of fs.readdirSync(dir).sort()) {
+                if (!file.endsWith('.md')) continue;
+                const body = fs.readFileSync(path.join(dir, file), 'utf8').trim();
+                if (!body) continue;
+                await github.rest.issues.createComment({
+                  issue_number: parseInt(process.env.PR),
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body,
                 });
-                fs.writeFileSync('${{github.workspace}}/' + name + '.zip', Buffer.from(download.data));
               }
             }
-      - run: |
-          [ -f pr_check_comments.zip ] && unzip -o pr_check_comments.zip -d pr_check_comments || true
-          [ -f test_comments.zip ] && unzip -o test_comments.zip -d test_comments || true
-
-      - name: "Comment rebase conflict"
-        if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        continue-on-error: true
-        env:
-          PR: "${{ needs.pr.outputs.pr }}"
-          PR_AUTHOR: "${{ needs.pr.outputs.pr_author }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const path = 'pr_check_comments/rebase.txt';
-            if (!fs.existsSync(path)) return;
-            const rebaseText = fs.readFileSync(path, 'utf8').trim();
-            await github.rest.issues.createComment({
-              issue_number: parseInt(process.env.PR),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Dear @${process.env.PR_AUTHOR},\nYour forked project is not rebased\n\nTo fix this issue please rebase or execute following commands:\n\`\`\`\n${rebaseText}\n\`\`\``
-            });
-
-      - name: "Comment packagemanifest format failed"
-        if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        continue-on-error: true
-        env:
-          PR: "${{ needs.pr.outputs.pr }}"
-          PR_AUTHOR: "${{ needs.pr.outputs.pr_author }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            if (!fs.existsSync('pr_check_comments/packagemanifest_err')) return;
-            await github.rest.issues.createComment({
-              issue_number: parseInt(process.env.PR),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Dear @${process.env.PR_AUTHOR},\nyour operator is in package manifest format. This format is not supported anymore. Please convert it to bundle format. [More info](https://docs.openshift.com/container-platform/4.12/operators/operator_sdk/osdk-pkgman-to-bundle.html)`
-            });
-
-      - name: "Comment k8s bundles deprecated API"
-        if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        continue-on-error: true
-        env:
-          PR: "${{ needs.pr.outputs.pr }}"
-          PR_AUTHOR: "${{ needs.pr.outputs.pr_author }}"
-          OPP_THIS_REPO_ORG: "redhat-openshift-ecosystem"
-          OPP_THIS_REPO_NAME: "community-operators-pipeline"
-
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const path = 'pr_check_comments/k8s_bundles_err.txt';
-            if (!fs.existsSync(path)) return;
-            const versions = fs.readFileSync(path, 'utf8').trim();
-            if (!versions) return;
-            await github.rest.issues.createComment({
-              issue_number: parseInt(process.env.PR),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Dear @${process.env.PR_AUTHOR},\nThere are some operators version that are using **deprecated api** and kubernetes max versions (\`operatorhub.io/ui-metadata-max-k8s-version\`) is **NOT** set correctly under annotation field in CSV file.\n\nAffected versions : \`${versions}\`\n\nMore info in 'Kubernetes max version in CSV' section [here](https://${process.env.OPP_THIS_REPO_ORG}.github.io/${process.env.OPP_THIS_REPO_NAME}/operator-ci-yaml/#kubernetes-max-version-in-csv).`
-            });
-
-      - name: "Comment bundle validate warnings"
-        if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        continue-on-error: true
-        env:
-          PR: "${{ needs.pr.outputs.pr }}"
-          PR_AUTHOR: "${{ needs.pr.outputs.pr_author }}"
-          OPP_NAME: "${{ needs.pr.outputs.opp_name }}"
-          OPP_VERSION: "${{ needs.pr.outputs.opp_version }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const errPath = 'test_comments/operator_sdk_bundle_validate_warnings_and_errors.txt';
-            if (!fs.existsSync(errPath)) return;
-            const errors = fs.readFileSync(errPath, 'utf8').trim();
-            if (!errors) return;
-            const infoPath = 'test_comments/operator_sdk_bundle_validate_info.txt';
-            let sdkVersion = 'na', sdkArgs = 'na';
-            if (fs.existsSync(infoPath)) {
-              const lines = fs.readFileSync(infoPath, 'utf8').split('\n');
-              sdkVersion = lines[0] || 'na';
-              sdkArgs = lines[1] || 'na';
-            }
-            await github.rest.issues.createComment({
-              issue_number: parseInt(process.env.PR),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Dear @${process.env.PR_AUTHOR},\nSome errors and/or warnings were found while doing the check of your operator (\`${process.env.OPP_NAME}/${process.env.OPP_VERSION}\`) against the entire suite of validators for Operator Framework with [Operator-SDK](https://github.com/operator-framework/operator-sdk) version \`${sdkVersion}\` and the command \`$ operator-sdk bundle validate <bundle-path> ${sdkArgs}\`.\n\n**Errors (:bug:) must be fixed while warnings (:warning:) are informative, and fixing them might improve the quality of your solution.**\n\n${errors}`
-            });
-
-      - name: "Comment maxOpenShiftVersion"
-        if: needs.pr.outputs.pr != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        continue-on-error: true
-        env:
-          PR: "${{ needs.pr.outputs.pr }}"
-          PR_AUTHOR: "${{ needs.pr.outputs.pr_author }}"
-          OPP_NAME: "${{ needs.pr.outputs.opp_name }}"
-          OPP_VERSION: "${{ needs.pr.outputs.opp_version }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const path = 'test_comments/maxOpenShiftVersion_count.txt';
-            if (!fs.existsSync(path)) return;
-            const count = fs.readFileSync(path, 'utf8').trim();
-            if (count === '0' || count === '') return;
-            await github.rest.issues.createComment({
-              issue_number: parseInt(process.env.PR),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Dear @${process.env.PR_AUTHOR},\n:warning: | Your operator (\`${process.env.OPP_NAME}/${process.env.OPP_VERSION}\`) might **not** run on k8s 1.22 or in the Openshift version 4.9. **For more info see details below.**\n:---: | :--- |\n\n**IMPORTANT** : Kubernetes has been deprecating API(s) which will be removed and no longer available in 1.22 and in the Openshift version 4.9. Note that your project will be unable to use them on OCP 4.9/K8s 1.22 and then, it is strongly recommended to check [Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22) and ensure that your projects have them migrated and are not using any deprecated API.\nTo prevent workflow issues, its users will need to have installed in their OCP cluster a version of your operator compatible with 4.9 before they try to upgrade their cluster from any previous version to 4.9 or higher. However, If you still need to publish the operator bundles with any of these API(s) for use on earlier k8s/OCP versions, ensure that the operator bundle is configured accordingly:\nUse the olm.openShiftMaxVersion property in the CSV to prevent the user from upgrading their OCP cluster before upgrading the installed operator version to any distribution which is compatible with:\n\`\`\`yaml\napiVersion: operators.coreos.com/v1alpha1\nkind: ClusterServiceVersion\n  metadata:\n    annotations:\n      # Prevent cluster upgrades to OpenShift Version 4.9 when this\n      # bundle is installed on the cluster\n      "olm.properties": \'[{"type": "olm.maxOpenShiftVersion", "value": "4.8"}]\'\n\`\`\``
-            });
 
   on-success:
     runs-on: ubuntu-latest
