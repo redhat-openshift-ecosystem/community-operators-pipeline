@@ -90,7 +90,7 @@ jobs:
           mkdir -p /tmp/pr_comments
           cat > /tmp/pr_comments/rebase.md <<'ENDOFCOMMENT'
           Dear @${{ github.event.pull_request.user.login }},
-          Your forked procject is not rebased
+          Your forked project is not rebased
           
           To fix this issue please rebase or execute following commands: 
           ```
@@ -195,7 +195,7 @@ jobs:
           ## Automatic Cluster Version Label (OCP) - packagemanifest only
 
           Starting OCP v4.9 (based on k8s 1.22) some old API were deprecated([Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22), [OKD/OpenShift Catalogs criteria and options](./packaging-required-criteria-ocp.md)). User can set `com.redhat.openshift.versions: <versions>`in its bundle `annotations.yaml` file to limit specific operator version to be visible on certain cluster.
-          Users can set label only when the operator is in bundle format. For packagemanifest format it is not possible to set this lablel, but community-operators pipeline can automatically set such label to the bundle. User have to allow it by putting packagemanifestClusterVersionLabel: auto in ci.yaml file
+          Users can set label only when the operator is in bundle format. For packagemanifest format it is not possible to set this label, but community-operators pipeline can automatically set such label to the bundle. User have to allow it by putting packagemanifestClusterVersionLabel: auto in ci.yaml file
 
           ```
           $ cat <path-to-operator>/ci.yaml
@@ -329,7 +329,7 @@ jobs:
           Dear @${{ github.event.pull_request.user.login }},        
           Some errors and/or warnings were found while doing the check of your operator (\`${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}\`) against the entire suite of validators for Operator Framework with [Operator-SDK](https://github.com/operator-framework/operator-sdk) version \`${{ steps.op-kiwi-test-err-bundle-validate.outputs.operator_sdk_version }}\` and the command \`$ operator-sdk bundle validate <bundle-path> ${{ steps.op-kiwi-test-err-bundle-validate.outputs.operator_sdk_args }}\`. 
           
-          **Errors (:bug:)  must be fixed while warnings (:warning:) are informative, and fixing them might improve the quality of your solution.**
+          **Errors (:bug:) must be fixed while warnings (:warning:) are informative, and fixing them might improve the quality of your solution.**
 
           ${{ steps.op-kiwi-test-err-bundle-validate.outputs.opp_check_err_bundle_validate }}
           ENDOFCOMMENT
@@ -348,7 +348,7 @@ jobs:
           mkdir -p /tmp/pr_comments
           cat > /tmp/pr_comments/maxOpenShiftVersion.md <<'ENDOFCOMMENT'
           Dear @${{ github.event.pull_request.user.login }},
-          :warning: | Your operator (`${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}`) might **not** run on k8s 1.22 or  in the Openshift version 4.9. **For more info see details bellow.**
+          :warning: | Your operator (`${{ needs.pr-check.outputs.opp_name }}/${{ needs.pr-check.outputs.opp_version }}`) might **not** run on k8s 1.22 or in the Openshift version 4.9. **For more info see details below.**
           :---: | :--- |
 
           **IMPORTANT** : Kubernetes has been deprecating API(s) which will be removed and no longer available in 1.22 and in the Openshift version 4.9. Note that your project will be unable to use them on OCP 4.9/K8s 1.22 and then, it is strongly recommended to check [Deprecated API Migration Guide from v1.22](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-22) and ensure that your projects have them migrated and are not using any deprecated API.
