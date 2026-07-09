@@ -60,6 +60,18 @@ OPP_NOCOLOR=${OPP_NOCOLOR-0}
 
 OPP_PACKAGEMANIFEST_DISABLED=${OPP_PACKAGEMANIFEST_DISABLED-0}
 
+# FBC (File-Based Catalog) support — k8s/operatorhub.io
+# Source the FBC helper functions.  The script is co-located with opp.sh;
+# when downloaded via curl the companion file is fetched from the same URL base.
+OPP_FBC_SCRIPT_URL="${OPP_THIS_REPO_BASE}/redhat-openshift-ecosystem/community-operators-pipeline/raw/ci/latest/ci/scripts/opp-fbc.sh"
+_OPP_FBC_LOCAL="$(dirname "${BASH_SOURCE[0]}")/opp-fbc.sh"
+if [ -f "$_OPP_FBC_LOCAL" ]; then
+    # shellcheck source=ci/scripts/opp-fbc.sh
+    source "$_OPP_FBC_LOCAL"
+else
+    source <(curl -sL "$OPP_FBC_SCRIPT_URL") || echo "[fbc] WARNING: could not load opp-fbc.sh; FBC operators will be skipped"
+fi
+
 OPP_RELEASE_BUNDLE_REGISTRY=${OPP_RELEASE_BUNDLE_REGISTRY-"quay.io"}
 OPP_RELEASE_BUNDLE_ORGANIZATION=${OPP_RELEASE_BUNDLE_ORGANIZATION-"community-operators-pipeline"}
 OPP_RELEASE_INDEX_REGISTRY=${OPP_RELEASE_INDEX_REGISTRY-"quay.io"}
@@ -701,6 +713,24 @@ for t in $TESTS;do
     echo "$OPP_EXEC_BASE $OPP_EXEC_EXTRA $OPP_EXEC_USER"
     run $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "update-ca-trust && $OPP_EXEC_BASE $OPP_EXEC_EXTRA $OPP_EXEC_USER $OPP_EXEC_USER_SECRETS"
     set +e
+
+    # FBC post-processing: render and validate catalogs for FBC-enabled operators.
+    # Applies to k8s orange (release) stage only; OCP uses IIB instead.
+    # The operator bundle has been built and pushed above; this step updates the
+    # catalogs/latest/<operator>/catalog.yaml in the repository clone so that the
+    # catalog image can be rebuilt from the rendered FBC tree.
+    if [[ $t1 == orange* ]] && [ "$OPP_CLUSTER_TYPE" = "k8s" ] && [[ $OPP_PROD -ge 1 ]]; then
+        OPP_FBC_OPERATOR_DIR="$OPP_BASE_DIR/$OPP_OPERATORS_DIR/$OPP_OPERATOR"
+        if declare -f opp_fbc_is_enabled > /dev/null && opp_fbc_is_enabled "$OPP_FBC_OPERATOR_DIR"; then
+            echo "[fbc] FBC operator detected: $OPP_OPERATOR — running FBC catalog render/validate"
+            OPP_FBC_REPO_ROOT="$OPP_BASE_DIR"
+            opp_fbc_process "$OPP_FBC_REPO_ROOT" "$OPP_OPERATOR" || {
+                echo "[fbc] ERROR: FBC processing failed for $OPP_OPERATOR"
+                exit 1
+            }
+        fi
+    fi
+
     echo -e "Test '$t' : [ OK ]\n"
 done
 
