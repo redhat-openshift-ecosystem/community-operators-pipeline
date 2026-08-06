@@ -29,7 +29,7 @@ jobs:
 
       - name: Merge command handler
         id: command
-        uses: xt0rted/slash-command-action@v1
+        uses: xt0rted/slash-command-action@bf51f8f5f4ea3d58abc7eca58f77104182b23e88  # v2.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           command: merge
@@ -92,7 +92,7 @@ jobs:
 
       - name: automerge
         if: steps.command.outputs.command-name == 'merge' && steps.command.outputs.command-arguments == 'possible'
-        uses: "pascalgn/automerge-action@v0.14.2"
+        uses: "pascalgn/automerge-action@7961b8b5eec56cc088c140b56d864285eabd3f67"  # v0.16.4
         env:
           GITHUB_TOKEN: "${{ secrets.FRAMEWORK_MERGE }}"
           MERGE_LABELS: "authorized-changes,package-validated,installation-validated,!do-not-merge/hold,!do-not-merge/work-in-progress,!automerge-disabled,!dco-failed"

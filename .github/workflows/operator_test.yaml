@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -157,20 +157,20 @@ jobs:
 
       - name: Upload pr-check comments
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: pr_comments
           path: /tmp/pr_comments/
           if-no-files-found: ignore
       - name: Upload operator_info
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1') && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
         with:
           name: operator_info
           path: "/tmp/operator-test/op_info.yaml"
       - name: Upload converted operators
         if: (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1') && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -206,12 +206,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: operator_info
           path: "/tmp/operator-test/"
       - name: Download converted operators
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -314,7 +314,7 @@ jobs:
           ENDOFCOMMENT
       - name: Upload pr comments
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: pr_comments_test
           path: /tmp/pr_comments/
@@ -403,7 +403,7 @@ jobs:
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
           echo "${{ needs.pr-check.outputs.opp_ci_yaml_only }}" > ./pr/CI_YAML_ONLY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: pr
           path: pr/

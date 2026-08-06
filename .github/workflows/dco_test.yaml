@@ -36,10 +36,10 @@ jobs:
         with:
           persist-credentials: false
       - id: files
-        uses: masesgroup/retrieve-changed-files@v2
+        uses: masesgroup/retrieve-changed-files@45a8b3b496d2d6037cbd553e8a3450989b9384a2  # v4.0.0
         continue-on-error: true
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -72,11 +72,11 @@ jobs:
     steps:
       - name: Get PR Commits
         id: 'get-pr-commits'
-        uses: tim-actions/get-pr-commits@master
+        uses: tim-actions/get-pr-commits@198af03565609bb4ed924d1260247b4881f09e7d  # v1.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: DCO Check
-        uses: tim-actions/dco@v1.0
+        uses: tim-actions/dco@f2279e6e62d5a7d9115b0cb8e837b777b1b02e21  # v1.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commits: ${{ steps.get-pr-commits.outputs.commits }}
@@ -96,7 +96,7 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: pr
           path: pr/
