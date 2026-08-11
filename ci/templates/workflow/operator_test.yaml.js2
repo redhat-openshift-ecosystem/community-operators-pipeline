@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c  # v4.9.1
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -89,7 +89,7 @@ jobs:
       - name: Operator traffic light (comment)
         id: op-traffic-light-comment
         if: always() && steps.op-traffic-light-result.outputs.git_rebase_conflict == '1'
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
@@ -153,7 +153,7 @@ jobs:
       - name: Operator info (packagemanifest format failed)
         id: op-info-comment-format
         if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
@@ -165,7 +165,7 @@ jobs:
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_k8s_bundles == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
@@ -192,7 +192,7 @@ jobs:
       - name: Operator info (packagemanifest format failed)
         id: op-info-comment-format
         if: always() && steps.op-info-result.outputs.opp_check_err_package_manifest == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1' ) && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
@@ -204,7 +204,7 @@ jobs:
       - name: Operator info (comment)
         id: op-info-comment
         if: always() && steps.op-info-result.outputs.opp_check_err_cluster_version_autolabel == '1' && (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' )
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             ## Automatic Cluster Version Label (OCP) - packagemanifest only
@@ -225,14 +225,14 @@ jobs:
 {% endif %}
 {% raw %}
       - name: Upload operator_info
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         if: (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1') && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
         with:
           name: operator_info
           path: "/tmp/operator-test/op_info.yaml"
       - name: Upload converted operators
         if: (steps.op-traffic-light.outputs.opp_op_delete == '0' || steps.op-traffic-light.outputs.opp_is_new_operatror == '1' || steps.op-traffic-light.outputs.opp_recreate == '1') && (steps.op-traffic-light.outputs.opp_ci_yaml_only == '0')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -268,12 +268,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operator_info
           path: "/tmp/operator-test/"
       - name: Download converted operators
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operators_converted
           path: "/tmp/operator-test/operators"
@@ -333,7 +333,7 @@ jobs:
 
       - name: "Comment operator_sdk_bundle_validate_warnings_and_errors if exists"
         if: always() && steps.op-kiwi-test-err-bundle-validate.outputs.opp_check_err_bundle_validate != ''
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},        
@@ -357,7 +357,7 @@ jobs:
 
       - name: "Comment operator test error olm.maxOpenShiftVersion"
         if: always() && steps.op-kiwi-test-err-maxOpenShiftVersion.outputs.opp_check_err_maxOpenShiftVersion != '0'
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@a96c578acba98b60f16c6866d5f20478dc4ef68b  # v1
         with:
           message: |
             Dear @${{ github.event.pull_request.user.login }},
@@ -433,12 +433,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operator_info
           path: /tmp/operator-test/
       - name: Download converted operators
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
@@ -518,12 +518,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Download operator_info
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operator_info
           path: /tmp/operator-test/
       - name: Download converted operators
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281  # v2.1.1
         with:
           name: operators_converted
           path: /tmp/operator-test/operators
@@ -575,7 +575,7 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2  # v2.3.1
         with:
           name: pr
           path: pr/
