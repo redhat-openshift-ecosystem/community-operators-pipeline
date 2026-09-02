@@ -9,7 +9,7 @@ OPP_ANSIBLE_PULL_REPO=${OPP_ANSIBLE_PULL_REPO-"https://github.com/redhat-openshi
 OPP_ANSIBLE_PULL_BRANCH=${OPP_ANSIBLE_PULL_BRANCH-"upstream-community"}
 
 OPP_INPUT_REPO=${OPP_INPUT_REPO-"https://github.com/redhat-openshift-ecosystem/community-operators-pipeline"}
-OPP_INPUT_BRANCH=${OPP_INPUT_BRANCH-"ci/latest"}
+OPP_INPUT_BRANCH=${OPP_INPUT_BRANCH-"e49167d27e0480ba4e77adcad3c52b1c13354f2d"} # ci/latest
 OPP_CONTAINER_TOOL=${OPP_CONTAINER_TOOL-docker}
 OPP_ANSIBLE_ARGS="-i localhost, -e ansible_connection=local upstream/local-pipeline-update.yml"
 OPP_ANSIBLE_EXTRA_ARGS=""
