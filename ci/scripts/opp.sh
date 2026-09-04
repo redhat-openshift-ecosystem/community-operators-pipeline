@@ -689,7 +689,7 @@ for t in $TESTS;do
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
             OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
-            OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo $OPP_UNCOMPLETE_OPERATORS_CURRENT | xargs)
+            OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo "$OPP_UNCOMPLETE_OPERATORS_CURRENT" | tr ' ' '\0' | xargs -0)
             echo "[$t1] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
             OPP_MY_VER=${t1/orange_/}
             OPP_MY_VER=${OPP_MY_VER//./_}
@@ -704,7 +704,7 @@ for t in $TESTS;do
     echo -e "Test '$t' : [ OK ]\n"
 done
 
-[ -n "$OPP_UNCOMPLETE_OPERATORS" ] && OPP_UNCOMPLETE_OPERATORS=$(echo $OPP_UNCOMPLETE_OPERATORS | tr ' ' '\n' | sort | uniq | tr '\n' ' '| xargs)
+[ -n "$OPP_UNCOMPLETE_OPERATORS" ] && OPP_UNCOMPLETE_OPERATORS=$(echo "$OPP_UNCOMPLETE_OPERATORS" | tr ' ' '\n' | sort | uniq | tr '\n' '\0' | xargs -0)
 echo "OPP_UNCOMPLETE_OPERATORS='$OPP_UNCOMPLETE_OPERATORS'"
 echo "opp_uncomplete_operators=$OPP_UNCOMPLETE_OPERATORS" >> $GITHUB_OUTPUT
 
