@@ -688,7 +688,8 @@ for t in $TESTS;do
             $DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "ls $OPP_UNCOMPLETE" > /dev/null 2>&1 || { echo "Noting to run !!!";set +e; continue; }
             OPP_EXEC_USER="$OPP_EXEC_USER -e operators_config=$OPP_UNCOMPLETE"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$($DRY_RUN_CMD $OPP_CONTAINER_TOOL exec $OPP_CONTAINER_OPT $OPP_NAME /bin/bash -c "/tmp/operator-test/bin/yq r $OPP_UNCOMPLETE operators -j | /tmp/operator-test/bin/jq '.[]' -r | tr '\n' ' '")
-            OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS $OPP_UNCOMPLETE_OPERATORS_CURRENT"
+            # Use ${var:+ } to add space only if OPP_UNCOMPLETE_OPERATORS is non-empty, preventing leading space on first iteration
+            OPP_UNCOMPLETE_OPERATORS="$OPP_UNCOMPLETE_OPERATORS${OPP_UNCOMPLETE_OPERATORS:+ }$OPP_UNCOMPLETE_OPERATORS_CURRENT"
             OPP_UNCOMPLETE_OPERATORS_CURRENT=$(echo "$OPP_UNCOMPLETE_OPERATORS_CURRENT" | tr ' ' '\0' | xargs -0)
             echo "[$t1] OPP_UNCOMPLETE_OPERATORS_CURRENT='$OPP_UNCOMPLETE_OPERATORS_CURRENT'"
             OPP_MY_VER=${t1/orange_/}
