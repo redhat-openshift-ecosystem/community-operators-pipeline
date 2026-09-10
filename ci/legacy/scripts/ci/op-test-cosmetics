@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-OP_TEST_SCRIPT_URL=${OP_TEST_SCRIPT_URL-"https://raw.githubusercontent.com/redhat-openshift-ecosystem/operator-test-playbooks/upstream-community/upstream/test/oprt_cosmetics.sh"}
+OP_TEST_SCRIPT_URL=${OP_TEST_SCRIPT_URL-"https://raw.githubusercontent.com/redhat-openshift-ecosystem/operator-test-playbooks/d64319fdeb08f8cb0be328ab711388cc1353513b/upstream/test/oprt_cosmetics.sh"} # branch upstream-community
 
 bash <(curl -sL $OP_TEST_SCRIPT_URL) $*
 rc=$?

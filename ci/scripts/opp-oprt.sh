@@ -7,7 +7,8 @@ OPP_OPRT_SHA=${OPP_OPRT_SHA-""}
 OPP_OPRT_SRC_REPO=${OPP_OPRT_SRC_REPO-"redhat-openshift-ecosystem/community-operators-pipeline"}
 OPP_OPRT_SRC_BRANCH=${OPP_OPRT_SRC_BRANCH-"main"}
 #OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/master/scripts/ci/actions-env"}
-OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/support/ci_01/ci/scripts/opp-env.sh"}
+OPP_SCRIPT_ENV_URL=${OPP_SCRIPT_ENV_URL-"https://raw.githubusercontent.com/operator-framework/community-operators/cb176e58657398364502510180c5dae44dff4bd4/ci/scripts/opp-env.sh"} # branch support/ci_01
+
 OPP_EXEC_USER=
 OPRT=1
 
