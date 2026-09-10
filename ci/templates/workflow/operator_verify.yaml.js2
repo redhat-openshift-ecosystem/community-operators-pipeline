@@ -44,6 +44,9 @@ on:
         description: 'Source branch'     
         required: true
         default: 'upstream-community'
+
+permissions: {}
+
 {% endraw %}
 env:
   OPP_CONTAINER_TOOL: podman
