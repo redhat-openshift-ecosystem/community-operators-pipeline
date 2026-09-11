@@ -7,6 +7,8 @@ on:
       - manual-test-index
       - index-for-openshift-test
 
+permissions: {}
+
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"

@@ -13,6 +13,8 @@ on:
         required: true
         default: '0'
 
+permissions: {}
+
 env:
 {% endraw %}
   OPP_CONTAINER_OPT: "-t"

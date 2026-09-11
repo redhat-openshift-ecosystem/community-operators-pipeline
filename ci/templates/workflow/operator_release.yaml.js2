@@ -61,6 +61,11 @@ on:
 {% endif %}
 {% endif %}
 
+permissions:
+  contents: read
+  actions: write
+  pull-requests: read
+
 env:
   OPP_DEBUG: 1
   OPP_CONTAINER_OPT: "-t"
