@@ -8,7 +8,7 @@ TESTS=$1
 TESTS=${TESTS//,/ }
 
 OPP_INPUT_REPO=${OPP_INPUT_REPO-"operator-framework/community-operators"}
-OPP_INPUT_BRANCH=${OPP_INPUT_BRANCH-"master"}
+OPP_INPUT_BRANCH=${OPP_INPUT_BRANCH-"e49167d27e0480ba4e77adcad3c52b1c13354f2d"} # master
 OPP_THIS_SCRIPT_URL="https://raw.githubusercontent.com/$OPP_INPUT_REPO/$OPP_INPUT_BRANCH/ci/scripts/opp.sh"
 OPP_THIS_REPO_BASE=${OPP_THIS_REPO_BASE-"https://github.com"}
 OPP_THIS_REPO=${OPP_THIS_REPO-"redhat-openshift-ecosystem/community-operators-pipeline"}
