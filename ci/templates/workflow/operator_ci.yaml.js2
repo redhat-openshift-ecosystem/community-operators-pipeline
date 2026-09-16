@@ -5,6 +5,10 @@ on:
  pull_request_target:
    types: [opened, synchronize, reopened, ready_for_review, unlabeled]
 
+permissions:
+  issues: write
+  pull-requests: write
+
 env:
 {% endraw %}
   AUTOMERGE_ENABLED: "{{ default_config.pipeline.automerge.enabled }}"

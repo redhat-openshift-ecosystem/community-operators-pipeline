@@ -1,6 +1,11 @@
 {% raw %}
 on: issue_comment
 name: Issue Comments - merge
+
+permissions:
+  issues: write
+  pull-requests: write
+
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"

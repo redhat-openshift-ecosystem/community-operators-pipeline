@@ -5,6 +5,8 @@ on:
  pull_request_target:
    types: [labeled]
 
+permissions: {}
+
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"
