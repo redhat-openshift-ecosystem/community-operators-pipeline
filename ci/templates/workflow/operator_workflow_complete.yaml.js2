@@ -6,6 +6,11 @@ on:
     workflows: ["Operator test"]
     types: [completed]
 
+permissions:
+  actions: read
+  issues: write
+  pull-requests: write
+
 env:
 {% endraw %}
   OPP_PRODUCTION_TYPE: "{{ default_config.production.type }}"

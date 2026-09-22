@@ -16,6 +16,10 @@ on:
         required: true
         default: '100'
 {% endif %}
+
+permissions:
+  contents: write
+
 {% raw %}
 env:
 {% endraw %}
