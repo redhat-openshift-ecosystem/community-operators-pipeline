@@ -1,4 +1,4 @@
-FROM quay.io/operator-framework/upstream-registry-builder@sha256:7c67542fd69f3fcc7bcae84b1a4a5af99725c186f2a35dbac43aaa41aa2b20a3 as builder
+FROM quay.io/operator-framework/upstream-registry-builder:v1.13.3 as builder
 ARG PERMISSIVE_LOAD=true
 COPY upstream-community-operators manifests
 RUN if [ $PERMISSIVE_LOAD = "true" ] ; then ./bin/initializer --permissive -o ./bundles.db ; else ./bin/initializer -o ./bundles.db ; fi 
